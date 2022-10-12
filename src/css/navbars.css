@@ -1,0 +1,64 @@
+/* Logo */
+.navbar_brand {
+    display: flex;
+    align-items: center;
+    padding-right: 30px;
+  }
+  /* .navbar-brand>img {
+    padding: 7px 14px;
+  } */
+
+/* Browse and Updates */
+.nav_icon_field {
+    vertical-align: middle;
+    
+}
+
+
+/* .nav_icon_img:hover{
+    background-color: #B8D9A0;
+} */
+
+.nav_icon_text {
+    margin-left: 8px;
+    color: #2A2E2E;
+    font-size: 18px;
+    font-weight: 400;
+    vertical-align: middle;
+    /* font-family: Nunito Verdana, Geneva, Tahoma, sans-serif; */
+    /* display: flex;
+    align-items: center; */
+}
+/* .nav_icon_text:hover{
+    color: #B8D9A0;
+} */
+
+/* Avatar User */
+.dropdown-toggle::after {
+    display: none !important; 
+  }
+
+/* Login & Register Button */
+.Btn_Login {
+  border-color: #B8D9A0 !important;
+  color: #B8D9A0 !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+
+}.Btn_Login:hover {
+  background-color: #B8D9A0 !important;
+  color: #fff !important;
+}
+
+.Btn_Register {
+  background-color: #B8D9A0 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+}.Btn_Register:hover{
+  background-color: #fff !important;
+  /* border-width: 0.125rem;
+  border-style: solid; */
+  border-color: #B8D9A0 !important;
+  color: #B8D9A0 !important;
+}
