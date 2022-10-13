@@ -58,9 +58,6 @@ function Footer() {
                       
                       
                     </li>
-                    {/* <li>
-                      <Link className="footer-link" to="/about">Ranking</Link>
-                    </li> */}
               
                   </ul>
 
@@ -72,26 +69,8 @@ function Footer() {
                     <li style={{ color: "#fff" }}>
                       © 2022 | All Rights Reserved
                     </li>
-
                     </center>
-                    
                   </ul>
-
-                  {/* <ul>
-                    <li>
-                      <p>Bantuan</p>
-                    </li>
-                    <li>Syarat dan Ketentuan</li>
-                    <li>Kebijakan Privasi</li>
-                  </ul> */}
-
-                  {/* <ul>
-                    <li>
-                      <p>Kemitraan</p>
-                    </li>
-                    <li>Ajukan Kemitraan</li>
-                    <li>Program Afiliasi</li>
-                  </ul> */}
 
                   <ul>
                     <li>

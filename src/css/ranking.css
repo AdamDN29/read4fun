@@ -1,0 +1,40 @@
+.ranking_title{
+    color: #2e2c2a;
+    font-size: 24px;
+    font-style: italic;
+    font-weight: bold;
+    
+}
+
+.story_link{
+    margin-bottom: 10px !important;
+}
+
+.story_field{
+    /* margin-left: 10px; */
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.stort_title{
+    color: #2e2c2a !important;
+}
+
+.detail_list2{
+    padding-bottom: 2px;
+    display: flex;
+    align-items: center;
+    font-size: auto ;
+    font-size: max(12px)!important;
+    font-weight: 500;
+    color: rgba(42, 46, 46, 0.8);
+    overflow-x:hidden;
+    white-space: nowrap;
+  }
+  .detail_list_icon{
+    margin-right: 10px;
+  }
+  .icon_text{
+    vertical-align: bottom;
+  }

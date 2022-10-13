@@ -29,9 +29,13 @@
     /* display: flex;
     align-items: center; */
 }
-/* .nav_icon_text:hover{
+.nav_icon_text:hover{
     color: #B8D9A0;
-} */
+}
+
+.navbar-light .navbar-toggler-icon {
+  background-image: fixed !important;
+}
 
 /* Avatar User */
 .dropdown-toggle::after {

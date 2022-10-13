@@ -1,0 +1,54 @@
+/* .section_header{
+    display: flex;
+} */
+
+.story_type{
+    font-size: max(36px) !important;
+    color: #2A2E2E !important;
+    font-weight: bolder;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(42, 46, 46, 0.25);
+
+    padding-bottom: 15px;
+}
+.more_link{
+    float: right;
+    margin-top: -55px;
+    font-size: 16x;
+    color: #B8D9A0;
+    text-decoration: underline;
+    font-weight: bold;
+}
+.more_link:hover{
+    color: #2A2E2E;
+}
+
+/* Write Section */
+.write_card {
+    margin-top: 25px;
+    background-color: #B8D9A0 !important;
+    height: auto;
+    padding: 10px;
+}
+.write_card_body{
+    vertical-align: middle !important;
+    align-items: center !important;
+    text-align: center;
+}
+
+.write_card_title{
+    color: #2A2E2E;
+    font-weight: bold;
+}
+.write_card_icon{
+    padding-right: 5px;
+    vertical-align: middle;
+}
+
+.btn_writes{
+    margin-top: 10px;
+    background-color: #2A2E2E !important;
+    font-size: 16px !important;
+}
+

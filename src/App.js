@@ -3,6 +3,9 @@ import React from 'react'
 //import react router dom
 import { Router, Routes, Route, Link } from "react-router-dom";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 //import pages
 import Listpages from './pages/ListPages' 
 import Login from './pages/Login'
