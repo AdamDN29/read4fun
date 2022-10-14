@@ -20,24 +20,17 @@ function Footer() {
         className="row mx-auto pt-5 pb-2 footer"
         style={{ backgroundColor: "#2A2E2E", width: "100%" }}
       >
-        <Container>
-        <div className="col-lg-12">
-          <div className="nav-footer">
-            <div className="row ">
-              <div className="col-lg-12 ">
-                <div className=" list-footer-nav">
-                  
-
+              <Container>
+                <div className="list-footer-nav">
                   <ul>
-                    
                     <li>
-                        <Row >
+                        <Row className="icon_space d-flex justify-space-between">
                           <Col >
                               <li>
-                                <Link className="footer-link" to="/">Updates</Link>
+                                <Link className="footer-link" to="/updatespage">Updates</Link>
                               </li>
                               <li>
-                                <Link className="footer-link" to="/">Ranking</Link>
+                                <Link className="footer-link" to="/browsepage">Ranking</Link>
                               </li>
                            
                           </Col>
@@ -65,7 +58,7 @@ function Footer() {
               
                   </ul>
 
-                  <ul className="pt-1">
+                  <ul>
                     <center>
                     <li>
                       <img src = {ImgAsset.logo2}  alt="gambar" className="logo2"/>
@@ -100,13 +93,8 @@ function Footer() {
                     </li>
                   </ul>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        </Container>
-      </div>
-      
+                </Container>
+      </div>  
     </>
   );
 }

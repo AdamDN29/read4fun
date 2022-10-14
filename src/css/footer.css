@@ -1,3 +1,9 @@
+.list-footer-nav {
+    display: flex;
+    margin-left: -12px;
+    
+}
+
 .list-footer-nav ul li {
     list-style: none;
     color: #D6EFC7;
@@ -27,11 +33,7 @@
     align-items: center;
 }
 
-.list-footer-nav {
-    display: flex;
-    margin-left: -20px;
-    
-}
+
 
 .list-footer-nav ul li:hover {
     color: #fff;
@@ -73,6 +75,16 @@
   margin-right: auto;
     /* left: 50%;
 	transform:translate(-50%); */
+}
+
+.col_space {
+    /* padding-left: 0% !important; */
+    justify-content: space-between;
+    margin: auto;
+}
+
+ul{
+    padding-left: 0% !important;
 }
 
 @media only screen and (max-width: 600px) {

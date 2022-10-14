@@ -11,7 +11,7 @@ export default function Navbars () {
         <div>
             <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
                 <Container>
-                    <Navbar.Brand href="/homepage">
+                    <Navbar.Brand href="/">
                         <img
                         src = {ImgAsset.logo}
                         // width="150"
@@ -23,7 +23,7 @@ export default function Navbars () {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/" className="nav_icon_field nav-link">
+                            <Nav.Link as={Link} to="/browsepage" className="nav_icon_field nav-link">
                                 <img
                                 src = {ImgAsset.compass_browse}
                                 width="30"
@@ -33,7 +33,7 @@ export default function Navbars () {
                                 />
                                 <span className='nav_icon_text'>Browse</span>
                             </Nav.Link>
-                            <Nav.Link as={Link} to="/" className="nav_icon_field nav-link">
+                            <Nav.Link as={Link} to="/updatespage" className="nav_icon_field nav-link">
                                 <img
                                 src = {ImgAsset.book_updates}
                                 width="30"
@@ -65,10 +65,10 @@ export default function Navbars () {
                             </NavDropdown> */}
 
                             {/* Login & Register Button */}
-                            <Nav.Link href="#action1">
+                            <Nav.Link href="/login">
                                 <Button variant="outline-primary" className='Btn_Login'>Login</Button>{' '}
                             </Nav.Link>
-                            <Nav.Link href="#action1">
+                            <Nav.Link href="/register">
                                 <Button variant="primary" className='Btn_Register'>Register</Button>
                             </Nav.Link>
                         </Nav>

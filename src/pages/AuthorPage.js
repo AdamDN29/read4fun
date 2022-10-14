@@ -1,4 +1,5 @@
 import React from 'react';
+import ImgAsset from '../resources';
 
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'

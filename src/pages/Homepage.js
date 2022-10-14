@@ -26,7 +26,7 @@ function Homepage() {
             {/* Short Story Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Short Story</h1>
-                <Link to="/" className='more_link'>View More</Link>
+                <Link to="/browsepage" className='more_link'>View More</Link>
 
                 <StoryCard/>
             </div>
@@ -34,7 +34,7 @@ function Homepage() {
             {/* Short Story Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Novel</h1>
-                <Link to="/" className='more_link'>View More</Link>
+                <Link to="/browsepage" className='more_link'>View More</Link>
                 
                 <StoryCard/>
             </div>
@@ -43,7 +43,7 @@ function Homepage() {
             <Card className="write_card border-0 rounded shadow-sm">
                 <Card.Body className="write_card_body p-4">
                     <h1 className='write_card_title'>Want to Write a Story ?</h1>
-                    <Button variant="primary" className='btn_writes'>
+                    <Button variant="primary" href="/" className='btn_writes'>
                         <img
                         className='write_card_icon'
                         src = {ImgAsset.icon_write_story}
@@ -56,7 +56,7 @@ function Homepage() {
             {/* Ranking Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Ranking</h1>
-                <Link to="/" className='more_link'>View More</Link>
+                <Link to="/browsepage" className='more_link'>View More</Link>
                
                 <Ranking/>
             </div>           
@@ -64,7 +64,7 @@ function Homepage() {
              {/* Updates Section  */}
              <div className='section_header'>
                 <h1 className='story_type'>Recently Updates</h1>
-                <Link to="/" className='more_link'>View More</Link>
+                <Link to="/updatespage" className='more_link'>View More</Link>
                
                 <StoryGrid/>
             </div>  

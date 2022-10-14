@@ -87,6 +87,13 @@
     color: black;
     cursor: pointer;
   }
+
+  .slick-prev{
+    left: -10px !important;
+  }
+  .slick-next{
+    right: -10px !important;
+  }
   
   .slick-prev:before {
     color: rgb(85, 85, 85) !important;
