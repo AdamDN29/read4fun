@@ -67,10 +67,9 @@ function Ranking() {
                                 </Col>
                             </Row>
                         </Link>
-                    ))}
-
-                
+                    ))}               
                 </Col>
+
                 <Col><p className='ranking_title'>Most Like</p>
                     {storys.slice(0,5).map((story) => (
                         <Link  to={`/storypage/${story.id}`}>
@@ -112,9 +111,9 @@ function Ranking() {
                                 </Col>
                             </Row>
                         </Link>
-                    ))}
-                    
+                    ))}                   
                 </Col>
+
                 <Col><p className='ranking_title'>Most Bookmark</p>
                     {storys.slice(0,5).map((story) => (
                         <Link  to={`/storypage/${story.id}`}>
@@ -156,8 +155,7 @@ function Ranking() {
                                 </Col>
                             </Row>
                         </Link>
-                    ))}
-                   
+                    ))}                
                 </Col>
             </Row>
         </div>

@@ -4,19 +4,23 @@ import ImgAsset from '../resources'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
+import { Container } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+
 // import { Icon } from "@iconify/react";
 // import instagramFilled from "@iconify/icons-ant-design/instagram-filled";
 // import facebookFilled from "@iconify/icons-ant-design/facebook-filled";
 // import twitterFilled from "@iconify/icons-ant-design/twitter-circle-filled";
-import { Link } from 'react-router-dom'
 
 function Footer() {
   return (
     <>
+    
       <div
         className="row mx-auto pt-5 pb-2 footer"
         style={{ backgroundColor: "#2A2E2E", width: "100%" }}
       >
+        <Container>
         <div className="col-lg-12">
           <div className="nav-footer">
             <div className="row ">
@@ -100,7 +104,9 @@ function Footer() {
             </div>
           </div>
         </div>
+        </Container>
       </div>
+      
     </>
   );
 }

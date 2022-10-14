@@ -13,6 +13,9 @@ import Register from './pages/Register'
 import Homepage from './pages/Homepage'
 import StoryPage from './pages/StoryPage'
 import ChapterPage from './pages/ChapterPage'
+import BrowsePage from './pages/BrowsePage'
+import UpdatesPage from './pages/UpdatesPage'
+import AuthorPage from './pages/AuthorPage'
 
 //import components
 import Navbars from './components/Navbars'
@@ -32,6 +35,9 @@ function App() {
           <Route path='/homepage' element={<Homepage/>} />
           <Route path='/storypage' element={<StoryPage/>} />
           <Route path='/chapterpage' element={<ChapterPage/>} />
+          <Route path='/browsepage' element={<BrowsePage/>} />
+          <Route path='/updatespage' element={<UpdatesPage/>} />
+          <Route path='/authorpage' element={<AuthorPage/>} />
           
          
         </Routes>

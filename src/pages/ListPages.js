@@ -21,7 +21,9 @@ function ListPages() {
                         <a class="lead" href="/homepage">Homepage</a><br/>
                         <a class="lead" href="/storypage">StoryPage</a><br/>
                         <a class="lead" href="/chapterpage">ChapterPage</a><br/>
-                        
+                        <a class="lead" href="/browsepage">BrowsePage</a><br/>
+                        <a class="lead" href="/updatespage">UpdatesPage</a><br/>
+                        <a class="lead" href="/authorpage">AuthorPage</a><br/>            
                         
                         </Card.Body>
                     </Card>
