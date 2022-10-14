@@ -27,7 +27,7 @@ function ImgCarousel() {
         />
 
         <Carousel.Caption>
-          <h3 className='title_caption2'>Want to be <a className='text_theme2'>Author</a> and Share Your Story in Great Place?</h3>
+          <h3 className='title_caption2'>Want to be <a className='text_theme2'>Author</a> and Share Your Story in Great Place  ?</h3>
           <p>Write a <a className='text_theme3'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
           <p><center><Button variant="primary" className='btn_write'>Write</Button></center></p>
         </Carousel.Caption>
@@ -40,7 +40,7 @@ function ImgCarousel() {
         />
 
         <Carousel.Caption>
-          <h3 className='title_caption2'>Find a <a className='text_theme'>Great Place</a> to Read and Write a Story?</h3>
+          <h3 className='title_caption2'>Find a <a className='text_theme'>Great Place</a> to Read and Write a Story  ?</h3>
           <p className='text_theme3'>Search a <a className='text_theme'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
           <p><center><Button variant="primary" className='btn_search'>Search</Button></center></p>
         </Carousel.Caption>

@@ -27,6 +27,7 @@
 /* Write Section */
 .write_card {
     margin-top: 25px;
+    margin-bottom: 25px;
     background-color: #B8D9A0 !important;
     height: auto;
     padding: 10px;
