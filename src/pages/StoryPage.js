@@ -16,7 +16,7 @@ function StoryPage() {
                     <Card className="border-0 rounded shadow-sm">
                         <Card.Body className="p-4">
                         <h1>StoryPage</h1>
-                        <p class="lead">Test StoryPage<strong>Read4Fun</strong></p>
+                        <p class="lead">Andre ganteng<strong>Read4Fun</strong></p>
                         
                         </Card.Body>
                     </Card>
