@@ -13,7 +13,10 @@ body {
   color: #2A2E2E !important;
 } */
 
-
+::selection {
+  color: white;
+  background: #B8D9A0;
+}
 
 
 code {

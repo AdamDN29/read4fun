@@ -1,0 +1,80 @@
+.info_section2{
+    margin-top: 25px !important;
+    border-bottom: 2px solid rgba(42, 46, 46, 0.5);
+    padding-bottom: 5px;
+    margin-left: 0px !important;
+    /* width: 100%; */
+}
+
+.search_form{
+    width: 98% !important;
+}
+
+.btn_search2{
+    background-color: #2A2E2E !important;
+    font-size: medium !important;
+    text-transform: none !important;
+    color: white !important;
+    font-weight: bold !important;
+    /* width: 100%; */
+    float: right;
+}
+
+.section_title4{
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E;
+    font-size: auto !important;
+    font-size: max(28px) !important;
+}
+
+.field_btn{
+    display: flex;
+}
+
+.btn_filter{
+    background-color: rgba(42, 46, 46, 0.25) !important;
+    font-size: medium !important;
+    text-transform: none !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 10px !important;
+    padding: 3px 20px 3px 20px !important;
+    margin-right: 10px !important;
+    box-sizing: border-box !important;
+    border: 2px solid transparent !important;
+    box-shadow: none !important;
+}
+
+.btn_filter:hover{
+    border: 2px solid #fff !important;
+}
+
+.btn_active{
+    background-color: #B8D9A0 !important;
+}
+
+.btn_apply{
+    background-color: #2A2E2E !important;
+    font-size: medium !important;
+    text-transform: none !important;
+    color: white !important;
+    font-weight: bold !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    margin-left: 12px !important;
+    float: right;
+}
+
+.form-check-input[type=checkbox]:checked {
+    background-image: none;
+    background-color: #B8D9A0 !important;
+}
+
+.form-check-input:checked {
+    border-color: #B8D9A0 !important;
+}
+
+.form_check{
+    margin-bottom: 7px!important;
+    color: #2A2E2E !important;
+}

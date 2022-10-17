@@ -5,10 +5,14 @@ export default {
     compass_browse: require('./compass_browse.svg').default,
     book_updates: require('./book_updates.svg').default,
     avatar: require('./avatar.svg').default,
+    avatar2: require('./avatar2.svg').default,
     mail_icon: require('./mail_icon.svg').default,
     fb_icon: require('./fb_icon.svg').default,
     twitter_icon: require('./twitter_icon.svg').default,
     ig_icon: require('./ig_icon.svg').default,
+    icon_ascending: require('./icon_ascending.svg').default,
+    icon_sort: require('./icon_sort.svg').default,
+    icon_search: require('./icon_search.svg').default,
 
     //Version 1
     icon_chapter: require('./icon_chapter.svg').default,
