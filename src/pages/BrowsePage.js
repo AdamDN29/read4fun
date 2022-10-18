@@ -4,6 +4,7 @@ import '../css/browsepage.css';
 
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
+import StoryBrowse from '../components/StoryBrowse'
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Form, FloatingLabel, InputGroup  } from 'react-bootstrap'
@@ -61,7 +62,7 @@ function BrowsePage() {
                 </Row>
            </div>
 
-             {/* Search Section */}
+             {/* Filter Section */}
              <div className='info_section2'> 
                 <Row>
                     <Col >
@@ -137,9 +138,14 @@ function BrowsePage() {
                     <Button className='btn_apply'>Apply Filter</Button>
                 </div>
                 </Row>
-                
-                
+                            
            </div>
+
+            {/* Story Section */}
+            <div className='info_section2'> 
+                {/* <h1 className='section_title3'>Result</h1> */}
+                <StoryBrowse/>
+            </div>
             
             {/* <Row>
                 <Col md="{60}">

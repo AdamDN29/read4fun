@@ -31,6 +31,7 @@ export default {
     icon_view2: require('./icon_view2.svg').default,
     icon_like2: require('./icon_like2.svg').default,
     icon_bookmark2: require('./icon_bookmark2.svg').default,
+    icon_update2: require('./icon_update2.svg').default,
 
     icon_like3: require('./icon_like3.svg').default,
     icon_like4: require('./icon_like4.svg').default,

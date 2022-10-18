@@ -10,6 +10,10 @@
     margin-bottom: 10px !important;
 }
 
+.story_link:hover{
+  background-color: #f5f5f5;
+}
+
 .story_field{
     /* margin-left: 10px; */
     white-space: nowrap !important;

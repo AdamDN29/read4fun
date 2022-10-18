@@ -28,7 +28,7 @@ function StoryPage() {
 
                 <Col xs={5}>
                     <h2 className='story_title2'>Shadow Slave</h2>
-                    <h4 className='section_title'><i>Author :</i> <a className='author_text'>Guiltythree</a></h4>
+                    <h4 className='section_title'><i>Author :</i> <a href="/authorpage" className='author_text'>Guiltythree</a></h4>
 
                     {/* Detail */}
                     <Row className='row_detail'>
@@ -134,7 +134,8 @@ function StoryPage() {
                     What's worse, the divine power he received happened to possess a small, but potentially fatal side effect...</p>
 
            </div>
-
+            
+            {/* Chapters Section */}
            <div className='info_section'> 
                 <h1 className='section_title3'>Chapters</h1>
                 <div className='release_content'>Latest Release : <a className='latest_chapter'>{" "} Chapter 472 : Quid Pro Quo </a>

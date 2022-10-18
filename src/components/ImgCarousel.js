@@ -42,7 +42,7 @@ function ImgCarousel() {
         <Carousel.Caption>
           <h3 className='title_caption2'>Find a <a className='text_theme'>Great Place</a> to Read and Write a Story  ?</h3>
           <p className='text_theme3'>Search a <a className='text_theme'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
-          <p><center><Button variant="primary" href="/" className='btn_search'>Search</Button></center></p>
+          <p><center><Button variant="primary" href="/browsepage" className='btn_search'>Search</Button></center></p>
         </Carousel.Caption>
       </Carousel.Item>
     </Carousel>

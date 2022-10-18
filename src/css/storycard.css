@@ -57,6 +57,11 @@
   .card {
     transition: 0.5s;
   }
+
+  .card:hover{
+    background-color: #f5f5f5;
+ }
+
   .button-beli {
     display: none;
     font-weight: 600;
