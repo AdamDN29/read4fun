@@ -23,7 +23,7 @@ export default function Navbars () {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/browsepage" className="nav_icon_field nav-link">
+                            <Nav.Link as={Link} to="/browse" className="nav_icon_field nav-link">
                                 <img
                                 src = {ImgAsset.compass_browse}
                                 width="30"
@@ -33,7 +33,7 @@ export default function Navbars () {
                                 />
                                 <span className='nav_icon_text'>Browse</span>
                             </Nav.Link>
-                            <Nav.Link as={Link} to="/updatespage" className="nav_icon_field nav-link">
+                            <Nav.Link as={Link} to="/updates" className="nav_icon_field nav-link">
                                 <img
                                 src = {ImgAsset.book_updates}
                                 width="30"

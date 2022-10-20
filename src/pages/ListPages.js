@@ -19,11 +19,18 @@ function ListPages() {
                         <a class="lead" href="/login">Login</a><br/>
                         <a class="lead" href="/register">Register</a><br/>
                         <a class="lead" href="/homepage">Homepage</a><br/>
-                        <a class="lead" href="/storypage">StoryPage</a><br/>
-                        <a class="lead" href="/chapterpage">ChapterPage</a><br/>
-                        <a class="lead" href="/browsepage">BrowsePage</a><br/>
-                        <a class="lead" href="/updatespage">UpdatesPage</a><br/>
-                        <a class="lead" href="/authorpage">AuthorPage</a><br/>            
+                        <a class="lead" href="/story">StoryPage</a><br/>
+                        <a class="lead" href="/chapter">ChapterPage</a><br/>
+                        <a class="lead" href="/browse">BrowsePage</a><br/>
+                        <a class="lead" href="/updates">UpdatesPage</a><br/>
+                        <a class="lead" href="/author">AuthorPage</a><br/> 
+
+                        <a class="lead" href="/dashboard">DashboardPage</a><br/>    
+                        <a class="lead" href="/userstory">UserStoryPage</a><br/>    
+                        <a class="lead" href="/editdetail">EditDetailPage</a><br/>    
+                        <a class="lead" href="/editprofile">EditProfilePage</a><br/>    
+                        <a class="lead" href="/changepassword">ChangePasswordPage</a><br/>    
+                        <a class="lead" href="/writing">WritingPage</a><br/>               
                         
                         </Card.Body>
                     </Card>

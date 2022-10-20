@@ -28,7 +28,7 @@ function StoryGrid() {
     return (
         <Row xs={3} md={6} className="g-6">
         {storys.slice(0,12).map((story) => (
-            <Link  to={`/storypage/${story.id}`}>
+            <Link  to={`/story/${story.id}`}>
                 <Col className='story_col'>
                     <Card className="story_card card mx-1">
                         <div

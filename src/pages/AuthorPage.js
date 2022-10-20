@@ -162,7 +162,7 @@ function AuthorPage() {
                         </Col>
                 </Row>
 
-                    <Row className='row_detail'>
+                    <Row className='row_detail3'>
                         <Col className='col_detail'><p className='detail1'>Views</p>
                             <div className="detail_list3">
                                 <img
@@ -203,7 +203,7 @@ function AuthorPage() {
                                 <span className="icon_text">Short Story</span>
                             </div>
                         </Col>
-                        <Col className='col_detail'><p className='detail1'>Status</p>
+                        <Col className='col_detail3'><p className='detail1'>Status</p>
                             <div className="detail_list3">
                                 <img
                                     className="detail_list_icon"
@@ -223,7 +223,7 @@ function AuthorPage() {
                         </Col>
                 </Row>
 
-                    <Row className='row_detail'>
+                    <Row className='row_detail3'>
                         <Col className='col_detail'><p className='detail1'>Views</p>
                             <div className="detail_list3">
                                 <img
@@ -288,7 +288,7 @@ function AuthorPage() {
                         </Col>
                 </Row>
 
-                    <Row className='row_detail'>
+                    <Row className='row_detail3'>
                         <Col className='col_detail'><p className='detail1'>Views</p>
                             <div className="detail_list3">
                                 <img
@@ -351,7 +351,7 @@ function AuthorPage() {
                         </Col>
                 </Row>
 
-                    <Row className='row_detail'>
+                    <Row className='row_detail3'>
                         <Col className='col_detail'><p className='detail1'>Views</p>
                             <div className="detail_list3">
                                 <img
@@ -414,7 +414,7 @@ function AuthorPage() {
                         </Col>
                 </Row>
 
-                    <Row className='row_detail'>
+                    <Row className='row_detail3'>
                         <Col className='col_detail'><p className='detail1'>Views</p>
                             <div className="detail_list3">
                                 <img

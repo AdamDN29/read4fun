@@ -98,6 +98,24 @@
     background-color: #D3455B !important;
 }
 
+.btn_delete{
+    background-color: #D3455B !important;
+    float: right !important;
+    width: 30px;
+    height: 40px;
+    padding: 5px;
+    display: flexbox;
+}
+
+.icon_delete{
+    /* margin-right: 10px !important; */
+    /* justify-content: center !important; */
+    vertical-align: middle !important;
+    /* float: left !important; */
+    margin: 0 auto !important;
+}
+
+
 .like_section{
     vertical-align: middle !important;
     padding-top: 125px;

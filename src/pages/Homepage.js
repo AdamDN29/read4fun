@@ -26,7 +26,7 @@ function Homepage() {
             {/* Short Story Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Short Story</h1>
-                <Link to="/browsepage" className='more_link'>View More</Link>
+                <Link to="/browse" className='more_link'>View More</Link>
 
                 <StoryCard/>
             </div>
@@ -34,7 +34,7 @@ function Homepage() {
             {/* Short Story Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Novel</h1>
-                <Link to="/browsepage" className='more_link'>View More</Link>
+                <Link to="/browse" className='more_link'>View More</Link>
                 
                 <StoryCard/>
             </div>
@@ -56,7 +56,7 @@ function Homepage() {
             {/* Ranking Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Ranking</h1>
-                <Link to="/browsepage" className='more_link'>View More</Link>
+                <Link to="/browse" className='more_link'>View More</Link>
                
                 <Ranking/>
             </div>           
@@ -64,7 +64,7 @@ function Homepage() {
              {/* Updates Section  */}
              <div className='section_header'>
                 <h1 className='story_type'>Recently Updates</h1>
-                <Link to="/updatespage" className='more_link'>View More</Link>
+                <Link to="/updates" className='more_link'>View More</Link>
                
                 <StoryGrid/>
             </div>  

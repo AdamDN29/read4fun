@@ -28,7 +28,7 @@ function Ranking() {
             <Row>
                 <Col><p className='ranking_title'>Most View</p>
                     {storys.slice(0,5).map((story) => (
-                        <Link  to={`/storypage/${story.id}`}>
+                        <Link  to={`/story/${story.id}`}>
                             <Row className="story_link">
                                 <Col xs lg="3"> 
                                     <img

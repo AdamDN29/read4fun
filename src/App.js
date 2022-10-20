@@ -17,6 +17,13 @@ import BrowsePage from './pages/BrowsePage'
 import UpdatesPage from './pages/UpdatesPage'
 import AuthorPage from './pages/AuthorPage'
 
+import DashboardUser from './pages/DashboardUser'
+import UserStoryPage from './pages/UserStoryPage'
+import EditDetailPage from './pages/EditDetailPage'
+import EditProfilePage from './pages/EditProfilePage'
+import ChangePasswordPage from './pages/ChangePasswordPage'
+import WritingPage from './pages/WritingPage'
+
 //import components
 import Navbars from './components/Navbars'
 import Footer from './components/Footer'
@@ -33,11 +40,18 @@ function App() {
           
           <Route path='/' element={<Listpages/>} />
           <Route path='/homepage' element={<Homepage/>} />
-          <Route path='/storypage' element={<StoryPage/>} />
-          <Route path='/chapterpage' element={<ChapterPage/>} />
-          <Route path='/browsepage' element={<BrowsePage/>} />
-          <Route path='/updatespage' element={<UpdatesPage/>} />
-          <Route path='/authorpage' element={<AuthorPage/>} />
+          <Route path='/story' element={<StoryPage/>} />
+          <Route path='/chapter' element={<ChapterPage/>} />
+          <Route path='/browse' element={<BrowsePage/>} />
+          <Route path='/updates' element={<UpdatesPage/>} />
+          <Route path='/author' element={<AuthorPage/>} />
+
+          <Route path='/dashboard' element={<DashboardUser/>} />
+          <Route path='/userstory' element={<UserStoryPage/>} />
+          <Route path='/editdetail' element={<EditDetailPage/>} />
+          <Route path='/editprofile' element={<EditProfilePage/>} />
+          <Route path='/changepassword' element={<ChangePasswordPage/>} />
+          <Route path='/writing' element={<WritingPage/>} />
           
          
         </Routes>

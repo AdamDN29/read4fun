@@ -28,7 +28,7 @@ function StoryBrowse() {
             <div>
                 <Row xs={1} md={2} >
                     {Array.from({ length: 10 }).map((_, idx) => (
-                        <Link className="link_chapter" to={`/storypage`}>
+                        <Link className="link_chapter" to={`/story`}>
                             <Col>
                             <Row className="story_row">
                                 <Col xs md={4}> 

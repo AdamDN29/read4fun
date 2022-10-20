@@ -9,10 +9,10 @@ import Footer from '../components/Footer'
 import { Card, Container, Row, Col , Button, Badge, Pagination, Form, FloatingLabel } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 
-function StoryPage() {
+function UserStoryPage() {
     return (
         <div>
-        <Navbars/>
+        <Navbars />   
         <Container className="mt-3">
             {/* Details Section */}
             <Row className='info_section' >
@@ -100,30 +100,29 @@ function StoryPage() {
                         <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Mystery</Badge>{' '}</Link>
                         <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Magical Realism</Badge>{' '}</Link>
                         <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Psychological</Badge>{' '}</Link>
-                        {/* <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Comedy</Badge>{' '}</Link> */}
+                        {/* <Link to="/browsepage"><Badge bg="#B8D9A0" className='genre_badge' >Comedy</Badge>{' '}</Link> */}
                     </div>
 
                     {/* Button */}
-                    <Button className='btn_sp'>Read First Chapter</Button>
-                    <Button className='btn_sp'>Add to Bookmark</Button>
-                    <Button className='btn_report btn_sp'>Report</Button>
+                    <Button className='btn_sp'>Edit Detail</Button>
+                    <Button className='btn_sp'>Add New Chapter</Button>
+                    <Button className='btn_report btn_sp'>Delete Story</Button>
 
                 </Col>
 
                 {/* Like */}
                 <Col >
-                    <div className='like_section'>
+                    {/* <div className='like_section'>
                         <p className='like_question'>Like This Story ?</p>
                         <div className='like_icon_place'>
                         </div>
-                        {/* <img
+                        <img
                             className="like_icon_place"
                             width="100px"
                             height="100px"
                             src = {ImgAsset.icon_like2}
-                        /> */}
-                    </div>
-  
+                        />
+                    </div> */}
                 </Col>
             </Row>
             
@@ -158,6 +157,14 @@ function StoryPage() {
                                             </Col>
                                             <Col className='title_chapter'> Nightmare Begin
                                             </Col>
+                                            {/* <Col className='title_chapter'> 
+                                                <Button variant="primary" className="btn_delete">
+                                                    <img
+                                                        className="icon_delete"
+                                                        src = {ImgAsset.icon_delete}
+                                                    />
+                                                </Button>
+                                            </Col> */}
                                         </Row>
                                     </Card.Title>
                                     <Card.Text>
@@ -305,9 +312,9 @@ function StoryPage() {
             </div>
          
         </Container>
-        <Footer/>
+        <Footer />   
         </div>
     );
 }
 
-export default StoryPage;
+export default UserStoryPage;

@@ -27,19 +27,19 @@ function Footer() {
                         <Row className="icon_space d-flex justify-space-between">
                           <Col >
                               <li>
-                                <Link className="footer-link" to="/updatespage">Updates</Link>
+                                <Link className="footer-link" to="/updates">Updates</Link>
                               </li>
                               <li>
-                                <Link className="footer-link" to="/browsepage">Ranking</Link>
+                                <Link className="footer-link" to="/browse">Ranking</Link>
                               </li>
                            
                           </Col>
                           <Col >
                           <li>
-                                <Link className="row_link footer-link" to="/">Short Story</Link>
+                                <Link className="row_link footer-link" to="/browse">Short Story</Link>
                               </li>
                               <li>
-                                <Link className="footer-link" to="/">Novel</Link>
+                                <Link className="footer-link" to="/browse">Novel</Link>
                               </li>
                           </Col>
                           <Col >

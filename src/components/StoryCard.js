@@ -72,7 +72,7 @@ function StoryCard() {
         <div className="container-fluid d-flex justify-content-center">
           <Sliderslick {...settingsSlick} className="slickSlider">
             {products.map((product) => (
-              <Link className="link" to={`/storypage/${product.id}`}>
+              <Link className="link" to={`/story/${product.id}`}>
                 <div className="d-flex justify-content-center ">
                   <div
                     key={product.id}

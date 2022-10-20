@@ -20,6 +20,10 @@
     float: right;
 }
 
+.btn_search2:hover{
+    background-color: #B8D9A0 !important;
+}
+
 .section_title4{
     font-family: "nunito_sansextrabold";
     color: #2A2E2E;
@@ -63,6 +67,10 @@
     margin-bottom: 10px !important;
     margin-left: 12px !important;
     float: right;
+}
+
+.btn_apply:hover{
+    background-color: #B8D9A0 !important;
 }
 
 .form-check-input[type=checkbox]:checked {
