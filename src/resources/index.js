@@ -14,6 +14,7 @@ export default {
     icon_sort: require('./icon_sort.svg').default,
     icon_search: require('./icon_search.svg').default,
     icon_delete: require('./icon_delete.svg').default,
+    icon_upload: require('./icon_upload.svg').default,
 
     //Version 1
     icon_chapter: require('./icon_chapter.svg').default,
@@ -43,6 +44,7 @@ export default {
     img_bg3: require('./img_bg3.svg').default,
 
     //Cover Book
+    image_placeholder: require('./image_placeholder.svg').default,
     shadowslavecover: require('./shadowslavecover.jpg').default,
     ssc1: require('./ssc1.svg').default,
    

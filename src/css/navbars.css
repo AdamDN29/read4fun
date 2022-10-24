@@ -48,6 +48,7 @@
   color: #B8D9A0 !important;
   box-shadow: none !important;
   text-transform: none !important;
+  width: 90px !important;
 
 }.Btn_Login:hover {
   background-color: #B8D9A0 !important;
@@ -59,10 +60,11 @@
   color: #fff !important;
   box-shadow: none !important;
   text-transform: none !important;
+  width: 90px !important;
 }.Btn_Register:hover{
   background-color: #fff !important;
-  /* border-width: 0.125rem;
-  border-style: solid; */
+  /* border-width: 0.1px; */
+  border-style: solid !important;
   border-color: #B8D9A0 !important;
   color: #B8D9A0 !important;
 }
