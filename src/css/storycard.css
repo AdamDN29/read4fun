@@ -62,6 +62,10 @@
     background-color: #f5f5f5;
  }
 
+ .card-img-top{
+  border-radius: 0px !important;
+ }
+
   .button-beli {
     display: none;
     font-weight: 600;

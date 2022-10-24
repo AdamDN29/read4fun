@@ -28,15 +28,15 @@ function Homepage() {
                 <h1 className='story_type'>Short Story</h1>
                 <Link to="/browse" className='more_link'>View More</Link>
 
-                <StoryCard/>
+                <StoryCard key={"1"} type={"Short Story"}/>
             </div>
 
-            {/* Short Story Section  */}
+            {/* Novel Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Novel</h1>
                 <Link to="/browse" className='more_link'>View More</Link>
                 
-                <StoryCard/>
+                <StoryCard key={"2"} type={"Novel"}/>
             </div>
 
             {/* Write Section */}

@@ -13,9 +13,9 @@ function Ranking() {
 
     useEffect(() => {
         axios
-          .get(`https://dummyjson.com/products`)
+          .get(`https://read4fun-backend.herokuapp.com/api/story`)
           .then((response) => {
-            setStory(response.data.products);
+            setStory(response.data);
             console.log(response);
           })
           .catch((err) => {
@@ -39,7 +39,7 @@ function Ranking() {
                                     />
                                 </Col>
                                 <Col className='story_field'> 
-                                    <h6 className='stort_title'>Shadow Slave</h6>
+                                    <h6 className='stort_title'>{story.title}</h6>
                                     <div className="detail_list2">
                                         <img
                                             width="14px"
@@ -47,7 +47,7 @@ function Ranking() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_type}
                                         />
-                                        <span className="icon_text">Novel</span>
+                                        <span className="icon_text">{story.type}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -55,7 +55,7 @@ function Ranking() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_status}
                                         />
-                                        <span className="icon_text">Completed</span>
+                                        <span className="icon_text">{story.status}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -83,7 +83,7 @@ function Ranking() {
                                     />
                                 </Col>
                                 <Col className='story_field'> 
-                                    <h6 className='stort_title'>Shadow Slave</h6>
+                                <h6 className='stort_title'>{story.title}</h6>
                                     <div className="detail_list2">
                                         <img
                                             width="14px"
@@ -91,7 +91,7 @@ function Ranking() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_type}
                                         />
-                                        <span className="icon_text">Novel</span>
+                                        <span className="icon_text">{story.type}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -99,7 +99,7 @@ function Ranking() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_status}
                                         />
-                                        <span className="icon_text">Completed</span>
+                                        <span className="icon_text">{story.status}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -127,7 +127,7 @@ function Ranking() {
                                     />
                                 </Col>
                                 <Col className='story_field'> 
-                                    <h6 className='stort_title'>Shadow Slave</h6>
+                                <h6 className='stort_title'>{story.title}</h6>
                                     <div className="detail_list2">
                                         <img
                                             width="14px"
@@ -135,7 +135,7 @@ function Ranking() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_type}
                                         />
-                                        <span className="icon_text">Novel</span>
+                                        <span className="icon_text">{story.type}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -143,7 +143,7 @@ function Ranking() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_status}
                                         />
-                                        <span className="icon_text">Completed</span>
+                                        <span className="icon_text">{story.status}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
