@@ -133,7 +133,7 @@ function EditDetailPage() {
                                         <Form.Label className="label_form">Description</Form.Label>
                                         <Form.Control as="textarea" placeholder="Enter the Description" rows={4} />
                                     </Form.Group>
-                                    <Button href='/dashboard' variant="primary" className="btn_back" >
+                                    <Button href='/userstory' variant="primary" className="btn_back" >
                                         Back
                                     </Button>
                                     <Button variant="primary"  className="btn_save" type="submit">

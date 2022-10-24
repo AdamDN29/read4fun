@@ -61,3 +61,8 @@
     background-color: #B8D9A0 !important;
     color: #2A2E2E !important;
 }
+
+.form-control:focus {
+    border-color: #B8D9A0 !important;
+    box-shadow: inset 0px 0px 0px 1px #B8D9A0 !important;
+}

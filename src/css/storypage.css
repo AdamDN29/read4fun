@@ -94,8 +94,16 @@
     margin-right: 5px;
 }
 
+.btn_sp:hover{
+    background-color: #B8D9A0 !important;
+}
+
 .btn_report{
     background-color: #D3455B !important;
+}
+
+.btn_report:hover{
+    background-color: #2A2E2E !important;
 }
 
 .btn_delete{
@@ -105,6 +113,10 @@
     height: 40px;
     padding: 5px;
     display: flexbox;
+}
+
+.btn_delete:hover{
+    background-color: #2A2E2E !important;
 }
 
 .icon_delete{

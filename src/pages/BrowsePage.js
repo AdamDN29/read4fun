@@ -1,6 +1,7 @@
 import React from 'react';
 import ImgAsset from '../resources';
 import '../css/browsepage.css';
+import { scroller } from "react-scroll";
 
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
@@ -8,6 +9,15 @@ import StoryBrowse from '../components/StoryBrowse'
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Form, FloatingLabel, InputGroup  } from 'react-bootstrap'
+
+const scrollToSection = (flag) => {
+    scroller.scrollTo(flag, {
+      duration: 100,
+      offset:-25,
+      delay: 0,
+      smooth: "easeInOutQuart",
+    });
+  };
 
 const genres = [
     {id: 1, label: 'Action'},
@@ -35,6 +45,10 @@ const genres = [
 
 
 function BrowsePage() {
+
+    const temp = () => {
+        scrollToSection("result");
+      }
     return (
         <div>
         <Navbars />   
@@ -58,7 +72,7 @@ function BrowsePage() {
                             {/* <InputGroup.Text id="basic-addon2"><Button className='btn_search2'>Search</Button></InputGroup.Text> */}
                         </InputGroup>
                     </Col>
-                    <Col xs={1}> <Button className='btn_search2'>Search</Button> </Col>
+                    <Col xs={1}> <Button className='btn_search2' onClick={temp} >Search</Button> </Col>
                 </Row>
            </div>
 
@@ -135,14 +149,14 @@ function BrowsePage() {
                 </Row>
                 <Row>
                 <div align="right">
-                    <Button className='btn_apply'>Apply Filter</Button>
+                    <Button className='btn_apply' onClick={temp}>Apply Filter</Button>
                 </div>
                 </Row>
                             
            </div>
 
             {/* Story Section */}
-            <div className='info_section2'> 
+            <div className='info_section2' id="result"> 
                 {/* <h1 className='section_title3'>Result</h1> */}
                 <StoryBrowse/>
             </div>

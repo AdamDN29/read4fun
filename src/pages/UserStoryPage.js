@@ -104,8 +104,8 @@ function UserStoryPage() {
                     </div>
 
                     {/* Button */}
-                    <Button className='btn_sp'>Edit Detail</Button>
-                    <Button className='btn_sp'>Add New Chapter</Button>
+                    <Button href="/editdetail" className='btn_sp'>Edit Detail</Button>
+                    <Button href="/writingpage" className='btn_sp'>Add New Chapter</Button>
                     <Button className='btn_report btn_sp'>Delete Story</Button>
 
                 </Col>
