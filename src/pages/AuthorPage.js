@@ -111,12 +111,13 @@ function AuthorPage() {
                 <Row className="Border">
                     <Col>
                     <img
+                    
                     className='book_icon1'
                     src={ImgAsset.icon_status}
-
                     />
                     </Col>
                     <Col><h2 className='detail_genre3'>5 Story</h2></Col>
+
                 </Row>
                 <Row className>
                     <Col className="AuthStory">

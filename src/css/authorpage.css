@@ -36,8 +36,8 @@
 }
 
 .book_icon1 {
-    height: 50px !important;
-    width: 50px !important;
+    height: 40px !important;
+    width: 40px !important;
 
 }
 
@@ -55,19 +55,21 @@
     font-family: "nunito_sansextrabold";
     color: #2A2E2E;
     font-size: auto !important;
-    margin-left:-425pt !important;
-    margin-top: 5px;
+    margin-left:-450pt !important;
+    
     
 }
 
 .Report{
     margin-left: 204px !important;
     
+    
 }
 
 .Border{
     border-bottom: 2px solid rgba(42, 46, 46, 0.5);
-    padding-bottom: 50px;
+    padding-bottom: 20px;
+    margin-bottom: 50px;
   
 }
 
