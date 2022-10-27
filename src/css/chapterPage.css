@@ -1,0 +1,33 @@
+.downloadSection {
+    margin-right: 50px !important;
+    margin-top: 5%;
+}
+
+span {
+    font-size: 15px;
+}
+
+.buttonSection {
+    text-align: center;
+}
+
+.titleSection {
+    /* margin-left: 1em; */
+}
+
+textarea {
+    resize: none;
+    background-color: #FFFFFF;
+    min-height: min-content;
+    max-height: max-content;
+}
+
+.content {
+    margin-left: 10px;
+    padding: 2em;
+    text-align: justify;
+}
+
+.chapterSection {
+    margin-left: 37px;
+}
