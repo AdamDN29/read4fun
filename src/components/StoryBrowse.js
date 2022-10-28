@@ -8,14 +8,26 @@ import { Card, Container, Row, Col , Button, ListGroup, Pagination } from 'react
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-function StoryBrowse() {
+function StoryBrowse(props) {
+    const temp = props.temp;
+    console.log("temp: ",temp);
+
+    const [querys, setQuery] = useState("");
+
+    useEffect(() => {
+       setQuery(temp);
+       console.log("query: ",querys);
+      }, []);
+
+    //   setQuery(temp);
+    //   console.log("query: ",querys);
     const [storys, setStory] = useState([]);
 
     useEffect(() => {
         axios
-          .get(`https://dummyjson.com/products`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${querys}`)
           .then((response) => {
-            setStory(response.data.products);
+            setStory(response.data);
             console.log(response);
           })
           .catch((err) => {
@@ -27,8 +39,16 @@ function StoryBrowse() {
         <div>
             <div>
                 <Row xs={1} md={2} >
-                    {Array.from({ length: 10 }).map((_, idx) => (
-                        <Link className="link_chapter" to={`/story`}>
+                    {/* {Array.from({ length: 10 }).map((_, idx) => ( */}
+                    {storys.map((story) => {
+
+                        return(
+                        // <Link className="link" 
+                        // to={`/story/${story.title}`}
+                        // state={{story_id: story.id}}>
+                        <Link className="link" 
+                            to={`/story/${story.title}`}
+                            state={{story_id: story.id}}>
                             <Col>
                             <Row className="story_row">
                                 <Col xs md={4}> 
@@ -39,7 +59,7 @@ function StoryBrowse() {
                                     />
                                 </Col>
                                 <Col md="auto" className='story_field2'> 
-                                    <h6 className='stort_title2'>Shadow Slave</h6>
+                                    <h6 className='stort_title2'>{story.title}</h6>
                                     <div className="detail_list2">
                                         <img
                                             width="16px"
@@ -47,7 +67,7 @@ function StoryBrowse() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_type2}
                                         />
-                                        <span className="icon_text2">Novel</span>
+                                        <span className="icon_text2">{story.type}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -55,7 +75,7 @@ function StoryBrowse() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_status2}
                                         />
-                                        <span className="icon_text2">Completed</span>
+                                        <span className="icon_text2">{story.status}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -63,7 +83,7 @@ function StoryBrowse() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_chapter2}
                                         />
-                                        <span className="icon_text2">472 Chapters</span>
+                                        <span className="icon_text2">{story.chapter}</span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -101,7 +121,7 @@ function StoryBrowse() {
                             </Row>
                             </Col>
                         </Link>
-                    ))}
+                    )})}
                 </Row>
             </div>
             <div className='pagination'>

@@ -27,20 +27,23 @@ import WritingPage from './pages/WritingPage'
 //import components
 import Navbars from './components/Navbars'
 import Footer from './components/Footer'
+import ScrollToTop from './hook/ScrollToTop';
 
 
 
 function App() {
   return (
     <div>
-   
+        <ScrollToTop/>
         <Routes>
+          
           <Route path='/login' element={<Login/>} />
           <Route path='/register' element={<Register/>} />
           
           <Route path='/' element={<Listpages/>} />
           <Route path='/homepage' element={<Homepage/>} />
-          <Route path='/story' element={<StoryPage/>} />
+          {/* <Route path='/story' element={<StoryPage/>} /> */}
+          <Route path="/story/:story_title" element={<StoryPage/>} />
           <Route path='/chapter' element={<ChapterPage/>} />
           <Route path='/browse' element={<BrowsePage/>} />
           <Route path='/updates' element={<UpdatesPage/>} />

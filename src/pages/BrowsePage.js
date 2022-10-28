@@ -1,15 +1,24 @@
 import React from 'react';
 import ImgAsset from '../resources';
 import '../css/browsepage.css';
+import '../css/storybrowse.css'
 import { scroller } from "react-scroll";
+import ReactTimeAgo from 'react-time-ago'
 
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 import StoryBrowse from '../components/StoryBrowse'
+import Pagination from "../components/Pagination";
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Form, FloatingLabel, InputGroup  } from 'react-bootstrap'
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import GoTopButton from '../components/GoTopButton';
+import { useScroll } from "../helper/scroll";
 
+// Scroll to Section
 const scrollToSection = (flag) => {
     scroller.scrollTo(flag, {
       duration: 100,
@@ -45,7 +54,65 @@ const genres = [
 
 
 function BrowsePage() {
+    const [query, setQuery] = useState("");    
+    console.log(query);
 
+    const [storys, setStory] = useState([]);
+    const [allSessionsCount, setallSessionsCount] = useState(0);
+    
+    // Pagination Settings
+    const [sessionsPerPage, setSessionsPerPage] = useState(4);
+    const [currentPage, setCurrentPage] = useState(1);
+    const scrollPosition = useScroll();
+
+    // const allSessionsCount = storys.length;
+    const lastSessionNumber = currentPage * sessionsPerPage;
+    const firstSessionIndex = lastSessionNumber - sessionsPerPage;
+    // const limitedSessions = storys.slice(
+    //     firstSessionIndex,
+    //     lastSessionNumber
+    // );
+
+    useEffect(() => {
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
+          .then((response) => {
+            setStory(response.data);
+            // console.log("Temp: ", response.data.length);
+            const tempw = response.data;
+            setallSessionsCount(tempw.length);
+            console.log(allSessionsCount)
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }, []);
+
+	const onSearchHandler = (e) => {
+		e.preventDefault();
+        console.log(query);
+        if( e !== null || e !== ""){
+            setQuery(query);
+            console.log("apply :", query);
+            browseStory(query);
+        }else{
+            return;
+        }
+	};
+
+    function browseStory (query){
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
+          .then((response) => {
+            setStory(response.data);
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    }
+
+    // Scroll to Section
     const temp = () => {
         scrollToSection("result");
       }
@@ -56,24 +123,29 @@ function BrowsePage() {
             {/* Search Section */}
             <div className='info_section2'> 
                 <h1 className='section_title3'>Search</h1>
-                <Row>
-                    <Col >
-                        <InputGroup size="lg" className="search_form mb-3">
-                            <InputGroup.Text id="basic-addon1">
-                                <img
-                                    src = {ImgAsset.icon_search}
+
+                <Form onSubmit={onSearchHandler}>
+                    <Row>
+                        <Col >
+                            <InputGroup size="lg" className="search_form mb-3">
+                                <InputGroup.Text id="basic-addon1">
+                                    <img
+                                        src = {ImgAsset.icon_search}
+                                    />
+                                </InputGroup.Text>
+                                <Form.Control
+                                placeholder="Search any Story"
+                                aria-label="Username"
+                                aria-describedby="basic-addon1"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
                                 />
-                            </InputGroup.Text>
-                            <Form.Control
-                            placeholder="Search any Story"
-                            aria-label="Username"
-                            aria-describedby="basic-addon1"
-                            />
-                            {/* <InputGroup.Text id="basic-addon2"><Button className='btn_search2'>Search</Button></InputGroup.Text> */}
-                        </InputGroup>
-                    </Col>
-                    <Col xs={1}> <Button className='btn_search2' onClick={temp} >Search</Button> </Col>
-                </Row>
+                                {/* <InputGroup.Text id="basic-addon2"><Button className='btn_search2'>Search</Button></InputGroup.Text> */}
+                            </InputGroup>
+                        </Col>
+                        <Col xs='1'> <Button type="submit" className='btn_search2' onClick={temp} >Search</Button> </Col>
+                    </Row>
+                </Form>
            </div>
 
              {/* Filter Section */}
@@ -158,20 +230,130 @@ function BrowsePage() {
             {/* Story Section */}
             <div className='info_section2' id="result"> 
                 {/* <h1 className='section_title3'>Result</h1> */}
-                <StoryBrowse/>
+                {/* <StoryBrowse querys={apply}/> */}
+
+                <div>
+                <Row xs={1} md={2} >
+                    {/* {Array.from({ length: 10 }).map((_, idx) => ( */}
+                    {storys
+                        .slice(firstSessionIndex,lastSessionNumber)
+                        .map((story) => {
+                        const date = story.updated_at					
+                        const dt = new Date(date)
+
+                        return(
+                        // <Link className="link" 
+                        // to={`/story/${story.title}`}
+                        // state={{story_id: story.id}}>
+                        <Link className="link" 
+                            to={`/story/${story.title}`}
+                            state={{story_id: story.id}}>
+                            <Col>
+                            <Row className="story_row">
+                                <Col xs md={4}> 
+                                    <img
+                                    src={ImgAsset.ssc1}
+                                    className="cover_story"
+                                    alt="Cover"
+                                    />
+                                </Col>
+                                <Col md="auto" className='story_field2'> 
+                                    <h6 className='stort_title2'>{story.title}</h6>
+                                    <div className="detail_list2">
+                                        <img
+                                            width="16px"
+                                            height="16px"
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_type2}
+                                        />
+                                        <span className="icon_text2">{story.type}</span>
+                                    </div>
+                                    <div className="detail_list2">
+                                        <img
+                                            height="16px"
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_status2}
+                                        />
+                                        <span className="icon_text2">{story.status}</span>
+                                    </div>
+                                    <div className="detail_list2">
+                                        <img
+                                            height="16px"
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_chapter2}
+                                        />
+                                        <span className="icon_text2">{story.chapter} Chapters</span>
+                                    </div>
+                                    <div className="detail_list2">
+                                        <img
+                                            height="16px"
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_view2}
+                                        />
+                                        <span className="icon_text2">2.84 M</span>
+                                    </div>
+                                    <div className="detail_list2">
+                                        <img
+                                            height="16px"
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_like2}
+                                        />
+                                        <span className="icon_text2">18.35 K</span>
+                                    </div>
+                                    <div className="detail_list2">
+                                        <img
+                                            height="16px"
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_bookmark2}
+                                        />
+                                        <span className="icon_text2">145</span>
+                                    </div>
+                                    <div className="detail_list2">
+                                        <img
+                                            height="16px"
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_update2}
+                                        />
+                                        <span className="icon_text2"><ReactTimeAgo date={dt} locale="en-US"/></span>
+                                    </div>
+                                </Col>
+                            </Row>
+                            </Col>
+                        </Link>
+                    )})}
+                </Row>
+            </div>
+                <div className='pagination'>
+                    {/* <Pagination size="md">
+                        <Pagination.First />
+                        <Pagination.Prev />
+                        <Pagination.Item>{1}</Pagination.Item>
+                        <Pagination.Ellipsis />
+
+                        <Pagination.Item>{10}</Pagination.Item>
+                        <Pagination.Item>{11}</Pagination.Item>
+                        <Pagination.Item active>{12}</Pagination.Item>
+                        <Pagination.Item>{13}</Pagination.Item>
+                        <Pagination.Item disabled>{14}</Pagination.Item>
+
+                        <Pagination.Ellipsis />
+                        <Pagination.Item>{20}</Pagination.Item>
+                        <Pagination.Next />
+                        <Pagination.Last />
+                    </Pagination> */}
+
+                    <Pagination
+                        itemsCount={allSessionsCount}
+                        itemsPerPage={sessionsPerPage}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        alwaysShown={false}
+                    />
+                </div>
+                <GoTopButton visible={scrollPosition > 400} />
             </div>
             
-            {/* <Row>
-                <Col md="{60}">
-                    <Card className="border-0 rounded shadow-sm">
-                        <Card.Body className="p-4">
-                        <h1>BrowsePage</h1>
-                        <p class="lead">Test BrowsePage <strong>Read4Fun</strong></p>
-                        
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row> */}
+          
             
         </Container>
         <Footer />   

@@ -49,7 +49,7 @@ function StoryCard(props) {
 
   useEffect(() => {
     axios
-      .get(`https://read4fun-backend.herokuapp.com/api/story`)
+    .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
       .then((response) => {
         setStory(response.data);
         console.log(response.data);
@@ -73,12 +73,17 @@ function StoryCard(props) {
       <section id="marketplace-product">
         <div className="container-fluid d-flex justify-content-center">
           <Sliderslick {...settingsSlick} className="slickSlider">
-            {storys.map((story) => (
+            {storys.map((story) => {
+
+              return (
               <div>
            
               {/* { 
                 story.type == props.type ? ( */}
-                    <Link className="link" to={`/story/${story.id}`}>
+                    <Link className="link" 
+                      to={`/story/${story.title}`}
+                      state={{story_id: story.id}}>
+                    {/* <Link  to={`/story/${story.id}`}> */}
                       <div className="d-flex justify-content-center ">
                         <div
                           key={story.id}
@@ -170,7 +175,7 @@ function StoryCard(props) {
               } */}
         
               </div>
-            ))}
+            )})}
           </Sliderslick>
         </div>
       </section>

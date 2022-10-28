@@ -16,7 +16,7 @@ function StoryGrid() {
 
     useEffect(() => {
         axios
-          .get(`https://read4fun-backend.herokuapp.com/api/story`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
           .then((response) => {
             setStory(response.data);
             console.log(response);
@@ -34,7 +34,9 @@ function StoryGrid() {
 			const dt = new Date(date)
 
             return (
-            <Link  to={`/story/${story.id}`}>
+                <Link className="link" 
+                to={`/story/${story.title}`}
+                state={{story_id: story.id}}>
                 <Col className='story_col'>
                     <Card className="story_card card mx-1">
                         

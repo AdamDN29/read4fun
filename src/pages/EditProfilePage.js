@@ -1,6 +1,6 @@
 import React from 'react';
 import ImgAsset from '../resources';
-import '../css/editprofilepage.css'
+// import '../css/editprofilepage.css'
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 
