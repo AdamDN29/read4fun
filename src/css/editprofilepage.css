@@ -1,0 +1,72 @@
+.edit_profile_body{
+    background-color: #B8D9A0 !important;
+    border-radius: 3px !important;
+    padding-top: 25px !important;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}
+
+.title{
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E;
+    font-size: auto !important;
+    font-size: max(32px) !important;
+    margin-bottom: 15px !important;
+    margin-left: 45px !important;
+}
+
+.btn_password {
+    background-color: red !important;
+}
+
+.upload_section {
+    padding-left: 0px!important
+}
+
+.upload_picture {
+    margin: 0 35px;
+}
+
+.upload_link{
+    margin-top: 15px;
+}
+
+.upload_icon{
+    background-color: #fff !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+.form_edit_profile{
+    padding-left: 25px;
+}
+
+.label_form{
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E !important;
+    font-size: 20px !important;
+}
+
+.btn_group {
+    margin-left: 500px !important;
+    margin-top: 20px !important;
+}
+
+.btn_save{
+    float: right !important;
+    background-color: #2A2E2E !important;
+}
+.btn_save:hover{
+    background-color: #B8D9A0 !important;
+    color: #2A2E2E !important;
+}
+
+.btn_back{
+    float: right !important;
+    background-color: #2A2E2E !important;
+    margin-left: 10px !important;
+}
+.btn_back:hover{
+    background-color: #B8D9A0 !important;
+    color: #2A2E2E !important;
+}
