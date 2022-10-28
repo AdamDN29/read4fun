@@ -43,17 +43,17 @@ function Login(){
                 />
             </a>
             
-                <div className="col-md-7 forms">
-                    <h1>SIGN IN TO YOUR ACCOUNT !</h1>
+                <div className="col-md-7 formss">
+                    <h1 className='title'>SIGN IN TO YOUR ACCOUNT !</h1>
                     <p>You must login to comment and write stories</p>
                 </div>
-                <div className="col-md-5 forms">
+                <div className="col-md-5 formss">
                     <form onSubmit={loginHandler}>
                         <div className="card-body">
                             <div className="form-group mb-3">
                                 <input 
                                 type="text" 
-                                className="form-control" 
+                                className="inputForm form-control" 
                                 value={username}
                                 id="username"
                                 onChange={(e) => setUsername(e.target.value)}
@@ -63,18 +63,18 @@ function Login(){
                             <div className="form-group mb-3">
                                 <input 
                                 type="password" 
-                                className="form-control" 
+                                className="inputForm form-control" 
                                 value={password} 
                                 id="password" 
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Password">
                                 </input>
                             </div>
-                            <button type="submit" className="btn btn-black">
-                                <span>Login</span>
+                            <button type="submit" className="btn_login btn btn-black">
+                                <span className='spans'>Login</span>
                             </button>
                             <div>
-                            <p className="login">Don't have an account? <a href="/register">Register</a></p>
+                            <p className="login">Don't have an account ? <a className="link" href="/register">Register</a></p>
                             </div>
                         </div>
                     </form>

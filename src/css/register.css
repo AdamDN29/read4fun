@@ -1,0 +1,46 @@
+.inputForm {
+    border-color: #B8D9A0 !important;
+    font-family: nunito_sanssemibold;
+    height: 50px;
+    font-size: 15px !important;
+}
+
+.btn_login {
+    width: 100% !important;
+    background-color: #B8D9A0 !important;
+}
+
+/* h1 {
+    font-size: 65px !important;
+    text-align: left;
+    font-family: nunito_sansblack;
+    padding-left: 35px;
+} */
+
+.title{
+    font-size: 65px !important;
+    text-align: left;
+    font-family: nunito_sansblack;
+    /* padding-top: 35px; */
+    /* padding-left: 35px; */
+}
+
+.login {
+    font-family: nunito_sansbold;
+    text-align: center;
+    padding-top: 15px;
+}
+
+.link {
+    font-family: nunito_sansbold;
+    color: #B8D9A0 !important;
+    text-decoration: underline !important;
+}
+
+.formss {
+    margin-bottom: 150px !important;
+}
+
+.spans {
+    font-size: 20px;
+}

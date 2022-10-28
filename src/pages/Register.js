@@ -42,28 +42,28 @@ function Register() {
                 alt="Read4Fun logo"
                 />
             </a>
-                <div className="col-md-7 forms">
-                    <h1>CREATE YOUR ACCOUNT !</h1>
+                <div className="col-md-7 formss">
+                    <h1 className='title'>CREATE YOUR ACCOUNT !</h1>
                     <p>You must login to comment and write stories</p>
-                    <p>Already have an account? <a href="/login">Login</a></p>
+                    <p>Already have an account? <a className="link" href="/login">Login</a></p>
                 </div>
-                <div className="col-md-5 forms">
+                <div className="col-md-5 formss">
                     <form onSubmit={registerHandler}>
                         <div className="card-body">
                             <div className="form-group mb-3">
-                                <input type="text" className="form-control" name="username" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"></input>
+                                <input type="text" className="inputForm form-control" name="username" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"></input>
                             </div>
                             <div className="form-group mb-3">
-                                <input type="email" className="form-control" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email"></input>
+                                <input type="email" className="inputForm form-control" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email"></input>
                             </div>
                             <div className="form-group mb-3">
-                                <input type="password" className="form-control" name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"></input>
+                                <input type="password" className="inputForm form-control" name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"></input>
                             </div>
                             <div className="form-group mb-3">
-                                <input type="password" className="form-control" name="passwordConfirmation" id="passwordConfirmation" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)}  placeholder="Password Confirmation"></input>
+                                <input type="password" className="inputForm form-control" name="passwordConfirmation" id="passwordConfirmation" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)}  placeholder="Password Confirmation"></input>
                             </div>
-                            <button type="submit" className="btn btn-black">
-                                <span>Register</span>
+                            <button type="submit" className="btn_login btn btn-black">
+                                <span className='spans'>Register</span>
                             </button>
                         </div>
                     </form>
