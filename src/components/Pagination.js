@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Pagination from "react-bootstrap/Pagination";
-import { scrollToResult } from "../helper/scroll";
+import { scrollToTop, scrollToResult } from "../helper/scroll";
 import PropTypes from "prop-types";
 
 const PaginationComponent = ({
@@ -8,7 +8,8 @@ const PaginationComponent = ({
   itemsPerPage,
   currentPage,
   setCurrentPage,
-  alwaysShown = true
+  alwaysShown = true,
+  flagScroll
 }) => {
   const pagesCount = Math.ceil(itemsCount / itemsPerPage);
   const isPaginationShown = alwaysShown ? true : pagesCount > 1;
@@ -18,7 +19,12 @@ const PaginationComponent = ({
   const changePage = number => {
     if (currentPage === number) return;
     setCurrentPage(number);
-    scrollToResult();
+
+    if (flagScroll === "1"){
+      scrollToTop();
+    } else if (flagScroll === "2"){
+      scrollToResult();
+    }
   };
 
   const onPageNumberClick = pageNumber => {

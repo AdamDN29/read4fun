@@ -1,0 +1,19 @@
+.titlepage{
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E;
+    font-size: auto !important;
+    font-size: max(36px) !important;
+    margin-top: 25px ;
+    margin-bottom: 25px;
+}
+.s_title{
+    margin-bottom: 15px !important;
+}
+
+.row_chapter{
+    margin-bottom: 5px !important;
+}
+
+.time_detail{
+    text-align: right !important;
+}

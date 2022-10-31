@@ -131,7 +131,7 @@ function EditDetailPage() {
                                     {/* Description Form */}
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                                         <Form.Label className="label_form">Description</Form.Label>
-                                        <Form.Control as="textarea" placeholder="Enter the Description" rows={4} />
+                                        <Form.Control as="textarea" placeholder="Enter the Description" rows={5} />
                                     </Form.Group>
                                     <Button href='/userstory' variant="primary" className="btn_back" >
                                         Back

@@ -12,7 +12,7 @@ const GoTopButton = ({ visible = true }) => (
     onClick={scrollToTop}
     variant="dark"
   >
-    <FaArrowUp />
+    <FaArrowUp className="icon_arrow"/>
   </Button>
 );
 

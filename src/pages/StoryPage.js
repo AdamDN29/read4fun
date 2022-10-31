@@ -71,7 +71,7 @@ function StoryPage(props) {
 
                 <Col xs={5}>
                     <h2 className='story_title2'>{story.title}</h2>
-                    <h4 className='section_title'><i>Author :</i> <a href="/authorpage" className='author_text'>{author.username}</a></h4>
+                    <h4 className='section_title'><i>Author :</i> <a href="/author" className='author_text'>{author.username}</a></h4>
 
                     {/* Detail */}
                     <Row className='row_detail'>
@@ -212,7 +212,7 @@ function StoryPage(props) {
                             <Row xs={1} md={2} className="g-4">
 
                             {Array.from({ length: 10 }).map((_, idx) => (
-                                    <Link className="link_chapter" to={`/storypage`}>
+                                    <Link className="link_chapter" to={`/chapter`}>
                                         <Col>
                                         <Card className='chapter_card'>
                                             <Card.Body className='chapter_card_body'>

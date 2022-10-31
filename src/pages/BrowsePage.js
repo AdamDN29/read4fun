@@ -58,30 +58,24 @@ function BrowsePage() {
     console.log(query);
 
     const [storys, setStory] = useState([]);
-    const [allSessionsCount, setallSessionsCount] = useState(0);
     
     // Pagination Settings
-    const [sessionsPerPage, setSessionsPerPage] = useState(4);
+    const [allSessionsCount, setallSessionsCount] = useState(1);
+    const [sessionsPerPage, setSessionsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const scrollPosition = useScroll();
+    console.log("Current Page : ", currentPage)
 
-    // const allSessionsCount = storys.length;
     const lastSessionNumber = currentPage * sessionsPerPage;
     const firstSessionIndex = lastSessionNumber - sessionsPerPage;
-    // const limitedSessions = storys.slice(
-    //     firstSessionIndex,
-    //     lastSessionNumber
-    // );
 
     useEffect(() => {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
           .then((response) => {
             setStory(response.data);
-            // console.log("Temp: ", response.data.length);
-            const tempw = response.data;
-            setallSessionsCount(tempw.length);
-            console.log(allSessionsCount)
+            console.log("Total Data: ", response.data.length);
+            setallSessionsCount(response.data.length);
           })
           .catch((err) => {
             console.log(err);
@@ -105,17 +99,21 @@ function BrowsePage() {
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
           .then((response) => {
             setStory(response.data);
+            console.log("Total Data: ", response.data.length);
+            setallSessionsCount(response.data.length);
             console.log(response);
           })
           .catch((err) => {
             console.log(err);
-          });
+        });
+        setCurrentPage(1);
     }
 
     // Scroll to Section
     const temp = () => {
         scrollToSection("result");
       }
+
     return (
         <div>
         <Navbars />   
@@ -324,30 +322,13 @@ function BrowsePage() {
                 </Row>
             </div>
                 <div className='pagination'>
-                    {/* <Pagination size="md">
-                        <Pagination.First />
-                        <Pagination.Prev />
-                        <Pagination.Item>{1}</Pagination.Item>
-                        <Pagination.Ellipsis />
-
-                        <Pagination.Item>{10}</Pagination.Item>
-                        <Pagination.Item>{11}</Pagination.Item>
-                        <Pagination.Item active>{12}</Pagination.Item>
-                        <Pagination.Item>{13}</Pagination.Item>
-                        <Pagination.Item disabled>{14}</Pagination.Item>
-
-                        <Pagination.Ellipsis />
-                        <Pagination.Item>{20}</Pagination.Item>
-                        <Pagination.Next />
-                        <Pagination.Last />
-                    </Pagination> */}
-
                     <Pagination
                         itemsCount={allSessionsCount}
                         itemsPerPage={sessionsPerPage}
                         currentPage={currentPage}
                         setCurrentPage={setCurrentPage}
                         alwaysShown={false}
+                        flagScroll = "2"
                     />
                 </div>
                 <GoTopButton visible={scrollPosition > 400} />

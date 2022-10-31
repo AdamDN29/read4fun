@@ -1,12 +1,97 @@
 import React from 'react'
+import { useState, useEffect } from "react";
 import ImgAsset from '../resources'
 import '../css/navbars.css'
 
 //import component Bootstrap React
 import { Navbar, Container, Nav, NavDropdown, Button } from 'react-bootstrap'
 import { Router, Routes, Route, Link } from "react-router-dom";
+import axios from "axios";
+import Swal from 'sweetalert2'
+
 
 export default function Navbars () {
+    const [user, setUser] = useState([]);
+
+    const [userId, setUserId] = useState(() => {
+		const localData = sessionStorage.getItem("id");
+		return localData ? localData : null;
+	});
+
+    const [username, setUsername] = useState(() => {
+		const localData = sessionStorage.getItem("user");
+		return localData ? localData : null;
+	});
+
+    var isLoggedIn = false;
+
+    if(userId !== null){
+		var isLoggedIn = true;
+	}
+
+    const [imageHolder, setImageHolder] = useState('');
+	
+    useEffect(() => {	
+		if (userId !== null){	
+			axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${userId}`)
+			.then((response)=> {
+					console.log(response);
+					setUser(response.data.data);
+					// if(response.data.data.avatar !== null){
+					// 	setImageHolder(statusAvatar);
+					// }else{
+					// 	setImageHolder(response.data.data.avatar);
+					// }
+					
+					
+			})
+		}		
+	}, [])
+
+    // logout handler
+	const logoutHandler = () => {
+        const userToken = sessionStorage.getItem("token");
+        // axios
+        // .get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`,
+        //     {
+        //         headers: {
+        //         'Accept': userToken
+        //         }
+        //     }
+        // )
+		// 	.then((response)=> {
+		// 		console.log(response);
+		// 		sessionStorage.clear();
+                
+        //         Swal.fire({
+        //             icon: 'success',
+        //             title: 'Anda Berhasil Logout !',
+        //             allowOutsideClick: false,
+        //             allowEscapeKey: false,
+        //             confirmButtonText: 'OK',
+        //             confirmButtonColor: '#21c177',
+        //             // preConfirm: () => {
+        //             //     window.location.href = "/homepage";
+        //             // }                        
+        //         });					
+		// 	})
+
+            sessionStorage.clear();
+                
+            Swal.fire({
+                icon: 'success',
+                title: 'Anda Berhasil Logout !',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#21c177',
+                preConfirm: () => {
+                    window.location.href = "/homepage";
+                }                        
+            });			
+	};
+
+
     return (
         <div>
             <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
@@ -46,31 +131,38 @@ export default function Navbars () {
 
                         </Nav>
                         <Nav pullRight>
-                            {/* Avatar User */}
-                            {/* <NavDropdown 
-                                title={
-                                    <img
-                                    src = {ImgAsset.avatar}
-                                    width="40"
-                                    height="40"
-                                    className="d-inline-block"
-                                    alt="avatar"
-                                    />
-                                }
-                                id="navbarScrollingDropdown" className="ml-auto">
-                                    <NavDropdown.Item >Username User</NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item href="#action3">Dashboard</NavDropdown.Item>
-                                    <NavDropdown.Item href="#action4">Logout</NavDropdown.Item>
-                            </NavDropdown> */}
-
-                            {/* Login & Register Button */}
-                            <Nav.Link href="/login">
-                                <Button variant="outline-primary" className='Btn_Login'>Login</Button>{' '}
-                            </Nav.Link>
-                            <Nav.Link href="/register">
-                                <Button variant="primary" className='Btn_Register'>Register</Button>
-                            </Nav.Link>
+                            { isLoggedIn === false ? 
+                            (<>
+                                {/* Login & Register Button */}
+                                <Nav.Link href="/login">
+                                    <Button variant="outline-primary" className='Btn_Login'>Login</Button>{' '}
+                                </Nav.Link>
+                                <Nav.Link href="/register">
+                                    <Button variant="primary" className='Btn_Register'>Register</Button>
+                                </Nav.Link>
+                             </>
+                            ) : 
+                            (<>
+                                {/* Avatar User */}
+                                <NavDropdown 
+                                    title={
+                                        <img
+                                        src = {ImgAsset.avatar}
+                                        width="40"
+                                        height="40"
+                                        className="d-inline-block"
+                                        alt="avatar"
+                                        />
+                                    }
+                                    id="navbarScrollingDropdown" className="ml-auto">
+                                        <NavDropdown.Item >{user.username}</NavDropdown.Item>
+                                        <NavDropdown.Divider />
+                                        <NavDropdown.Item href="/dashboard">Dashboard</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                                </NavDropdown>
+                             </>
+                            )
+                            }   
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

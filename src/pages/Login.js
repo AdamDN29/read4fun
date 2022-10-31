@@ -6,6 +6,7 @@ import '../css/login.css'
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Form } from 'react-bootstrap'
+import Swal from 'sweetalert2'
 
 function Login(){
 
@@ -20,13 +21,24 @@ function Login(){
         formData.append('emailOrUsername', username);
         formData.append('password', password);
 
-        await axios.post('https://read4fun-backend.herokuapp.com/api/auth/login', formData)
+        await axios
+        .post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, formData)
         .then((response) => {
             console.log(response);
-            sessionStorage.setItem("token", response.data.token);
-            sessionStorage.setItem("id", response.data.id);
-            sessionStorage.setItem("user", response.data.name);
-            window.location.href = "/homepage";
+            sessionStorage.setItem("token", response.data.data.token);
+            sessionStorage.setItem("id", response.data.data.user.id);
+            sessionStorage.setItem("user", response.data.data.user.username);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil Login',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonColor: '#21c177',
+                preConfirm: () => {
+                    window.location.href = "/homepage";
+                }	  
+            }) 	  
         })
         .catch((error) => {
             console.log("ERROR: ", error);
@@ -44,7 +56,7 @@ function Login(){
             </a>
             
                 <div className="col-md-7 formss">
-                    <h1 className='title'>SIGN IN TO YOUR ACCOUNT !</h1>
+                    <h1 className='titleAuth'>SIGN IN TO YOUR ACCOUNT !</h1>
                     <p>You must login to comment and write stories</p>
                 </div>
                 <div className="col-md-5 formss">
@@ -74,7 +86,7 @@ function Login(){
                                 <span className='spans'>Login</span>
                             </button>
                             <div>
-                            <p className="login">Don't have an account ? <a className="link" href="/register">Register</a></p>
+                            <p className="login">Don't have an account ? <a className="linkpage" href="/register">Register</a></p>
                             </div>
                         </div>
                     </form>

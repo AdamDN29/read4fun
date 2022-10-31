@@ -1,16 +1,22 @@
 .back-to-top-btn {
     position: fixed;
     right: 25px;
-    bottom: 240px;
-    border-radius: 50%;
+    bottom: 50px;
+    border-radius: 50% !important;
     height: 50px;
     width: 50px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center !important;
+    align-items: center !important;
     transition: opacity 0.2s;
     pointer-events: none;
     opacity: 0;
+    background-color: #B8D9A0 !important;
+    padding: 0px !important;
+  }
+
+  .back-to-top-btn:hover{
+    background-color: #2A2E2E !important;
   }
   
   .back-to-top-btn--visible {
@@ -19,7 +25,11 @@
   }
   
   .back-to-top-btn svg {
-    justify-content: center;
-    left: -10px !important;
-    font-size: 24px;
+    justify-content: center !important;
+    font-size: 25px !important;
   }
+
+  /* .icon_arrow{
+    size: 50px !important;
+    justify-content: center !important;
+  } */

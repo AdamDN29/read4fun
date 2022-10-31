@@ -9,6 +9,9 @@
     width: 100% !important;
     background-color: #B8D9A0 !important;
 }
+.btn_login:hover{
+    background-color: #2A2E2E !important;
+}
 
 /* h1 {
     font-size: 65px !important;
@@ -17,10 +20,11 @@
     padding-left: 35px;
 } */
 
-.title{
+.titleAuth{
     font-size: 65px !important;
     text-align: left;
     font-family: nunito_sansblack;
+    color: #2A2E2E !important;
     /* padding-top: 35px; */
     /* padding-left: 35px; */
 }
@@ -31,10 +35,13 @@
     padding-top: 15px;
 }
 
-.link {
+.linkpage {
     font-family: nunito_sansbold;
     color: #B8D9A0 !important;
     text-decoration: underline !important;
+}
+.linkpage:hover{
+    color: #2A2E2E !important;
 }
 
 .formss {

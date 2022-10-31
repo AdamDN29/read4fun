@@ -25,6 +25,7 @@
 
 .upload_form{
     margin-top: 15px;
+    width: 250px !important;
 }
 
 .icon_upload{
