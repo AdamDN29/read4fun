@@ -26,6 +26,10 @@
     margin-bottom: 5px !important;
 }
 
+.cover_img {
+    margin-right: 20px;
+}
+
 .author_text{
     font-family: "nunito_sansblack";
     color: #B8D9A0;
@@ -171,6 +175,15 @@
     font-size: auto !important;
     font-size: max(36px) !important;
     margin-top: 25px ;
+}
+
+.content_field2{
+    /* margin-top: 20px;
+    border : 1px solid rgba(42, 46, 46, 0.5);
+    padding: 25px;
+    margin-bottom: 20px; */
+    white-space: pre-line;
+    font-size: auto;
 }
 
 .desc_content{

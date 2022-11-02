@@ -24,6 +24,9 @@ import EditProfilePage from './pages/EditProfilePage'
 import ChangePasswordPage from './pages/ChangePasswordPage'
 import WritingPage from './pages/WritingPage'
 
+import PolicyPage from './pages/PolicyPage'
+import AboutUsPage from './pages/AboutUsPage'
+
 //import components
 import Navbars from './components/Navbars'
 import Footer from './components/Footer'
@@ -56,7 +59,9 @@ function App() {
           <Route path='/changepassword' element={<ChangePasswordPage/>} />
           <Route path='/writing' element={<WritingPage/>} />
           
-         
+          <Route path='/policy' element={<PolicyPage/>} />
+          <Route path='/about_us' element={<AboutUsPage/>} />
+
         </Routes>
 
     </div>

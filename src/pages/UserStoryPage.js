@@ -7,9 +7,34 @@ import Footer from '../components/Footer'
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Badge, Pagination, Form, FloatingLabel } from 'react-bootstrap';
-import { Link } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function UserStoryPage() {
+    const [story, setStory] = useState([]);
+    const [author, setAuthor] = useState([]);
+    const [chapters, setChapter] = useState([]);
+
+    useEffect(() => {
+        axios
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/1`)
+          .then((response) => {
+            setStory(response.data);
+            console.log(response.data);
+
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
+            .then((response) => {
+                setAuthor(response.data.data);
+                console.log(response.data.data);
+            })
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }, []);
+
     return (
         <div>
         <Navbars />   
@@ -17,18 +42,18 @@ function UserStoryPage() {
             {/* Details Section */}
             <Row className='info_section' >
                 {/* Story Cover */}
-                <Col >
+                <Col md='auto'>
                     <img
                         height="450px"
-                        className="card-img-top"
+                        className="cover_img card-img-top"
                         src={ImgAsset.ssc1}
                         alt="Cover"
                     />
                 </Col>
 
-                <Col xs={5}>
-                    <h2 className='story_title2'>Shadow Slave</h2>
-                    <h4 className='section_title'><i>Author :</i> <a href="/authorpage" className='author_text'>Guiltythree</a></h4>
+                <Col md={5}>
+                    <h2 className='story_title2'>{story.title}</h2>
+                    <h4 className='section_title'><i>Author :</i> <a href="/dashboard" className='author_text'>{author.username}</a></h4>
 
                     {/* Detail */}
                     <Row className='row_detail'>
@@ -38,7 +63,7 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_type2}
                                 />
-                                <span className="icon_text">Short Story</span>
+                                <span className="icon_text">{story.type}</span>
                             </div>
                         </Col>
                         <Col className='col_detail'><p className='detail1'>Status</p>
@@ -47,7 +72,7 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_status2}
                                 />
-                                <span className="icon_text">Ongoing</span>
+                                <span className="icon_text">{story.status}</span>
                             </div>
                         </Col>
                         <Col ><p className='detail1'>Chapters</p>
@@ -56,7 +81,7 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_chapter2}
                                 />
-                                <span className="icon_text">472</span>
+                                <span className="icon_text">{story.chapter}</span>
                             </div>
                         </Col>
                     </Row>
@@ -68,7 +93,12 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_view2}
                                 />
-                                <span className="icon_text">2.84 M</span>
+                                <span className="icon_text">
+                                    { story.view !== null ? (
+                                        <>{story.view}</>
+                                        ):(<>1</>)
+                                    }
+                                </span>
                             </div>
                         </Col>
                         <Col className='col_detail'><p className='detail1'>Likes</p>
@@ -77,7 +107,12 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_like2}
                                 />
-                                <span className="icon_text">18.35 K</span>
+                                <span className="icon_text">
+                                    { story.like !== null ? (
+                                        <>{story.like}</>
+                                        ):(<>1</>)
+                                    }
+                                </span>
                             </div>
                         </Col>
                         <Col ><p className='detail1'>Bookmarks</p>
@@ -86,7 +121,12 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_bookmark2}
                                 />
-                                <span className="icon_text">134</span>
+                                <span className="icon_text">
+                                    { story.bookmark !== null ? (
+                                        <>{story.bookmark}</>
+                                        ):(<>1</>)
+                                    }
+                                </span>
                             </div>
                         </Col>
                     </Row>
@@ -107,8 +147,8 @@ function UserStoryPage() {
                     <Button href="/editdetail" className='btn_sp'>Edit Detail</Button>
                     <Button href="/writingpage" className='btn_sp'>Add New Chapter</Button>
                     <Button className='btn_report btn_sp'>Delete Story</Button>
-
                 </Col>
+
 
                 {/* Like */}
                 <Col >
@@ -129,14 +169,16 @@ function UserStoryPage() {
             {/* Description Section */}
            <div className='info_section'> 
                 <h1 className='section_title3'>Description</h1>
-                <p className='desc_content'>Growing up in poverty, Sunny never expected anything good from life. However, even he did not anticipate being chosen by the Nightmare Spell and becoming one of the Awakened - an elite group of people gifted with supernatural powers. Transported into a ruined magical world, he found himself facing against terrible monsters - and other Awakened - in a deadly battle of survival.
-                    What's worse, the divine power he received happened to possess a small, but potentially fatal side effect...</p>
-
+                
+                <div className='content_field2'>
+                    <span className='desc_content'>{story.description}</span>
+                </div>
            </div>
             
             {/* Chapters Section */}
            <div className='info_section'> 
                 <h1 className='section_title3'>Chapters</h1>
+                <p> <i>You can edit and delete your story chapter by click the story chapter you want</i></p>
                 <div className='release_content'>Latest Release : <a className='latest_chapter'>{" "} Chapter 472 : Quid Pro Quo </a>
                         <img
                             className="icon_sort"

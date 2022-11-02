@@ -30,7 +30,10 @@ function ListPages() {
                         <a class="lead" href="/editdetail">EditDetailPage</a><br/>    
                         <a class="lead" href="/editprofile">EditProfilePage</a><br/>    
                         <a class="lead" href="/changepassword">ChangePasswordPage</a><br/>    
-                        <a class="lead" href="/writing">WritingPage</a><br/>               
+                        <a class="lead" href="/writing">WritingPage</a><br/>    
+
+                        <a class="lead" href="/policy">PolicyPage</a><br/>  
+                        <a class="lead" href="/about_us">AboutUsPage</a><br/>         
                         
                         </Card.Body>
                     </Card>

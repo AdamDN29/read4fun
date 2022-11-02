@@ -20,7 +20,7 @@
 }
 
 .detail_genre1{
-    margin-left: 295px !important;
+    /* margin-left: 295px !important; */
 }
 
 .detail_genre2{
@@ -38,27 +38,195 @@
     
 }
 
-.detail{
-    margin-top: 25px !important;
-    padding-bottom: 25px;
-    margin-left: 25px !important;
-}
-
 .Border{
     border-bottom: 1px solid rgba(42, 46, 46, 0.5);
     padding-bottom: 20px;
     margin-bottom: 50px;
+    margin-top: 40px !important;
+    margin-left: 0px !important;
   
 }
+
+.detailAvatar{
+    /* margin-top: 25px !important; */
+    /* padding-bottom: 25px;  */
+    margin-right: 15px !important;
+}
+
+.title_area{
+    display: flex;
+}
+
+.username_user{
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E;
+    font-size: 32px !important;
+    margin-bottom: 20px;
+}
+
+.detail_list3{
+    padding-bottom: 2px;
+    display: flex;
+    align-items: center;
+    font-size: auto ;
+    font-size: max(18px)!important;
+    font-weight: 500;
+    color: rgba(42, 46, 46, 0.8);
+    /* overflow-x:hidden; */
+    /* white-space: nowrap; */
+    vertical-align: middle !important;
+    margin-bottom: 10px;
+  }
+  .detail_list_icon3{
+    margin-right: 15px;
+  }
+  .icon_text3{
+    /* vertical-align: middle !important; */
+    font-size: 20px !important;
+  }
+
+.row_btn{
+    display: flex;
+    /* justify-content: flex-end; */
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.btn_editprofile{
+    background-color: #B8D9A0 !important;
+    width: 140px !important;
+    height: 35px !important;
+    float: right !important;
+    margin-bottom: 25px;
+    justify-content: right !important;
+    
+}
+.btn_editprofile:hover{
+    background-color: #2A2E2E !important;
+}
+
+.bookmark_box{
+    box-sizing: border-box;
+    border: 3px solid rgba(42, 46, 46, 0.25);
+    padding: 25px 25px 10px 30px;
+
+}
+
+.bookmark_title{
+    font-family: "nunito_sansbold";
+    color: #2A2E2E;
+    font-size: 32px !important;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(42, 46, 46, 0.5);
+}
+
+.bookmark_story{
+    border-bottom: 2px solid rgba(42, 46, 46, 0.25);
+    margin-bottom: 15px;
+}
+.bookmark_story:hover{
+    background-color: #f5f5f5;
+}
+
+.bookmark_story_title{
+    font-family: "nunito_sanssemibold";
+    color: #2A2E2E;
+    font-size: 20px !important;
+    margin-bottom: 5px;
+}
+
+.bookmark_story_date{
+    font-family: "nunito_sanssemibold_italic";
+    color: rgba(42, 46, 46, 0.5);
+    font-size: 16px !important;
+    margin-bottom: 10px;
+}
+
+.userstory_box{
+    box-sizing: border-box;
+    border: 3px solid rgba(42, 46, 46, 0.25);
+    padding: 25px 25px 10px 30px;
+}
+
+.title_box{
+    display: flex;
+}
+
+.btn_addstory{
+    margin-bottom: 10px !important;
+    float: right !important;
+    background-color: #2A2E2E !important;
+    width: 130px !important;
+    height: 35px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    vertical-align: middle;
+}
+.btn_addstory:hover{
+    background-color: #B8D9A0 !important;
+}
+
+.detail_list_icon5{
+    margin-right: 5px !important;
+}
+
+.userstory_title{
+    font-family: "nunito_sansbold";
+    color: #2A2E2E;
+    font-size: 32px !important;
+    margin-bottom: 10px;
+    
+}
+
+.border_bottom{
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(42, 46, 46, 0.5);
+}
+
+.list_Story_box{
+    margin-top: 20px;
+}
+
+.list_story_title{
+    font-family: "nunito_sansbold";
+    color: #2A2E2E;
+    font-size: 24px !important;
+    margin-bottom: 15px;
+}
+
+.size_s{
+    font-size: 18px !important;
+}
+
+.story_box{
+    margin-bottom: 15px;
+}
+.story_box:hover{
+    background-color: #f5f5f5;
+}
+
+.detail_list_icon4{
+    margin-right: 10px !important;
+}
+
+.btn_report_author{
+    background-color: #D3455B !important;
+    width: 100px !important;
+}
+
+
+
+
 
 .text-gede{
     font-family: "nunito_sansextrabold";
     color: #2A2E2E;
     font-size: 25px !important;
-   margin-top: 15px !important;
+    margin-top: 15px !important;
     /* font-size: max(32px) !important; */
     margin-bottom: 10px !important;
-     font-size: 20px !important;
+    font-size: 20px !important;
     border-bottom: 1px solid rgba(42, 46, 46, 0.25)
 }
 

@@ -60,10 +60,10 @@ function StoryPage(props) {
             {/* Details Section */}
             <Row className='info_section' >
                 {/* Story Cover */}
-                <Col >
+                <Col md='auto'>
                     <img
                         height="450px"
-                        className="card-img-top"
+                        className="cover_img card-img-top"
                         src={ImgAsset.ssc1}
                         alt="Cover"
                     />
@@ -115,7 +115,7 @@ function StoryPage(props) {
                                 <span className="icon_text">
                                     { story.view !== null ? (
                                         <>{story.view}</>
-                                        ):(<>2.84 M</>)
+                                        ):(<>1</>)
                                     }
                                 </span>
                             </div>
@@ -129,7 +129,7 @@ function StoryPage(props) {
                                 <span className="icon_text">
                                     { story.like !== null ? (
                                         <>{story.like}</>
-                                        ):(<>18.35 K</>)
+                                        ):(<>1</>)
                                     }
                                 </span>
                             </div>
@@ -143,7 +143,7 @@ function StoryPage(props) {
                                 <span className="icon_text">
                                     { story.bookmark !== null ? (
                                         <>{story.bookmark}</>
-                                        ):(<>134</>)
+                                        ):(<>1</>)
                                     }
                                 </span>
                             </div>
@@ -189,10 +189,10 @@ function StoryPage(props) {
             {/* Description Section */}
            <div className='info_section'> 
                 <h1 className='section_title3'>Description</h1>
-                {/* <p className='desc_content'>Growing up in poverty, Sunny never expected anything good from life. However, even he did not anticipate being chosen by the Nightmare Spell and becoming one of the Awakened - an elite group of people gifted with supernatural powers. Transported into a ruined magical world, he found himself facing against terrible monsters - and other Awakened - in a deadly battle of survival.
-                    What's worse, the divine power he received happened to possess a small, but potentially fatal side effect...</p> */}
-                <p className='desc_content'>{story.description}</p>
-
+                
+                <div className='content_field2'>
+                    <span className='desc_content'>{story.description}</span>
+                </div>
            </div>
             
             {/* Chapters Section */}

@@ -146,13 +146,28 @@ export default function Navbars () {
                                 {/* Avatar User */}
                                 <NavDropdown 
                                     title={
-                                        <img
-                                        src = {ImgAsset.avatar}
-                                        width="40"
-                                        height="40"
-                                        className="d-inline-block"
-                                        alt="avatar"
-                                        />
+                                        <>
+                                        {
+                                            user.avatar !== null ?(
+                                                <>
+                                                <img
+                                                src = {user.avatar}
+                                                style={{width: 45, height: 45, borderRadius: 45/ 2}}
+                                                />
+                                                </>
+                                            ):(
+                                                <>
+                                                <img
+                                                src = {ImgAsset.avatar}
+                                                width="45"
+                                                height="45"
+                                                className="d-inline-block"
+                                                alt="avatar"
+                                                />
+                                                </>
+                                            )
+                                        }
+                                        </>
                                     }
                                     id="navbarScrollingDropdown" className="ml-auto">
                                         <NavDropdown.Item >{user.username}</NavDropdown.Item>

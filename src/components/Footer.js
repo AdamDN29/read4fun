@@ -44,10 +44,10 @@ function Footer() {
                           </Col>
                           <Col >
                           <li>
-                                <Link className="row_link footer-link" to="/">About Us</Link>
+                                <Link className="row_link footer-link" to="/about_us">About Us</Link>
                               </li>
                               <li>
-                                <Link className="footer-link" to="/">Policy</Link>
+                                <Link className="footer-link" to="/policy">Policy</Link>
                               </li>
                               
                           </Col>
