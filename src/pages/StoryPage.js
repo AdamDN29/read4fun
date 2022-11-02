@@ -5,10 +5,10 @@ import ReactTimeAgo from 'react-time-ago'
 
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
-import getAuthor from '../hook/getAuthor';
+import Pagination from "../components/Pagination";
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, Badge, Pagination, Form, FloatingLabel } from 'react-bootstrap';
+import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -18,9 +18,26 @@ function StoryPage(props) {
     const { story_id } = location.state;
     console.log(story_id);
 
+    const [userId, setUserId] = useState(() => {
+		const localData = sessionStorage.getItem("id");
+		return localData ? localData : null;
+	});
+    const [user, setUser] = useState([]);
+
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
     const [chapters, setChapter] = useState([]);
+    const [listChapters, setListChapters] = useState([]);
+
+    // Pagination Settings
+    const [allSessionsCount, setallSessionsCount] = useState(1);
+    const [sessionsPerPage, setSessionsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    console.log("Current Page : ", currentPage)
+
+    const lastSessionNumber = currentPage * sessionsPerPage;
+    const firstSessionIndex = lastSessionNumber - sessionsPerPage;
+    const [lastChapter, setLastChapter] = useState([]);
 
     useEffect(() => {
         axios
@@ -43,15 +60,47 @@ function StoryPage(props) {
 
     useEffect(() => {
         axios
-          .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/${story_id}`)
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter`)
           .then((response) => {
-            setChapter(response.data);
             console.log(response.data);
+            const chapterAsc = [...response.data].sort((a, b) => a.number - b.number);
+            setChapter(chapterAsc);
+            setListChapters(chapterAsc);  
+            console.log("Total Data: ", response.data.length);
+            setallSessionsCount(response.data.length); 
+            setLastChapter(response.data[(response.data.length) - 1]);           
           })
           .catch((err) => {
             console.log(err);
           });
     }, []);
+
+    // Get Profile User
+    useEffect(() => {	
+		if (userId !== null){	
+			axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${userId}`)
+			.then((response)=> {
+				console.log(response);
+				setUser(response.data.data);	
+			})
+		}		
+	}, [])
+
+    // Sort Settings
+    const [sortFlag, setSortFlag] = useState(true);
+
+    function sortChange (){
+        setSortFlag(!sortFlag);
+
+        if(sortFlag !== true){
+            const chapterAsc = [...chapters].sort((a, b) => a.number - b.number);
+            setChapter(chapterAsc);
+        }
+        else{
+            const chapterDesc = [...chapters].sort((a, b) => b.number - a.number);
+            setChapter(chapterDesc); 
+        }
+    }
 
     return (
         <div>
@@ -61,12 +110,27 @@ function StoryPage(props) {
             <Row className='info_section' >
                 {/* Story Cover */}
                 <Col md='auto'>
-                    <img
-                        height="450px"
-                        className="cover_img card-img-top"
-                        src={ImgAsset.ssc1}
-                        alt="Cover"
-                    />
+                    {
+                        story.link !== null ?(
+                            <>
+                            <img
+                                height="450px"
+                                className="cover_img card-img-top"
+                                src={story.link}
+                                alt="Cover"
+                            />
+                            </>
+                        ):(
+                            <>
+                            <img
+                                height="450px"
+                                className="cover_img card-img-top"
+                                src={ImgAsset.image_placeholder}
+                                alt="Cover"
+                            />
+                            </>
+                        )
+                    }     
                 </Col>
 
                 <Col xs={5}>
@@ -201,49 +265,28 @@ function StoryPage(props) {
                     <>
                     <div className='info_section'> 
                         <h1 className='section_title3'>Chapters</h1>
-                        <div className='release_content'>Latest Release : <a className='latest_chapter'>{" "} Chapter 472 : Quid Pro Quo </a>
+                        <div className='release_content'>Latest Release : 
+                            <a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
                                 <img
                                     className="icon_sort"
                                     src = {ImgAsset.icon_sort}
+                                    onClick ={sortChange}
                                 />
                         </div>
 
                         <div>
                             <Row xs={1} md={2} className="g-4">
 
-                            {Array.from({ length: 10 }).map((_, idx) => (
-                                    <Link className="link_chapter" to={`/chapter`}>
-                                        <Col>
-                                        <Card className='chapter_card'>
-                                            <Card.Body className='chapter_card_body'>
-                                            <Card.Title>
-                                                <Row>
-                                                    <Col xs={2} className='number_chapter'> 1
-                                                    </Col>
-                                                    <Col className='title_chapter'> Nightmare Begin
-                                                    </Col>
-                                                </Row>
-                                            </Card.Title>
-                                            <Card.Text>
-                                                <Row>
-                                                    <Col xs={2}> 
-                                                    </Col>
-                                                    <Col className='date_chapter'> 8 months ago
-                                                    </Col>
-                                                </Row>
-                                            </Card.Text>
-                                            </Card.Body>
-                                        </Card>
-                                        </Col>
-                                    </Link>
-                                ))}
-
-                            {/* {chapters.map((chapter) => {
+                            {chapters
+                                .slice(firstSessionIndex,lastSessionNumber)
+                                .map((chapter, index) => {
                                 const date = chapter.updated_at					
                                 const dt = new Date(date)
 
                                 return (
-                                    <Link className="link_chapter" to={`/chapter`}>
+                                    <Link className="link_chapter" 
+                                    to={`/story/${story.title}/chapter/${chapter.number}`}
+                                    state={{chapter_content: chapter, list_chapter: listChapters}}>
                                         <Col>
                                         <Card className='chapter_card'>
                                             <Card.Body className='chapter_card_body'>
@@ -259,7 +302,7 @@ function StoryPage(props) {
                                                 <Row>
                                                     <Col xs={2}> 
                                                     </Col>
-                                                    <Col className='date_chapter'> 8 months ago
+                                                    <Col className='date_chapter'><ReactTimeAgo date={dt} locale="en-US"/>
                                                     </Col>
                                                 </Row>
                                             </Card.Text>
@@ -269,34 +312,24 @@ function StoryPage(props) {
                                     </Link>
                                 )
                                 
-                            })} */}
+                            })}
                             
                             
                             </Row>
                         </div>
 
                         <div className='pagination'>
-                            <Pagination size="md">
-                                <Pagination.First />
-                                <Pagination.Prev />
-                                <Pagination.Item>{1}</Pagination.Item>
-                                <Pagination.Ellipsis />
-
-                                <Pagination.Item>{10}</Pagination.Item>
-                                <Pagination.Item>{11}</Pagination.Item>
-                                <Pagination.Item active>{12}</Pagination.Item>
-                                <Pagination.Item>{13}</Pagination.Item>
-                                <Pagination.Item disabled>{14}</Pagination.Item>
-
-                                <Pagination.Ellipsis />
-                                <Pagination.Item>{20}</Pagination.Item>
-                                <Pagination.Next />
-                                <Pagination.Last />
-                            </Pagination>
+                            <Pagination
+                                itemsCount={allSessionsCount}
+                                itemsPerPage={sessionsPerPage}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                alwaysShown={false}
+                                flagScroll = "2"
+                            />
                         </div>
-
-                </div>
-                    </>
+                    </div>
+                </>
                 ):(<></>)
             }
 
@@ -308,29 +341,71 @@ function StoryPage(props) {
                 <div className='comment_field'>
                     
                     <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
+                        <Col xs={1} >
+                        {
+                            userId !== null ?(
+                                <>
+                                {
+                                    user.avatar !== null ?(
+                                        <>
+                                        <img
+                                        src = {user.avatar}
+                                        className="avatar_place"
+                                        style={{width: 50, height: 50, borderRadius: 50/ 2}}
+                                        />
+                                        </>
+                                    ):(
+                                        <>
+                                        <img
+                                        src = {ImgAsset.avatar2}
+                                        className="avatar_place"
+                                        alt="avatar"
+                                        />
+                                        </>
+                                    )
+                                }
+                                </>
+                            ):(
+                                <>
+                                <img
                                 src = {ImgAsset.avatar2}
-                            />
+                                className="avatar_place"
+                                alt="avatar"
+                                />
+                                </>
+                            )
+                        }
+                        
                         </Col>
                         <Col > 
                             <div className='comment_form'>
-                                {/* Not Logged In */}
-                                {/* <p>You Must Be Logged In to Comment</p>
-                                <Button className='btn_comment_form'>Login</Button> */}
-
-                                {/* Logged In */}
-                                <>
-                                <FloatingLabel
-                                    controlId="floatingTextarea"
-                                    label="Comment"
-                                    className="mb-3"
-                                >
-                                    <Form.Control as="textarea" placeholder="Leave a comment here" />
-                                </FloatingLabel>
-                                <Button className='btn_comment_form'>Post Comment</Button>
-                                </>
+                                {
+                                    userId === null ?(
+                                        <>
+                                        {/* Not Logged In */}
+                                        <div className='notlogin_box'>
+                                            <Col><p className='login_note'>You Must Be Logged In to Comment</p></Col>
+                                            <Col><Button href='/login' className='btn_comment_form'>Login</Button></Col>
+                                        </div>
+                                        </>
+                                    ):(
+                                                             
+                                        <>
+                                        {/* Logged In */}
+                                        <div className='login_box'>
+                                            <FloatingLabel
+                                                controlId="floatingTextarea"
+                                                label="Comment"
+                                                className="mb-3"
+                                            >
+                                                <Form.Control as="textarea" placeholder="Leave a comment here" />
+                                            </FloatingLabel>
+                                            <Button className='btn_comment_form'>Post Comment</Button>
+                                        </div>
+                                        </>                    
+                                    )
+                                }
+      
                             </div>
                         </Col>
                     </Row>
@@ -355,8 +430,9 @@ function StoryPage(props) {
                     <Row>
                         <Col xs={1}></Col>
                         <Col > 
-                            <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                           
+                            <div className='comment_content_box'>
+                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
+                            </div>  
                         </Col>
                     </Row>
                 </div>
@@ -378,8 +454,9 @@ function StoryPage(props) {
                     <Row>
                         <Col xs={1}></Col>
                         <Col > 
-                            <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                           
+                            <div className='comment_content_box'>
+                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
+                            </div>
                         </Col>
                     </Row>
                 </div>
@@ -401,8 +478,9 @@ function StoryPage(props) {
                     <Row>
                         <Col xs={1}></Col>
                         <Col > 
-                            <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                           
+                            <div className='comment_content_box'>
+                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
+                            </div>
                         </Col>
                     </Row>
                 </div>

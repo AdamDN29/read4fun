@@ -35,15 +35,13 @@ export default function Navbars () {
 		if (userId !== null){	
 			axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${userId}`)
 			.then((response)=> {
-					console.log(response);
-					setUser(response.data.data);
+				console.log(response);
+				setUser(response.data.data);
 					// if(response.data.data.avatar !== null){
 					// 	setImageHolder(statusAvatar);
 					// }else{
 					// 	setImageHolder(response.data.data.avatar);
-					// }
-					
-					
+					// }		
 			})
 		}		
 	}, [])

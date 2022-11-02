@@ -15,12 +15,19 @@ export default {
     icon_search: require('./icon_search.svg').default,
     icon_delete: require('./icon_delete.svg').default,
     icon_upload: require('./icon_upload.svg').default,
+
+    // Profile Icon
     icon_email: require('./icon_email.svg').default,
     icon_fullname: require('./icon_fullname.svg').default,
     icon_birthdate: require('./icon_birthdate.svg').default,
     icon_occupation: require('./icon_occupation.svg').default,
     icon_address: require('./icon_address.svg').default,
     icon_add: require('./icon_add.svg').default,
+
+    // Chapter Icon
+    icon_prev_chapter: require('./icon_prev_chapter.svg').default,
+    icon_next_chapter: require('./icon_next_chapter.svg').default,
+    icon_story_chapter: require('./icon_story_chapter.svg').default,
 
     //Version 1
     icon_chapter: require('./icon_chapter.svg').default,

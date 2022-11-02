@@ -224,6 +224,12 @@
     float: right !important;
 }
 
+.icon_sort:hover{
+    border-radius: 50%;
+    background-color: #B8D9A0 !important;
+    cursor: pointer;
+}
+
 .number_chapter{
     font-family: "nunito_sanssemibold";
     color: #2A2E2E;
@@ -291,16 +297,27 @@
     margin: 0 auto;
 }
 .comment_form{
-    font-family: "nunito_sanssemibold";
-    display: block;
+    font-family: "nunito_sanssemibold";   
     top: 20px;
     align-items: center;
+}
+
+.notlogin_box{
+    display: flex;
+}
+
+.login_box{
+    display: block;
+}
+
+.login_note{
+    vertical-align: middle !important;
 }
 
 .btn_comment_form{
     background-color: #2A2E2E !important;
     color: white;
-    float: right;
+    float: right !important;
     vertical-align: middle;
     align-items: center;
 }
@@ -326,6 +343,10 @@
     font-size: auto !important;
     font-size: max(14px) !important;
     margin-bottom: 0px!important;
+}
+
+.comment_content_box{
+    white-space: pre-line;
 }
 
 .comment_content{
