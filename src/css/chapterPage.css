@@ -5,6 +5,27 @@
     background-color: #2A2E2E !important;
     float: right !important;
     vertical-align: middle;
+    margin-left: 15px;
+}
+
+.btn_save_chapter{
+    float: right !important;
+    vertical-align: middle;
+    margin-left: 15px;
+    background-color: #B8D9A0 !important;
+}
+.btn_save_chapter:hover{
+    background-color: #2A2E2E !important;
+}
+
+.btn_delete_chapter{
+    float: right !important;
+    vertical-align: middle;
+    margin-left: 15px;
+    background-color: #D3455B !important;
+}
+.btn_delete_chapter:hover{
+    background-color: #2A2E2E !important;
 }
 
 .downloadSection:hover{
@@ -46,13 +67,33 @@
 } */
 
 .content_field{
-    margin-top: 20px;
+    margin-top: 40px;
     border : 1px solid rgba(42, 46, 46, 0.5);
     padding: 25px;
     margin-bottom: 20px;
     white-space: pre-line;
     font-size: auto;
+    min-height: 400px !important;
 }
+
+.content_editor_field{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.ck-editor__editable_inline {
+    min-height: 500px;
+  }
+
+.editor{
+    min-height: 500px !important;
+    height: 500px !important;
+}
+
+.editor_field{
+    margin-top: 30px;
+}
+
 .chapterSection {
     font-family: "nunito_sansbold";
     color: #2A2E2E;

@@ -16,4 +16,15 @@
 
 .time_detail{
     text-align: right !important;
+    opacity: 0.8;
+    
+}
+
+.cover_updates{
+    margin-right: 15px !important;
+}
+
+.p_note{
+    color: #2A2E2E;
+    opacity: 0.4;
 }

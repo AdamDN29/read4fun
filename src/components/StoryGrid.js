@@ -16,7 +16,7 @@ function StoryGrid() {
 
     useEffect(() => {
         axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
           .then((response) => {
             setStory(response.data);
             console.log(response);
@@ -40,23 +40,13 @@ function StoryGrid() {
                 <Col className='story_col'>
                     <Card className="story_card card mx-1">
                         
-                        <div
-                            className="thumb-img-product d-flex justify-content-center align-items-center"
-                            style={{
-                            // backgroundImage: `url(${story.thumbnail})`,
-                            // backgroundImage: `../resources/ssc1/svg`,
-                            // height: "225px",
-                            // backgroundSize: "100% 100%",
-                            // backgroundRepeat: "no-repeat",
-                            }}
-                        > 
-                            <img
-                                
-                                src={ImgAsset.ssc1}
-                                alt="Cover"
-                                height="225px"
-                              />
-                        </div>
+                        {story.link !== null ? (
+                            <div className="thumb-img-product d-flex justify-content-center align-items-center">             
+                              <img className="card-img-top" src={story.link} alt="Cover" height="225px" width="150px"/>
+                            </div>
+                          ) : (
+                            <img width="150px" height="225px" className="card-img-top" src={ImgAsset.image_placeholder} alt="Cover"/>
+                          )}
                         {/* <Card.Img variant="top" src={story.thumbnail} /> */}
                         <Card.Body className="story_card_body card-body">
                         <Card.Title className="story_card_title card-title">{story.title}</Card.Title>
@@ -78,7 +68,7 @@ function StoryGrid() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_update}
                                 />
-                                <span className="icon_text"><ReactTimeAgo date={dt} locale="en-US"/></span>
+                                <span className="icon_text"><i><ReactTimeAgo date={dt} locale="en-US"/></i></span>
                             </div>
                         </Card.Text>
                         </Card.Body>

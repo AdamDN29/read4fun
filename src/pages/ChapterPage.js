@@ -11,6 +11,8 @@ import { Card, Container, Row, Col , Button, Form } from 'react-bootstrap'
 import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 function ChapterPage(props) {
     const location = useLocation();
@@ -25,14 +27,41 @@ function ChapterPage(props) {
     const [nextChapter, setNextChapter] = useState([]);
     const [btnStatusPrev, setbtnStatusPrev] = useState(true);
     const [btnStatusNext, setbtnStatusNext] = useState(true);
-
+    
     useEffect(() => {
         
         setButton();
+        
+        // ClassicEditor
+        // .create( document.querySelector( 'editor' ) )
+        // .then( editor => {
+        //     console.log( editor );
+        // } )
+        // .catch( error => {
+        //     console.error( error );
+        // } );
+
+        ClassicEditor
+            .create( document.querySelector( 'editor1' ), {
+               
+            } )
+            .then( editor => {
+                const toolbarElement = editor.ui.view.toolbar.element;
+                editor.enableReadOnlyMode( 'feature-id' );
+
+                toolbarElement.style.display = 'none';
+                 
+            } )
+            .catch( error => {
+                console.log( error );
+            } );
+
+
 
     }, [thisChapter]);
 
     function setButton (){
+        scrollToTop();
         list_chapter.map((chapter, index) => {
             if (chapter.id === thisChapter.id){
                 console.log("Finded with Index : ",index)
@@ -58,36 +87,24 @@ function ChapterPage(props) {
         })
     }
 
+    
+
     function prevChapterClick (){
-        
+        // window.location.href = '/story/' + thisChapter.story.title + '/chapter'
         // window.location.reload(false);
         setThisChapter(prevChapter);
         console.log(thisChapter);
         setButton();
-        scrollToTop();
+        
     }
 
     function nextChapterClick (){
         setThisChapter(nextChapter);
         console.log(thisChapter);
         setButton();
-        scrollToTop();
+        
         // window.location.reload(true);
     }
-
-    // const [chapter, setChapter] = useState([]);
-
-    // useEffect(() => {
-    //     axios
-    //     .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/1`)
-    //       .then((response) => {
-    //         setChapter(response.data);
-    //         console.log(response);
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       });
-    //   }, []);
 
 
     return (
@@ -128,16 +145,40 @@ function ChapterPage(props) {
                 
             </div>
 
-            <div className='content_field'>
-                
-                <span className='contents'>{thisChapter.content}</span>
+            {/* <div id="editor1" className='content_field' defaultValue={thisChapter.content}>
+            </div> */}
+            <div className='editor_field'>
+            <CKEditor
+                    id="editor1"
+                    disabled 
+                    config={ {
+                        toolbar : 'none'
+                    } }
+                    className='content_field'
+                    editor={ ClassicEditor }
+                    data={thisChapter.content}
+                    
+                    onReady={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                />
             </div>
-            {/* <div>
-                <textarea disabled='disabled' className='content' defaultValue={chapter.content}>
+                
+            
+            {/* <div className='content_field'>
+                <span className='contents'>{thisChapter.content}</span>
+            </div> */}
+            {/* <div className='content_field'>
+                
+                <textarea disabled='disabled' cols={150} rows={10} className='content' defaultValue={thisChapter.content}>
 
                 </textarea>
+                <Form.Control as="textarea" rows="auto" defaultValue={thisChapter.content} type="text" placeholder="Readonly input here..." readOnly />
             </div> */}
-            <div className="buttonSection">
+            {
+                thisChapter.story.type === "Novel" ? (
+                    <div className="buttonSection">
                 
                     <Button className='btn_chapter' disabled={btnStatusPrev} onClick={prevChapterClick}>
                         {/* <Link className="link_to" 
@@ -174,21 +215,10 @@ function ChapterPage(props) {
                             /> 
                         {/* </Link> */}
                     </Button>
-
-                {/* <a href="/story">
-                    <img src = {ImgAsset.icon_story_chapter}
-                    className="browse_chapter"
-                    alt="browse chapter"
-                    />
-                </a>
-
-                <a href="">
-                    <img src = {ImgAsset.icon_next_chapter}
-                    className="next_chapter"
-                    alt="next chapter"
-                    />
-                </a> */}
             </div>
+                ):(<></>)
+            }
+            
         </Container>
         <Footer />   
         </div>

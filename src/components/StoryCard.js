@@ -6,8 +6,11 @@ import '../css/storycard.css';
 import Sliderslick from "react-slick";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import arrayShuffle from 'array-shuffle';
 
 function StoryCard(props) {
+  const typeStory = props.type_story;
+  console.log(typeStory);
   const [storys, setStory] = useState([]);
   const [infinite, setInfinite] = useState(true);
   var temp = process.env.REACT_APP_BACKEND_URL;
@@ -49,9 +52,10 @@ function StoryCard(props) {
 
   useEffect(() => {
     axios
-    .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
+    .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/type/${typeStory}`)
       .then((response) => {
-        setStory(response.data);
+        const shuffled = arrayShuffle(response.data);
+        setStory(shuffled);
         console.log(response.data);
       })
       .catch((err) => {
@@ -90,33 +94,12 @@ function StoryCard(props) {
                           className="story_card card mx-1"
                           style={{ width: "28rem", height: "400px" }}
                         >
-                          {story.id ? (
-                            <div
-                              className="thumb-img-product d-flex justify-content-center align-items-center"
-                              // style={{
-                              //   backgroundImage: `../resources/sc1.svg`,
-                              //   height: "225px",
-                              //   backgroundSize: "100% 100%",
-                              //   backgroundRepeat: "no-repeat",
-                              // }}
-                            >
-                              {/* <div className="button-beli">
-                                <button className="btn ">Beli Produk</button>
-                              </div> */}
-                              <img
-                                className="card-img-top"
-                                src={ImgAsset.ssc1}
-                                alt="Cover"
-                                height="225px"
-                              />
+                          {story.link !== null ? (
+                            <div className="thumb-img-product d-flex justify-content-center align-items-center">             
+                              <img className="card-img-top" src={story.link} alt="Cover" height="225px" width="150px"/>
                             </div>
                           ) : (
-                            <img
-                              height="225px"
-                              className="card-img-top"
-                              src={ImgAsset.ssc1}
-                              alt="Cover"
-                            />
+                            <img width="150px" height="225px" className="card-img-top" src={ImgAsset.image_placeholder} alt="Cover"/>
                           )}
                           <div className="story_card_body card-body">
                             <h5 className="story_card_title card-title">
@@ -161,7 +144,7 @@ function StoryCard(props) {
                                   className="detail_list_icon"
                                   src = {ImgAsset.icon_chapter}
                               />
-                              <span className="icon_text">{story.chapter}</span>
+                              <span className="icon_text">{story.chapter} Chapters</span>
                             </div>
                               ):(<></>)
                             }

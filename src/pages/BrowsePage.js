@@ -248,12 +248,14 @@ function BrowsePage() {
                             state={{story_id: story.id}}>
                             <Col>
                             <Row className="story_row">
-                                <Col xs md={4}> 
-                                    <img
-                                    src={ImgAsset.ssc1}
-                                    className="cover_story"
-                                    alt="Cover"
-                                    />
+                                <Col xs md="auto"> 
+                                {
+                                    story.link !== null ?(
+                                        <img width="175px" height="250px" src={story.link} className="cover_updates" alt="Cover"/>
+                                    ):(
+                                        <img width="175px" height="250px" src={ImgAsset.image_placeholder} className="cover_updates" alt="Cover"/>
+                                    )
+                                }
                                 </Col>
                                 <Col md="auto" className='story_field2'> 
                                     <h6 className='stort_title2'>{story.title}</h6>
@@ -288,7 +290,12 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_view2}
                                         />
-                                        <span className="icon_text2">2.84 M</span>
+                                        <span className="icon_text2">
+                                            { story.view !== null ? (
+                                                <>{story.view}</>
+                                                ):(<>1</>)
+                                            }
+                                        </span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -296,7 +303,12 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_like2}
                                         />
-                                        <span className="icon_text2">18.35 K</span>
+                                        <span className="icon_text2">
+                                            { story.like !== null ? (
+                                                <>{story.like}</>
+                                                ):(<>1</>)
+                                            }
+                                        </span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -304,7 +316,12 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_bookmark2}
                                         />
-                                        <span className="icon_text2">145</span>
+                                        <span className="icon_text2">
+                                            { story.bookmark !== null ? (
+                                                <>{story.bookmark}</>
+                                                ):(<>1</>)
+                                            }
+                                        </span>
                                     </div>
                                     <div className="detail_list2">
                                         <img

@@ -3,6 +3,7 @@ import ImgAsset from '../resources';
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 import Pagination from "../components/Pagination";
+import ListChapter from '../components/ListChapter';
 import { scrollToTop } from "../helper/scroll";
 
 import { useState, useEffect } from "react";
@@ -25,8 +26,10 @@ const scrollToSection = (flag) => {
     });
   };
 
+
 function UpdatesPage() {
     const [storys, setStory] = useState([]);
+    
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -39,7 +42,7 @@ function UpdatesPage() {
 
     useEffect(() => {
         axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
           .then((response) => {
             setStory(response.data);
             console.log("Total Data: ", response.data.length);
@@ -50,6 +53,7 @@ function UpdatesPage() {
             console.log(err);
           });
       }, []);
+    
 
       const temp = () => {
         scrollToSection("title");
@@ -66,50 +70,35 @@ function UpdatesPage() {
                             {storys
                                 .slice(firstSessionIndex,lastSessionNumber)
                                 .map((story) => {
-                                
+
                                 return(
-                                    <Link className="link_chapter" 
+                                    <Link key={story.id} className="link_chapter" 
                                         to={`/story/${story.title}`}
                                         state={{story_id: story.id}}
                                     >
                                     
                                         <Col>
                                             <Row className="story_row">
-                                                <Col xs md={4}> 
-                                                    <img
-                                                    src={ImgAsset.ssc1}
-                                                    className="cover_story"
-                                                    alt="Cover"
-                                                    />
+                                                <Col xs md='auto'> 
+                                                {
+                                                    story.link !== null ?(
+                                                        <img width="175px" height="250px" src={story.link} className="cover_updates" alt="Cover"/>
+                                                    ):(
+                                                        <img width="175px" height="250px" src={ImgAsset.image_placeholder} className="cover_updates" alt="Cover"/>
+                                                    )
+                                                }
+                                                    
                                                 </Col>
                                                 <Col md="6" className='story_field2'> 
                                                     <h6 className='s_title stort_title2'>{story.title}</h6>
 
+                                                    {/* List Chapter */}
 
-                                                    <Row className='row_chapter'>
-                                                        <Col><Link to="/chapter"><Badge bg="#B8D9A0" className='genre_badge' >Chapter 100</Badge>{' '}</Link>
-                                                        </Col>
-                                                        <Col className='time_detail'><span className="time_detail icon_text2">2 days ago</span>
-                                                        </Col>
-                                                    </Row>
-                                                    <Row className='row_chapter'>
-                                                        <Col><Link to="/chapter"><Badge bg="#B8D9A0" className='genre_badge' >Chapter 99</Badge>{' '}</Link>
-                                                        </Col>
-                                                        <Col className='time_detail'><span className="time_detail icon_text2">7 days ago</span>
-                                                        </Col>
-                                                    </Row>
-                                                    <Row className='row_chapter'>
-                                                        <Col><Link to="/chapter"><Badge bg="#B8D9A0" className='genre_badge' >Chapter 98</Badge>{' '}</Link>
-                                                        </Col>
-                                                        <Col className='time_detail'><span className="time_detail icon_text2">12 days ago</span>
-                                                        </Col>
-                                                    </Row>
-                                                    <Row className='row_chapter'>
-                                                        <Col><Link to="/chapter"><Badge bg="#B8D9A0" className='genre_badge' >Chapter 97</Badge>{' '}</Link>
-                                                        </Col>
-                                                        <Col className='time_detail'><span className="time_detail icon_text2">15 days ago</span>
-                                                        </Col>
-                                                    </Row>
+                                                    {
+                                                        <ListChapter key={story.id} story_id={story.id} />
+                                                    }
+
+                                                    
                                                 </Col>
                                             </Row>
                                         </Col>

@@ -32,13 +32,12 @@ function Ranking() {
                         to={`/story/${story.title}`}
                         state={{story_id: story.id}}>
                             <Row className="story_link">
-                                <Col xs lg="3"> 
-                                    <img
-                                    width="76px"
-                                    height="114px"
-                                    src={ImgAsset.ssc1}
-                                    alt="Cover"
-                                    />
+                                <Col md="auto">
+                                    {story.link !== null ? (
+                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
+                                    ) : (
+                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
+                                    )} 
                                 </Col>
                                 <Col className='story_field'> 
                                     <h6 className='stort_title'>{story.title}</h6>
@@ -76,13 +75,12 @@ function Ranking() {
                     {storys.slice(0,5).map((story) => (
                         <Link  to={`/storypage/${story.id}`}>
                             <Row className="story_link">
-                                <Col xs lg="3"> 
-                                    <img
-                                    width="76px"
-                                    height="114px"
-                                    src={ImgAsset.ssc1}
-                                    alt="Cover"
-                                    />
+                                <Col md="auto"> 
+                                    {story.link !== null ? (
+                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
+                                    ) : (
+                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
+                                    )}
                                 </Col>
                                 <Col className='story_field'> 
                                 <h6 className='stort_title'>{story.title}</h6>
@@ -120,13 +118,12 @@ function Ranking() {
                     {storys.slice(0,5).map((story) => (
                         <Link  to={`/storypage/${story.id}`}>
                             <Row className="story_link">
-                                <Col xs lg="3"> 
-                                    <img
-                                    width="76px"
-                                    height="114px"
-                                    src={ImgAsset.ssc1}
-                                    alt="Cover"
-                                    />
+                                <Col md="auto"> 
+                                    {story.link !== null ? (
+                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
+                                    ) : (
+                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
+                                    )}
                                 </Col>
                                 <Col className='story_field'> 
                                 <h6 className='stort_title'>{story.title}</h6>

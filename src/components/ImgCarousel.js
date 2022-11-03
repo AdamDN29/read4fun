@@ -4,7 +4,9 @@ import ImgAsset from '../resources'
 import Carousel from 'react-bootstrap/Carousel';
 import { Navbar, Container, Nav, NavDropdown, Button } from 'react-bootstrap'
 
-function ImgCarousel() {
+function ImgCarousel(props) {
+  const link_btn = props.link_btn;
+
   return (
     <Carousel fade classname="carousel_place">
       <Carousel.Item>
@@ -29,7 +31,7 @@ function ImgCarousel() {
         <Carousel.Caption>
           <h3 className='title_caption2'>Want to be <a className='text_theme2'>Author</a> and Share Your Story in Great Place  ?</h3>
           <p>Write a <a className='text_theme3'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
-          <p><center><Button variant="primary" href="/dashboard" className='btn_write'>Write</Button></center></p>
+          <p><center><Button variant="primary" href={link_btn}className='btn_write'>Write</Button></center></p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>

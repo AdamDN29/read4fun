@@ -34,7 +34,7 @@ function Login(){
                 title: 'Berhasil Login',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                confirmButtonColor: '#21c177',
+                confirmButtonColor: '#B8D9A0',
                 preConfirm: () => {
                     window.location.href = "/homepage";
                 }	  
