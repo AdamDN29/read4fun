@@ -3,11 +3,33 @@ import ImgAsset from '../resources'
 import '../css/authorpage.css'
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Grid , Button } from 'react-bootstrap'
 
 function AuthorPage() {
+
+    const [author, setAuthor] = useState([]);
+
+    useEffect(() => {
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/1`)
+          .then((response) => {
+            setAuthor(response.data.data);
+            console.log("Total Data: ", response.data.length);
+            setallSessionsCount(response.data.length);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }, []);
+
+
+
+      
+
     return (
     <div>
         <Navbars />   
