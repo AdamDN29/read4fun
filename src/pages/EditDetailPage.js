@@ -43,7 +43,7 @@ function EditDetailPage() {
                         
                         <Row>
                             {/* Upload Cover */}
-                            <Col xs={3} className="upload_col">
+                            <Col md='auto' className="upload_col">
                                
                                 <img
                                     
@@ -63,7 +63,7 @@ function EditDetailPage() {
                                     aria-describedby="basic-addon1"
                                     />
                                     <Form.Text id="passwordHelpBlock" muted>
-                                        Please enter a valid link of your cover story
+                                        Please enter a valid link of your story cover
                                     </Form.Text>
                                     {/* <InputGroup.Text id="basic-addon2"><Button className='btn_search2'>Search</Button></InputGroup.Text> */}
                                 </InputGroup>
