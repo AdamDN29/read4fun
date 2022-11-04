@@ -16,6 +16,7 @@
 
 .time_detail{
     text-align: right !important;
+    float: right !important;
     opacity: 0.8;
     
 }

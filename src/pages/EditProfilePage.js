@@ -136,15 +136,15 @@ export default function EditProfilePage(props) {
                             </Col>
                         </Row>
                         <Row>
-                            <Col xs={3} className="upload_section">
+                            <Col md='auto' className="upload_col">
                                 {
                                     preload.avatar !== null ?(
-                                        <img src={preload.avatar} alt="Cover" width="250px"/>
+                                        <img src={preload.avatar} alt="Cover" style={{width: 300, height: 300, borderRadius: 300/ 2}}/>
                                     ):(
-                                        <img src={ImgAsset.image_placeholder} alt="Cover" width="250px"/>
+                                        <img src={ImgAsset.avatar2} alt="Cover" width="300px"/>
                                     )
                                 }
-                                <InputGroup size="md" className="upload_link mb-3">
+                                <InputGroup size="md" className="upload_form2 mb-3">
                                     <InputGroup.Text id="basic-addon1" className='upload_icon'>
                                         <img
                                             src={ImgAsset.icon_upload}
@@ -154,11 +154,11 @@ export default function EditProfilePage(props) {
                                         placeholder="Enter Link of Your Profile Picture"
                                         aria-label="Username"
                                         aria-describedby="basic-addon1"
-                                        name='link'
+                                        name='avatar'
                                         type="text" 
                                         // defaultValue ={preload.link}
                                         onChange={(e) =>
-                                            dispatch({ type: "link", payload: e.target.value })
+                                            dispatch({ type: "avatar", payload: e.target.value })
                                         }
                                     />
                                     <Form.Text id="passwordHelpBlock" muted>
@@ -230,13 +230,11 @@ export default function EditProfilePage(props) {
                                     </Form.Group>
                                     <Row className="btn_group">
                                         <Col>
-                                            <Button variant="primary" className="btn_save" type="submit" onClick={submitProfile}>
-                                                Save Profile
-                                            </Button>
-                                        </Col>
-                                        <Col>
                                             <Button href='/dashboard' variant="primary" className="btn_back" >
                                                 Back
+                                            </Button>
+                                            <Button variant="primary" className="btn_save" type="submit" onClick={submitProfile}>
+                                                Save Profile
                                             </Button>
                                         </Col>
                                     </Row>

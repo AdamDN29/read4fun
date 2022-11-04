@@ -46,7 +46,6 @@ function StoryPage(props) {
 
     const lastSessionNumber = currentPage * sessionsPerPage;
     const firstSessionIndex = lastSessionNumber - sessionsPerPage;
-    
 
     // Get Data Story
     useEffect(() => {
@@ -116,10 +115,7 @@ function StoryPage(props) {
         }
     }
 
-    const headers = {
-        'Authorization': userToken
-      }
-
+    // Pop Up Not Logged In
     function notLoginPop (){
         Swal.fire({
             title: 'Oopss.. !',
@@ -159,7 +155,7 @@ function StoryPage(props) {
                 .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/report`, 
                     formData, {
                         headers: {
-                          'Token': userToken
+                            'Authorization' : `Bearer ${userToken}`
                         }
                 })
                 .then((response) => {
@@ -206,10 +202,15 @@ function StoryPage(props) {
                         )
                     }     
                 </Col>
-
+                
                 <Col xs={5}>
                     <h2 className='story_title2'>{story.title}</h2>
-                    <h4 className='section_title'><i>Author :</i> <a href="/author" className='author_text'>{author.username}</a></h4>
+                    <h4 className='section_title'><i>Author : </i> 
+                        <Link 
+                        to="/author"  
+                        state={{author_id: author.id}}
+                        className='author_text'>{author.username}</Link>
+                    </h4>
 
                     {/* Detail */}
                     <Row className='row_detail'>
@@ -237,7 +238,12 @@ function StoryPage(props) {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_chapter2}
                                 />
-                                <span className="icon_text">{story.chapter}</span>
+                                <span className="icon_text">
+                                    { story.chapter !== null ? (
+                                        <>{story.chapter}</>
+                                        ):(<>0</>)
+                                    }  Chapters      
+                                </span>
                             </div>
                         </Col>
                     </Row>

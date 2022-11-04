@@ -12,6 +12,8 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
+import Swal from "sweetalert2"
+
 
 function UserStoryPage() {
     const location = useLocation();
@@ -24,6 +26,9 @@ function UserStoryPage() {
     const [firstChapter, setFirstChapter] = useState([]);
     const [lastChapter, setLastChapter] = useState([]);
     const [flag, setFlag] = useState(false);
+
+    const [newChapter, setNewChapter] = useState();
+    console.log(newChapter);
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -42,6 +47,8 @@ function UserStoryPage() {
           .then((response) => {
             setStory(response.data);
             console.log(response.data);
+            const tempNewChapter = {id : 0, title : '', number : '', content : '', story : { id : response.data.id, title : response.data.title, type: response.data.type}};
+            setNewChapter(tempNewChapter);
 
             axios
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
@@ -88,6 +95,47 @@ function UserStoryPage() {
             const chapterDesc = [...chapters].sort((a, b) => b.number - a.number);
             setChapter(chapterDesc); 
         }
+    }
+
+    // Delete Story
+    function deleteStory () {
+        Swal.fire({
+            icon: 'question',
+            title: 'Are you sure you want to delete this story ?',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonColor: '#D3455B',
+            confirmButtonText: 'Delete',
+            showCancelButton: true,
+            preConfirm: () => {
+                axios
+                .delete(`${process.env.REACT_APP_BACKEND_URL}/api/story/delete/${story.id}`)
+                .then((response) => {
+                    console.log(response)
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Delete Story Succesfull',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#B8D9A0',
+                        preConfirm: () => {
+                            // navigate(-1);
+                        }	  
+                    }) 		
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Delete Story Failed',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#D3455B',
+                    }) 
+                    return;
+                });
+            }	  
+        }) 	
     }
 
     return (
@@ -137,7 +185,12 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_chapter2}
                                 />
-                                <span className="icon_text">{story.chapter}</span>
+                                <span className="icon_text">
+                                    { story.chapter !== null ? (
+                                        <>{story.chapter}</>
+                                        ):(<>0</>)
+                                    }  Chapters  
+                                </span>
                             </div>
                         </Col>
                     </Row>
@@ -204,7 +257,12 @@ function UserStoryPage() {
                     {
                         story.type === "Novel" ?(
                             <>
+                            <Link 
+                            to={`/userstory/${story.title}/writing/newChapter`}
+                            state={{chapter_content: newChapter}}    
+                            >
                             <Button className='btn_sp'>Add New Chapter</Button>
+                            </Link>
                             </>
                         ):(
                             <Link className="link_chapter" 
@@ -215,7 +273,7 @@ function UserStoryPage() {
                             </Link>
                         )
                     }
-                    <Button className='btn_report btn_sp'>Delete Story</Button>
+                    <Button onClick={deleteStory} className='btn_report btn_sp'>Delete Story</Button>
                 </Col>
 
                 {/* Like */}
@@ -242,7 +300,11 @@ function UserStoryPage() {
                             flag === false ?(
                                 <>
                                     <p>There are no chapters in this novel yet</p>
-                                    <p className='latest_chapter'>Add a new chapter</p>
+                                    <Link 
+                                    to={`/userstory/${story.title}/writing/newChapter`}
+                                    state={{chapter_content: newChapter}}    
+                                    ><p className='latest_chapter'>Add a new chapter</p>
+                                    </Link>
                                 </>
                             ):(
                                 <>
@@ -267,8 +329,9 @@ function UserStoryPage() {
                                     {chapters
                                         .slice(firstSessionIndex,lastSessionNumber)
                                         .map((chapter) => {
-                                                const date = chapter.updated_at					
-                                                const dt = new Date(date)
+                                                let updated_at = new Date(chapter.updated_at).toString()
+                                                // const date = chapter.updated_at					
+                                                // const dt = new Date(date)
 
                                                 return (
                                                     <Link key={chapter.id} className="link_chapter" 
@@ -290,7 +353,9 @@ function UserStoryPage() {
                                                                 <Row>
                                                                     <Col xs={2}> 
                                                                     </Col>
-                                                                    <Col className='date_chapter'><ReactTimeAgo date={dt} locale="en-US"/>
+                                                                    <Col className='date_chapter'>
+                                                                        {/* <ReactTimeAgo date={dt} locale="en-US"/> */}
+                                                                        {updated_at}
                                                                     </Col>
                                                                 </Row>
                                                             </Card.Text>

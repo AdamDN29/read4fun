@@ -77,15 +77,14 @@ function ChangePasswordPage() {
                             </Form.Group>
                             <Row className="btn_group">
                                 <Col>
-                                    <Button variant="danger" className="btn_change" type="submit">
-                                        Change Password
-                                    </Button>
-                                </Col>
-                                <Col>
                                     <Button href='/editprofile' variant="primary" className="btn_back" >
                                         Back
                                     </Button>
+                                    <Button variant="danger" className="btn_change" type="submit">
+                                        Change Password
+                                    </Button>     
                                 </Col>
+        
                             </Row>
                         </Form>
                     </Card.Body>

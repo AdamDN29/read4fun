@@ -39,7 +39,7 @@ export default function ListChapter (props) {
 		<>
         {
             flag === false ? (
-                <p className='p_note'><i>There are no chapters in this story yet</i></p>
+                <p className='p_note'><i>There are no chapter in this story yet</i></p>
             ):(
                 <>
                 {
@@ -55,7 +55,7 @@ export default function ListChapter (props) {
                                         <Badge bg="#B8D9A0" className='genre_badge' >Chapter {chapter.number}</Badge>{' '}
                                     </Link>
                                 </Col>
-                                <Col ><span className="time_detail icon_text2"><i><ReactTimeAgo date={dt} locale="en-US"/></i></span>
+                                <Col ><span className="time_detail icon_text2"><i><ReactTimeAgo date={dt} locale="id"/></i></span>
                                 </Col>
                             </Row>
                         )

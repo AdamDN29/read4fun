@@ -17,6 +17,11 @@ const allStatus = [
 	'Complete'
 ];
 
+const allType = [
+	'Novel',
+	'Short Story'
+];
+
 const genres = [
     {id: 1, label: 'Action'},
     {id: 2, label: 'Adventure'},
@@ -43,6 +48,7 @@ const genres = [
 
 const initialState = {
     title: "",
+    type: "",
     status: "",
 	description: "",
 	link: "",
@@ -52,6 +58,8 @@ const reducer = (currentState, action) => {
     switch (action.type) {
         case "title":
             return { ...currentState, title: action.payload };
+        case "type":
+            return { ...currentState, type: action.payload };
         case "status":
             return { ...currentState, status: action.payload };
 		case "description":
@@ -67,71 +75,134 @@ function EditDetailPage() {
     const { story_id } = useParams();
     console.log(story_id);
 
+    const [userId, setUserId] = useState(() => {
+		const localData = sessionStorage.getItem("id");
+		return localData ? localData : null;
+	});
+
     const navigate = useNavigate();
 
     const [preload, setPreLoad] = useState([]);
 
     useEffect(()=>{
-	    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
-	    .then((response)=> {
-			setPreLoad(response.data);
-			console.log(response.data);
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+        // Check if create or edit story
+        if (story_id === "newStory"){
+            const tempNewStory = {title : '', type : '', status : '', description : "", link : null ,user_id : userId};
+            setPreLoad(tempNewStory);
+        }
+        else{
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
+            .then((response)=> {
+                setPreLoad(response.data);
+                console.log(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }  
 	},[])
 
     const [story, dispatch] = useReducer(reducer, initialState);
-    const [disable, setDisable] = useState(false);	
 
     const submitData = (e) => {
 		e.preventDefault();
-		setDisable(true);
 		console.log(story);
 	
 		const dataForm = new FormData();
-		dataForm.append("id", story_id);
+
+        // Check if create or edit story
+        // Edit
+        if (story_id !== "newStory"){
+            dataForm.append("id", story_id);
+            if (story.type !== null){
+                dataForm.append("type", story.type);
+            }
+            if (story.status !== null){
+                dataForm.append("status", story.status);
+            }
+            if (story.description !== ""){
+                dataForm.append("description", story.description);
+            }
+
+        }
+        else{
+            dataForm.append("user_id", userId);        
+            if (story.type === ""){
+                dataForm.append("type", "Novel");
+            }else {dataForm.append("type", story.type);}
+            if (story.status === ""){
+                dataForm.append("status", "On Going");
+            }else {dataForm.append("status", story.status);}
+            if (story.description === ""){
+                dataForm.append("description", "A New Story");
+            }else{dataForm.append("description", story.description);}
+        }
 		if (story.title !== ""){
-			dataForm.append("title", story.title);
-		}
-		if (story.status !== null){
-			dataForm.append("status", story.status);
-		}
-		if (story.description !== ""){
-			dataForm.append("description", story.description);
-		}
+            dataForm.append("title", story.title);
+        }
 		if (story.link !== ""){
 			dataForm.append("link", story.link);
 		}
 
-		axios
-		  .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/update/${story_id}`, dataForm)
-		  .then((response) => {
-			console.log(response)
-			setDisable(false);
-			Swal.fire({
-				icon: 'success',
-				title: 'Edit Profile Berhasil',
-				allowOutsideClick: false,
-				allowEscapeKey: false,
-				confirmButtonColor: '#B8D9A0',
-				preConfirm: () => {
-					// window.location.href = "/userstory";
-                    navigate(-1);
-				}	  
-			}) 		
-		  })
-		  .catch((err) => {
-			Swal.fire({
-				icon: 'error',
-				title: 'Edit Detail Story Gagal',
-				allowOutsideClick: false,
-				allowEscapeKey: false,
-				confirmButtonColor: '#D3455B',
-			}) 
-			return;
-		  });
+        // Post Data Edit Story
+        if (story_id !== "newStory"){
+            axios
+            .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/update/${story_id}`, dataForm)
+            .then((response) => {
+                console.log(response)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Edit Detail Story Succesfull',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#B8D9A0',
+                    preConfirm: () => {
+                        // window.location.href = "/userstory";
+                        navigate(-1);
+                    }	  
+                }) 		
+            })
+            .catch((err) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Edit Detail Story Failed',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#D3455B',
+                }) 
+                return;
+            });
+        }
+        // Post Data Create Story
+        else{
+            axios
+            .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/create`, dataForm)
+            .then((response) => {
+                console.log(response)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Create Detail Story Succesfull',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#B8D9A0',
+                    preConfirm: () => {
+                        // window.location.href = "/userstory";
+                        navigate(-1);
+                    }	  
+                }) 		
+            })
+            .catch((err) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Create Detail Story Failed',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#D3455B',
+                }) 
+                return;
+            });
+        }
+		
 		
 	};
 
@@ -156,7 +227,6 @@ function EditDetailPage() {
                                     )
                                 }
                                
-                                
                                 <InputGroup size="md" className="upload_form mb-3">
                                     <InputGroup.Text id="basic-addon1" className='icon_upload'>
                                         <img
@@ -184,11 +254,13 @@ function EditDetailPage() {
                             {/* Edit Detail */}
                             <Col>
                                 <Form className='form_detail'>
+
                                     {/* Story Title Form */}
                                     <Form.Group className="mb-3" controlId="formBasicEmail">
                                         <Form.Label className="label_form">Story Title</Form.Label>
-                                        <Form.Control 
-                                            type="email" 
+                                        <Form.Control
+                                            required 
+                                            type="title" 
                                             placeholder="Enter Story Title" 
                                             name='title'
                                             defaultValue ={preload.title}
@@ -199,26 +271,72 @@ function EditDetailPage() {
                                         We'll never share your email with anyone else.
                                         </Form.Text> */}
                                     </Form.Group>
+
+                                    {/* Type Form */}
+                                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                                        <Form.Label className="label_form">Type</Form.Label>
+                                        <Form.Select
+                                            required
+                                            defaultValue ={preload.type}
+                                            onChange={(e) =>
+                                                dispatch({ type: "type", payload: e.target.value })
+                                              }
+                                        >
+                                            {
+                                                preload.type !== "" ? (
+                                                    <>
+                                                    <option value="">{preload.type}</option>
+                                                    {
+                                                        allType.map(post => {
+                                                            if(post !== preload.type){
+                                                                return(<option value={post}>{post}</option>)
+                                                            }
+                                                        })
+                                                    }
+                                                    </>
+                                                ):(
+                                                    <>
+                                                    <option value="Novel">Novel</option>
+                                                    <option value="Short Story">Short Story</option>
+                                                    </>
+                                                )
+                                            }
+                                        </Form.Select>
+                                    </Form.Group>
+
                                     {/* Status Form */}
                                     <Form.Group className="mb-3" controlId="formBasicPassword">
                                         <Form.Label className="label_form">Status</Form.Label>
                                         <Form.Select
+                                            required
                                             defaultValue ={preload.status}
                                             onChange={(e) =>
                                                 dispatch({ type: "status", payload: e.target.value })
                                               }
                                         >
-                                            <option value="">{preload.status}</option>
                                             {
-                                                allStatus.map(post => {
-                                                    if(post !== preload.status){
-                                                        return(<option value={post}>{post}</option>)
+                                                preload.status !== "" ? (
+                                                    <>
+                                                    <option value="">{preload.status}</option>
+                                                    {
+                                                        allStatus.map(post => {
+                                                            if(post !== preload.status){
+                                                                return(<option value={post}>{post}</option>)
+                                                            }
+                                                        })
                                                     }
-                                                })
+                                                    </>
+                                                ):(
+                                                    <>
+                                                    <option value="On Going">On Going</option>
+                                                    <option value="Complete">Complete</option>
+                                                    </>
+                                                )
                                             }
                                             
                                         </Form.Select>
                                     </Form.Group>
+
                                     {/* Genre Form */}
                                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
                                         <Form.Label className="label_form">Genre</Form.Label>
@@ -258,6 +376,7 @@ function EditDetailPage() {
                                             </Col>
                                         </Row>
                                     </Form.Group>
+
                                     {/* Description Form */}
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                                         <Form.Label className="label_form">Description</Form.Label>
@@ -271,6 +390,7 @@ function EditDetailPage() {
                                             }
                                             />
                                     </Form.Group>
+
                                     <Button onClick={()=> navigate(-1)} variant="primary" className="btn_back" >
                                         Back
                                     </Button>

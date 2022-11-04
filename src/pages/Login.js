@@ -31,7 +31,7 @@ function Login(){
             
             Swal.fire({
                 icon: 'success',
-                title: 'Berhasil Login',
+                title: 'Login Succesful',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 confirmButtonColor: '#B8D9A0',
@@ -42,6 +42,13 @@ function Login(){
         })
         .catch((error) => {
             console.log("ERROR: ", error);
+            Swal.fire({
+				icon: 'error',
+				title: 'Login Failed.',
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				confirmButtonColor: '#D3455B',
+			}) 
         })
     };
 

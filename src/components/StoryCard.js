@@ -144,7 +144,12 @@ function StoryCard(props) {
                                   className="detail_list_icon"
                                   src = {ImgAsset.icon_chapter}
                               />
-                              <span className="icon_text">{story.chapter} Chapters</span>
+                              <span className="icon_text">
+                                    { story.chapter !== null ? (
+                                        <>{story.chapter}</>
+                                        ):(<>0</>)
+                                    }  Chapters  
+                              </span>
                             </div>
                               ):(<></>)
                             }

@@ -28,6 +28,17 @@
     background-color: #2A2E2E !important;
 }
 
+.btn_back_chapter{
+    float: right !important;
+    vertical-align: middle;
+    margin-left: 15px;
+    background-color: #2A2E2E !important;
+}
+.btn_back_chapter:hover{
+    background-color: #B8D9A0 !important;
+}
+
+
 .downloadSection:hover{
     background-color: #B8D9A0 !important;
 }

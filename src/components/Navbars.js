@@ -49,44 +49,39 @@ export default function Navbars () {
     // logout handler
 	const logoutHandler = () => {
         const userToken = sessionStorage.getItem("token");
-        // axios
-        // .get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`,
-        //     {
-        //         headers: {
-        //         'Accept': userToken
-        //         }
-        //     }
-        // )
-		// 	.then((response)=> {
-		// 		console.log(response);
-		// 		sessionStorage.clear();
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`,
+            {
+                headers: {
+                    'Authorization' : `Bearer ${userToken}`
+                }
+            }
+        )
+			.then((response)=> {
+				console.log(response);
+				sessionStorage.clear();
                 
-        //         Swal.fire({
-        //             icon: 'success',
-        //             title: 'Anda Berhasil Logout !',
-        //             allowOutsideClick: false,
-        //             allowEscapeKey: false,
-        //             confirmButtonText: 'OK',
-        //             confirmButtonColor: '#21c177',
-        //             // preConfirm: () => {
-        //             //     window.location.href = "/homepage";
-        //             // }                        
-        //         });					
-		// 	})
-
-            sessionStorage.clear();
-                
-            Swal.fire({
-                icon: 'success',
-                title: 'Anda Berhasil Logout !',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#21c177',
-                preConfirm: () => {
-                    window.location.href = "/homepage";
-                }                        
-            });			
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Log Out Succesfull !',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#21c177',
+                    preConfirm: () => {
+                        window.location.href = "/homepage";
+                    }                        
+                });					
+			})
+            .catch((error) => {
+                console.log("ERROR: ", error);
+                Swal.fire({
+                    title: 'Error !',
+                    text: `Failed to Log Out`,
+                    icon: 'error',
+                    confirmButtonColor: '#B8D9A0'
+                })
+            })	
 	};
 
 
@@ -171,7 +166,8 @@ export default function Navbars () {
                                         <NavDropdown.Item >{user.username}</NavDropdown.Item>
                                         <NavDropdown.Divider />
                                         <NavDropdown.Item href="/dashboard">Dashboard</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                                        <NavDropdown.Item href="/editprofile">Edit Profile</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={logoutHandler}>Log Out</NavDropdown.Item>
                                 </NavDropdown>
                              </>
                             )

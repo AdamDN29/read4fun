@@ -112,18 +112,24 @@
 
 }
 
+.col_bookmark{
+    padding: 0px !important;
+}
+
 .bookmark_title{
     font-family: "nunito_sansbold";
     color: #2A2E2E;
     font-size: 32px !important;
     margin-bottom: 20px;
     padding-bottom: 10px;
+    padding-left: 0px !important;
     border-bottom: 1px solid rgba(42, 46, 46, 0.5);
 }
 
 .bookmark_story{
     border-bottom: 2px solid rgba(42, 46, 46, 0.25);
     margin-bottom: 15px;
+    padding: 0px !important;
 }
 .bookmark_story:hover{
     background-color: #f5f5f5;
@@ -215,7 +221,24 @@
     width: 100px !important;
 }
 
+.btn_del_bookmark{
+    background-color: #D3455B !important;
+    width: 40px !important;
+    height: 40px !important;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px !important;
+    float: right !important; 
+    padding: 10px !important;
+    vertical-align: middle;
+}
+.btn_del_bookmark:hover{
+    background-color: #2A2E2E !important;
+}
 
+.icon_del{
+    margin-right: 0px !important;
+}
 
 
 
