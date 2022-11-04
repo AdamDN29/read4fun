@@ -33,6 +33,7 @@ function ListPages() {
                         <a class="lead" href="/writing">WritingPage</a><br/>    
 
                         <a class="lead" href="/policy">PolicyPage</a><br/>  
+                        <a class="lead" href="/term_of_service">TermOfServicePage</a><br/>
                         <a class="lead" href="/about_us">AboutUsPage</a><br/>         
                         
                         </Card.Body>

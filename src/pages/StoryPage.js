@@ -1,5 +1,6 @@
 import React from 'react';
 import '../css/storypage.css'
+import 'animate.css';
 import ImgAsset from '../resources';
 import ReactTimeAgo from 'react-time-ago'
 
@@ -11,6 +12,7 @@ import Pagination from "../components/Pagination";
 import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2"
 import axios from "axios";
 
 function StoryPage(props) {
@@ -20,6 +22,10 @@ function StoryPage(props) {
 
     const [userId, setUserId] = useState(() => {
 		const localData = sessionStorage.getItem("id");
+		return localData ? localData : null;
+	});
+    const [userToken, setUserToken] = useState(() => {
+		const localData = sessionStorage.getItem("token");
 		return localData ? localData : null;
 	});
     const [user, setUser] = useState([]);
@@ -96,6 +102,7 @@ function StoryPage(props) {
     // Sort Settings
     const [sortFlag, setSortFlag] = useState(true);
 
+    // Change Sort of Chapter Story
     function sortChange (){
         setSortFlag(!sortFlag);
 
@@ -106,6 +113,80 @@ function StoryPage(props) {
         else{
             const chapterDesc = [...chapters].sort((a, b) => b.number - a.number);
             setChapter(chapterDesc); 
+        }
+    }
+
+    const headers = {
+        'Authorization': userToken
+      }
+
+    function notLoginPop (){
+        Swal.fire({
+            title: 'Oopss.. !',
+            text: 'Please Login First',
+            icon: 'warning',
+            confirmButtonColor: '#B8D9A0'
+        })
+    }
+
+    // Report Function
+    const reportStory = async () => {
+        if (userId !== null){
+            const { value: report_content } = await Swal.fire({
+                title: 'Report Story',
+                input: 'textarea',
+                inputLabel: 'Your Report',
+                inputPlaceholder: 'Enter Your Report',
+                confirmButtonColor: '#D3455B',
+                confirmButtonText: 'Send Report',
+                showCancelButton: true,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                  },
+                  hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                  }
+              })
+              
+              if (report_content) {
+
+                const formData = new FormData();
+
+                formData.append('story_id', story.id);
+                formData.append('explanation', report_content);
+
+                await axios
+                .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/report`, 
+                    formData, {
+                        headers: {
+                          'Token': userToken
+                        }
+                })
+                .then((response) => {
+                    console.log(response);
+        
+                    Swal.fire({
+                        title: 'Sent !',
+                        text: 'Your report has been sent',
+                        // text: `Your Report : ${report_content}`,
+                        icon: 'success',
+                        confirmButtonColor: '#B8D9A0'
+                    })
+                })
+                .catch((error) => {
+                    console.log("ERROR: ", error);
+                    Swal.fire({
+                        title: 'Error !',
+                        text: `Your report failed to send because ${error.response.data.message}`,
+                        icon: 'error',
+                        confirmButtonColor: '#B8D9A0'
+                    })
+                })
+
+                
+              }
+        } else{
+            notLoginPop();
         }
     }
 
@@ -233,7 +314,7 @@ function StoryPage(props) {
                     
                     
                     <Button className='btn_sp'>Add to Bookmark</Button>
-                    <Button className='btn_report btn_sp'>Report</Button>
+                    <Button onClick={reportStory} className='btn_report btn_sp'>Report</Button>
 
                 </Col>
 

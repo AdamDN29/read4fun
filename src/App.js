@@ -26,6 +26,7 @@ import WritingPage from './pages/WritingPage'
 
 import PolicyPage from './pages/PolicyPage'
 import AboutUsPage from './pages/AboutUsPage'
+import TermOfServicePage from './pages/TermOfServicePage';
 
 //import components
 import Navbars from './components/Navbars'
@@ -61,6 +62,7 @@ function App() {
           <Route path='/userstory/:story_title/writing/:chapter_id' element={<WritingPage/>} />
           
           <Route path='/policy' element={<PolicyPage/>} />
+          <Route path='/term_of_service' element={<TermOfServicePage/>} />
           <Route path='/about_us' element={<AboutUsPage/>} />
 
         </Routes>
