@@ -29,6 +29,7 @@ function UserStoryPage() {
 
     const [newChapter, setNewChapter] = useState();
     console.log(newChapter);
+    console.log("Chapters : ", chapters);
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -154,7 +155,8 @@ function UserStoryPage() {
                         )
                     }
                 </Col>
-
+                
+                {/* Detail Story */}
                 <Col md={5}>
                     <h2 className='story_title2'>{story.title}</h2>
                     <h4 className='section_title'><i>Author :</i> <a href="/dashboard" className='author_text'>{author.username}</a></h4>
@@ -239,6 +241,7 @@ function UserStoryPage() {
                             </div>
                         </Col>
                     </Row>
+
                     {/* Genre */}
                     <div className='row_detail'>
                         <h4 className='section_title2'><i>Genre</i></h4>
@@ -265,12 +268,24 @@ function UserStoryPage() {
                             </Link>
                             </>
                         ):(
-                            <Link className="link_chapter" 
-                                to={`/userstory/${story.title}/writing/${firstChapter.number}`}
-                                state={{chapter_content: firstChapter}}
-                            >
-                                <Button className='btn_sp'>Edit Story</Button>
-                            </Link>
+                            <>
+                                {chapters.length !== 0 ? (
+                                    <Link className="link_chapter" 
+                                        to={`/userstory/${story.title}/writing/${firstChapter.number}`}
+                                        state={{chapter_content: firstChapter}}
+                                    >
+                                        <Button className='btn_sp'>Edit Story</Button>
+                                    </Link>
+                                ):(
+                                    <Link className="link_chapter" 
+                                        to={`/userstory/${story.title}/writing/newChapter`}
+                                        state={{chapter_content: newChapter}}
+                                    >
+                                        <Button className='btn_sp'>Add Story</Button>
+                                    </Link>
+                                )
+                                }
+                            </>
                         )
                     }
                     <Button onClick={deleteStory} className='btn_report btn_sp'>Delete Story</Button>

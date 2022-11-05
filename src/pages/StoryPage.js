@@ -414,9 +414,7 @@ function StoryPage(props) {
                                             </Link>
                                         )
                                         
-                                    })}
-                                    
-                                    
+                                    })}       
                                     </Row>
                                 </div>
 
@@ -433,8 +431,7 @@ function StoryPage(props) {
                                 
                                 </>
                             )
-                        }
-                        
+                        }      
                     </div>
                 </>
                 ):(<></>)

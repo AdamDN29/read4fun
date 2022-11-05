@@ -4,10 +4,11 @@ import ImgAsset from '../resources'
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 import '../css/chapterPage.css'
-import { scrollToTop } from '../helper/scroll';
+import { scrollToTop, useScroll } from '../helper/scroll';
+import GoTopButton from '../components/GoTopButton';
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, Form } from 'react-bootstrap'
+import { Card, Container, Row, Col , Button, Form, Dropdown, DropdownButton } from 'react-bootstrap'
 import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
@@ -22,6 +23,7 @@ function ChapterPage(props) {
 
     const [thisChapter, setThisChapter] = useState(chapter_content);
     console.log(thisChapter);
+    const scrollPosition = useScroll();
 
     const [prevChapter, setPrevChapter] = useState([]);
     const [nextChapter, setNextChapter] = useState([]);
@@ -41,20 +43,20 @@ function ChapterPage(props) {
         //     console.error( error );
         // } );
 
-        ClassicEditor
-            .create( document.querySelector( 'editor1' ), {
+        // ClassicEditor
+        //     .create( document.querySelector( 'editor1' ), {
                
-            } )
-            .then( editor => {
-                const toolbarElement = editor.ui.view.toolbar.element;
-                editor.enableReadOnlyMode( 'feature-id' );
+        //     } )
+        //     .then( editor => {
+        //         const toolbarElement = editor.ui.view.toolbar.element;
+        //         editor.enableReadOnlyMode( 'feature-id' );
 
-                toolbarElement.style.display = 'none';
+        //         toolbarElement.style.display = 'none';
                  
-            } )
-            .catch( error => {
-                console.log( error );
-            } );
+        //     } )
+        //     .catch( error => {
+        //         console.log( error );
+        //     } );
 
 
 
@@ -106,6 +108,22 @@ function ChapterPage(props) {
         // window.location.reload(true);
     }
 
+    // Select Chapter
+    const selectChapter =(e) => {
+        const temp = e.target.value;
+        console.log(temp);
+         
+        list_chapter.map((chapter, index) => {
+            if(chapter.number === e.target.value){
+                console.log("Found the Chapter")
+                setThisChapter(chapter);
+                console.log(thisChapter);
+                setButton();
+            }else{
+                console.log("Not Found the Chapter : ", chapter.number)
+            }
+        })
+    }
 
     return (
         <div>
@@ -139,11 +157,62 @@ function ChapterPage(props) {
                                     </div>
                                 </Col>
                             </Row>
+                            
                         </>
                     ):(<></>)
-                }
-                
+                } 
             </div>
+
+            {
+                    thisChapter.story.type === "Novel" ?(
+                        <Row className='upSection'>
+                            <Col >
+                                <Form.Select 
+                                    aria-label="Default select example" 
+                                    className="chapterDropdown" 
+                                    onChange={selectChapter}>
+                                        <option > Chapter {thisChapter.number}</option>
+                                        {list_chapter.map((chapter, index) => {
+                                            return(
+                                                <>
+                                                { chapter.number !== thisChapter.number ?(
+                                                        <option key={index} value={chapter.number}>Chapter {chapter.number}</option>
+                                                    ):(<></>)
+                                                }
+                                                </>
+                                            )
+                                        })}
+                                </Form.Select>
+                            </Col>
+
+                            <Col className="buttonSection2">
+                    
+                            <Button className='btn_chapter2' disabled={btnStatusPrev} onClick={prevChapterClick}>
+                                {/* <Link className="link_to" 
+                                to={`/story/${chapter_content.story.title}/chapter/${prevChapter.number}`}
+                                state={{chapter_content: prevChapter, list_chapter: list_chapter}}
+                                onClick={location.forceUpdate}> */}
+                                    <img src = {ImgAsset.icon_prev_chapter}
+                                    className="img_btn_prev_chapter2"
+                                    alt="prev chapter"
+                                    />
+                                {/* </Link> */}
+                            </Button>
+
+                            <Button className='btn_chapter2' disabled={btnStatusNext} onClick={nextChapterClick}>
+                                {/* <Link className='link_to'
+                                to={`/story/${chapter_content.story.title}/chapter/${nextChapter.number}`}
+                                state={{chapter_content: nextChapter, list_chapter: list_chapter}}> */}
+                                    <img src = {ImgAsset.icon_next_chapter}
+                                    className="img_btn_next_chapter2"
+                                    alt="next chapter"
+                                    /> 
+                                {/* </Link> */}
+                            </Button>
+                            </Col>
+                        </Row>   
+                    ):(<></>)
+                }
 
             {/* <div id="editor1" className='content_field' defaultValue={thisChapter.content}>
             </div> */}
@@ -152,7 +221,8 @@ function ChapterPage(props) {
                     id="editor1"
                     disabled 
                     config={ {
-                        toolbar : 'none'
+                        toolbar : 'none',
+                        padding : '10px'
                     } }
                     className='content_field'
                     editor={ ClassicEditor }
@@ -215,10 +285,10 @@ function ChapterPage(props) {
                             /> 
                         {/* </Link> */}
                     </Button>
-            </div>
+                    </div>
                 ):(<></>)
             }
-            
+            <GoTopButton visible={scrollPosition > 400} />
         </Container>
         <Footer />   
         </div>

@@ -43,9 +43,6 @@
     background-color: #B8D9A0 !important;
 }
 
-.buttonSection {
-    text-align: center;
-}
 
 .title_row{
     margin-top: 30px !important;
@@ -115,6 +112,10 @@
     border-bottom: 2px solid rgba(42, 46, 46, 0.75);
 }
 
+.buttonSection {
+    text-align: center;
+}
+
 .btn_chapter{
     background-color: #2A2E2E !important;
     height: 50px !important;
@@ -141,7 +142,66 @@
     margin-left: 10px !important;
 }
 
+.buttonSection2 {
+    text-align: right;
+    /* margin-top: 10px !important; */
+    
+}
+
+.btn_chapter2{
+    background-color: #2A2E2E !important;
+    width: 75px !important;
+    height: 40px !important;
+    padding: 10px 12px 10px 12px !important;
+    font-size: 16px !important;
+    text-transform: none !important;
+    vertical-align: middle !important;
+    margin: 10px 0px 10px 10px;
+    color: #FFFFFF !important;
+}
+
+.btn_chapter2:hover{
+    background-color: #B8D9A0 !important;
+}
+.btn_chapter2:disabled{
+    opacity: 0.3 !important;
+}
+
+.img_btn_prev_chapter2{
+    width: 15px;
+    height: 15px;
+    vertical-align: middle !important;
+    margin-top: -7px !important;
+}
+
+.img_btn_next_chapter2{
+    width: 15px;
+    height: 15px;
+    vertical-align: middle !important;
+    margin-top: -7px !important;
+}
+
 .link_to{
     color: #FFFFFF !important;
 }
 
+.upSection{
+    margin-top: 10px !important;
+    margin-bottom: -20px !important;
+}
+
+.chapterDropdown{
+    /* height: 45px !important; */
+    justify-content: center;
+    vertical-align: middle !important;
+    margin: 10px 10px 10px 0px;
+    /* text-transform: none !important; */
+    text-transform: capitalize !important;
+    width: 250px !important;
+}
+
+
+.ck.ck-editor__editable_inline {
+    padding-right: 25px !important;
+    padding-left: 25px !important;
+}

@@ -42,6 +42,7 @@ function WritingPage() {
 
     const [thisChapter, setThisChapter] = useState(chapter_content);
     const [disable, setDisable] = useState(false);
+    console.log(thisChapter)
 
     const [chapter, dispatch] = useReducer(reducer, initialState);
     console.log(chapter);
@@ -60,18 +61,33 @@ function WritingPage() {
         // Dataform Create Chapter
         if (thisChapter.id === 0){
             dataForm.append("story_id", thisChapter.story.id);
+
+            // Dataform create short story
+            if (thisChapter.story.type === 'Short Story') {
+                
+                    dataForm.append("title", thisChapter.story.title);
+                    dataForm.append("number", "1");
+
+            }else{
+                if (chapter.title !== ""){
+                    dataForm.append("title", chapter.title);
+                }
+                if (chapter.number !== ""){
+                    dataForm.append("number", chapter.number);
+                }
+            }
         } 
         // Dataform Update Chapter
         else{
             dataForm.append("id", thisChapter.id);
-        }
+            if (chapter.title !== ""){
+                dataForm.append("title", chapter.title);
+            }
+            if (chapter.number !== ""){
+                dataForm.append("number", chapter.number);
+            }
+        }  
 		
-		if (chapter.title !== ""){
-			dataForm.append("title", chapter.title);
-		}
-		if (chapter.number !== ""){
-			dataForm.append("number", chapter.number);
-		}
 		if (chapter.content !== ""){
 			dataForm.append("content", chapter.content);
 		}
