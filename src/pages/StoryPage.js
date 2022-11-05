@@ -173,7 +173,7 @@ function StoryPage(props) {
                     console.log("ERROR: ", error);
                     Swal.fire({
                         title: 'Error !',
-                        text: `Your report failed to send because ${error.response.data.message}`,
+                        text: `Your report failed to send because ${error.response.data.error}`,
                         icon: 'error',
                         confirmButtonColor: '#B8D9A0'
                     })

@@ -75,8 +75,12 @@ function ChangePasswordPage() {
                                 <Form.Label className="label_form">Confirm New Password</Form.Label>
                                 <Form.Control type="password" placeholder="Enter Confirm New Password" name='password' value={newConfirmpassword} onChange={(e) => setNewconfirmpassword(e.target.value)} />
                             </Form.Group>
-                            <Row className="btn_group">
-                                <Col>
+
+                            <Row>
+                                <Col >
+                
+                                </Col>
+                                <Col md="auto">
                                     <Button href='/editprofile' variant="primary" className="btn_back" >
                                         Back
                                     </Button>
@@ -84,8 +88,13 @@ function ChangePasswordPage() {
                                         Change Password
                                     </Button>     
                                 </Col>
-        
                             </Row>
+                            {/* <Row className="btn_group">
+                                <Col md="auto" className="btn_to_right">
+                                    
+                                </Col>
+        
+                            </Row> */}
                         </Form>
                     </Card.Body>
                 </Card>

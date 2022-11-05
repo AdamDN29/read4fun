@@ -128,10 +128,10 @@ export default function EditProfilePage(props) {
                 <Card className="edit_profile card mx-1">
                     <Card.Body className="edit_profile_body card-body">
                         <Row>
-                            <Col md='10'>
+                            <Col >
                                 <Card.Title className="title card-title">Edit Profile</Card.Title>
                             </Col>
-                            <Col md='2'>
+                            <Col md="auto">
                                 <Button href='/changePassword' className="btn_password">Change Password</Button>
                             </Col>
                         </Row>

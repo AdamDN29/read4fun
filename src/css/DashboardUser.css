@@ -138,14 +138,14 @@
 .bookmark_story_title{
     font-family: "nunito_sanssemibold";
     color: #2A2E2E;
-    font-size: 20px !important;
+    font-size: 18px !important;
     margin-bottom: 5px;
 }
 
 .bookmark_story_date{
     font-family: "nunito_sanssemibold_italic";
     color: rgba(42, 46, 46, 0.5);
-    font-size: 16px !important;
+    font-size: 14px !important;
     margin-bottom: 10px;
 }
 
@@ -202,7 +202,7 @@
 }
 
 .size_s{
-    font-size: 18px !important;
+    font-size: 16px !important;
 }
 
 .story_box{
@@ -309,11 +309,12 @@
     align-items: center;
     font-size: auto ;
     font-family: "nunito_sanssemibold";
-    font-size: max(16px)!important;
+    font-size: max(14px)!important;
     font-weight: 500;
     color: #2A2E2E;
     overflow-x:hidden;
     white-space: nowrap;
+    margin-bottom: 5px !important;
   }
 
  .icon_text{

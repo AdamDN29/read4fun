@@ -163,11 +163,11 @@ export default function Navbars () {
                                         </>
                                     }
                                     id="navbarScrollingDropdown" className="ml-auto">
-                                        <NavDropdown.Item >{user.username}</NavDropdown.Item>
+                                        <NavDropdown.Item href="/dashboard" className='username_nav'>{user.username}</NavDropdown.Item>
                                         <NavDropdown.Divider />
-                                        <NavDropdown.Item href="/dashboard">Dashboard</NavDropdown.Item>
+                                        <NavDropdown.Item href="/dashboard" >Dashboard</NavDropdown.Item>
                                         <NavDropdown.Item href="/editprofile">Edit Profile</NavDropdown.Item>
-                                        <NavDropdown.Item onClick={logoutHandler}>Log Out</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={logoutHandler} className="logout_nav">Log Out</NavDropdown.Item>
                                 </NavDropdown>
                              </>
                             )

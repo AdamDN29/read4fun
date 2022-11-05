@@ -95,12 +95,6 @@ function AuthorPage() {
                             'Authorization' : `Bearer ${userToken}`
                         }
                 })
-                // .create({
-                //     headers: {
-                //       Authorization : `Bearer ${userToken}`
-                //       }
-                //     })
-                // .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/report`, formData)  
                 .then((response) => {
                     console.log(response);
         
@@ -116,7 +110,7 @@ function AuthorPage() {
                     console.log("ERROR: ", error);
                     Swal.fire({
                         title: 'Error !',
-                        text: `Your report failed to send because ${error.response.data.message}`,
+                        text: `Your report failed to send because ${error.response.data.error}`,
                         icon: 'error',
                         confirmButtonColor: '#B8D9A0'
                     })
@@ -255,25 +249,27 @@ function AuthorPage() {
                                     <p>No Author Stories</p>
                                     </>
                                 ):(
-                                    <>
+                                    <Row xs="1" md="2" className="addMargin" style={{marginLeft: "1px"}}>
                                     {
                                         storys.map((story)=>{
                                             const date = story.updated_at					
                                             const dt = new Date(date)
                                             return(
                                                 <>
+                                                
                                                 {/* Story Box */}
                                                 <Link key={story.id} className="link_chapter" 
                                                     to={`/story/${story.title}`}
                                                     state={{story_id: story.id}}
                                                 >
+                                                <Col className="addMargin">
                                                 <Row className='story_box'>
                                                     <Col md="auto">
                                                         {
                                                             story.link !== null ?(
-                                                                <img width="225px" height="300px" className='cover_image_dashboard' src = {story.link}/>
+                                                                <img width="175px" height="250px" className='cover_image_dashboard' src = {story.link}/>
                                                             ):(
-                                                                <img width="225px" height="300px" className='cover_image_dashboard' src = {ImgAsset.image_placeholder}/>
+                                                                <img width="175px" height="250px" className='cover_image_dashboard' src = {ImgAsset.image_placeholder}/>
                                                             )
                                                         }
                                                         
@@ -283,7 +279,7 @@ function AuthorPage() {
                                                             <h2 className='list_story_title'>{story.title}</h2>
                                                         </Row>
                                                         <Row>
-                                                            <Col md={4}>
+                                                            <Col md={6}>
                                                                 <Row>
                                                                     <div className="detail_list3">
                                                                         <img
@@ -382,16 +378,15 @@ function AuthorPage() {
                                                         </Row>
                                                     </Col>
                                                 </Row>
-                                                </Link>           
+                                                </Col>
+                                                </Link>   
+                                                       
                                                 </>
-        
                                             )
                                         })
-
                                     }
-                                    </>
-                                )
-                             
+                                    </Row> 
+                                )           
                             }
                         </div>
                     </div>

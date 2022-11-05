@@ -68,3 +68,12 @@
   border-color: #B8D9A0 !important;
   color: #B8D9A0 !important;
 }
+
+.logout_nav{
+  /* background-color: rgba(211, 69, 91, 0.8) !important; */
+  color: #D3455B !important; 
+}
+
+.username_nav{
+  color: #B8D9A0 !important;
+}

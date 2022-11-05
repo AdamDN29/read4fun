@@ -264,9 +264,9 @@ function DashboardUser() {
                                                     <Col md="auto">
                                                         {
                                                             story.link !== null ?(
-                                                                <img width="225px" height="300px" className='cover_image_dashboard' src = {story.link}/>
+                                                                <img width="175px" height="250px" className='cover_image_dashboard' src = {story.link}/>
                                                             ):(
-                                                                <img width="225px" height="300px" className='cover_image_dashboard' src = {ImgAsset.image_placeholder}/>
+                                                                <img width="175px" height="250px" className='cover_image_dashboard' src = {ImgAsset.image_placeholder}/>
                                                             )
                                                         }
                                                         
@@ -368,7 +368,7 @@ function DashboardUser() {
                                                                             className="detail_list_icon3"
                                                                             src = {ImgAsset.icon_bookmark2}
                                                                         />
-                                                                        <span className="size_s icon_text3">
+                                                                        <span className="size_s ">
                                                                             { story.bookmark !== null ? (
                                                                                 <>{story.bookmark}</>
                                                                                 ):(<>1</>)

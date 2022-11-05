@@ -304,7 +304,7 @@ function BrowsePage() {
                                             { story.view !== null ? (
                                                 <>{story.view}</>
                                                 ):(<>1</>)
-                                            }
+                                            } Views
                                         </span>
                                     </div>
                                     <div className="detail_list2">
@@ -317,7 +317,7 @@ function BrowsePage() {
                                             { story.like !== null ? (
                                                 <>{story.like}</>
                                                 ):(<>1</>)
-                                            }
+                                            } Likes
                                         </span>
                                     </div>
                                     <div className="detail_list2">
@@ -330,7 +330,7 @@ function BrowsePage() {
                                             { story.bookmark !== null ? (
                                                 <>{story.bookmark}</>
                                                 ):(<>1</>)
-                                            }
+                                            } Bookmarks
                                         </span>
                                     </div>
                                     <div className="detail_list2">
