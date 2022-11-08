@@ -51,7 +51,7 @@ const initialState = {
     type: "",
     status: "",
 	description: "",
-	link: "",
+	link: null,
 }
 
 const reducer = (currentState, action) => {
@@ -65,7 +65,7 @@ const reducer = (currentState, action) => {
 		case "description":
             return { ...currentState, description: action.payload };
 		case "link":
-            return { ...currentState, link: action.payload };
+            return { ...currentState, link: action.upload };
         default:
             return currentState;
     }
@@ -83,6 +83,7 @@ function EditDetailPage() {
     const navigate = useNavigate();
 
     const [preload, setPreLoad] = useState([]);
+    const [imagePlaceholder, setImagePlaceholder] = useState('');
 
     useEffect(()=>{
         // Check if create or edit story
@@ -94,6 +95,7 @@ function EditDetailPage() {
             axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
             .then((response)=> {
                 setPreLoad(response.data);
+                setImagePlaceholder(response.data.data.avatar);
                 console.log(response.data);
             })
             .catch((err) => {
@@ -104,46 +106,7 @@ function EditDetailPage() {
 
     const [story, dispatch] = useReducer(reducer, initialState);
 
-    const submitData = (e) => {
-		e.preventDefault();
-		console.log(story);
-	
-		const dataForm = new FormData();
-
-        // Check if create or edit story
-        // Edit
-        if (story_id !== "newStory"){
-            dataForm.append("id", story_id);
-            if (story.type !== null){
-                dataForm.append("type", story.type);
-            }
-            if (story.status !== null){
-                dataForm.append("status", story.status);
-            }
-            if (story.description !== ""){
-                dataForm.append("description", story.description);
-            }
-
-        }
-        else{
-            dataForm.append("user_id", userId);        
-            if (story.type === ""){
-                dataForm.append("type", "Novel");
-            }else {dataForm.append("type", story.type);}
-            if (story.status === ""){
-                dataForm.append("status", "On Going");
-            }else {dataForm.append("status", story.status);}
-            if (story.description === ""){
-                dataForm.append("description", "A New Story");
-            }else{dataForm.append("description", story.description);}
-        }
-		if (story.title !== ""){
-            dataForm.append("title", story.title);
-        }
-		if (story.link !== ""){
-			dataForm.append("link", story.link);
-		}
-
+    function postData (dataForm){
         // Post Data Edit Story
         if (story_id !== "newStory"){
             axios
@@ -202,9 +165,99 @@ function EditDetailPage() {
                 return;
             });
         }
-		
-		
+    }
+
+    function uploadImage (img, dataForm) {
+        console.log("Image : ", img);
+        let body = new FormData()
+        body.set('key', 'fbf6a1214e399aee19712877bc787d54')
+        body.append('image', img)
+    
+        return axios({
+          method: 'POST',
+          url: 'https://api.imgbb.com/1/upload',
+          data: body
+        })
+        .then((response) => {
+            console.log(response.data);
+            console.log(response.data.data.display_url)
+
+            dataForm.append("link", response.data.data.display_url);
+
+            postData(dataForm);
+        })
+          .catch((err) => {
+            console.log(err);
+        });
+      }
+
+    const submitData = (e) => {
+		e.preventDefault();
+		console.log(story);
+	
+		const dataForm = new FormData();
+
+        // Check if create or edit story
+        // Edit
+        if (story_id !== "newStory"){
+            dataForm.append("id", story_id);
+            if (story.type !== null){
+                dataForm.append("type", story.type);
+            }
+            if (story.status !== null){
+                dataForm.append("status", story.status);
+            }
+            if (story.description !== ""){
+                dataForm.append("description", story.description);
+            }
+
+        }
+        else{
+            dataForm.append("user_id", userId);        
+            if (story.type === ""){
+                dataForm.append("type", "Novel");
+            }else {dataForm.append("type", story.type);}
+            if (story.status === ""){
+                dataForm.append("status", "On Going");
+            }else {dataForm.append("status", story.status);}
+            if (story.description === ""){
+                dataForm.append("description", "A New Story");
+            }else{dataForm.append("description", story.description);}
+        }
+		if (story.title !== ""){
+            dataForm.append("title", story.title);
+        }
+
+        if (story.link !== null){
+            console.log(story.link);
+
+            const reader = new FileReader()
+            reader.readAsDataURL(story.link)      
+            reader.onload = () => {
+                console.log('called: ', reader)
+                const img = reader.result.split(",").pop();
+                uploadImage(img, dataForm);
+        
+                // postData(formData);
+            }  
+		}
+
+        if (story.link === null){
+            postData(dataForm);
+        }   	
 	};
+
+    const onImageChange = (e) => {
+        dispatch({ type: "link", upload: e.target.files[0], })
+
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+              setImagePlaceholder(e.target.result);
+            };
+            reader.readAsDataURL(e.target.files[0]);
+          }
+    }
 
 
     return (
@@ -220,14 +273,14 @@ function EditDetailPage() {
                             <Col md='auto' className="upload_col">
 
                                 {
-                                    preload.link !== null ?(
-                                        <img src={preload.link} alt="Cover" width="250px"/>
+                                    imagePlaceholder !== '' ?(
+                                        <img src={imagePlaceholder} alt="Cover" width="250px"/>
                                     ):(
                                         <img src={ImgAsset.image_placeholder} alt="Cover" width="250px"/>
                                     )
                                 }
                                
-                                <InputGroup size="md" className="upload_form mb-3">
+                                {/* <InputGroup size="md" className="upload_form mb-3">
                                     <InputGroup.Text id="basic-addon1" className='icon_upload'>
                                         <img
                                             src = {ImgAsset.icon_upload}
@@ -247,8 +300,19 @@ function EditDetailPage() {
                                     <Form.Text id="passwordHelpBlock" muted>
                                         Please enter a valid link of your story cover
                                     </Form.Text>
-                                    {/* <InputGroup.Text id="basic-addon2"><Button className='btn_search2'>Search</Button></InputGroup.Text> */}
-                                </InputGroup>
+                                </InputGroup>  */
+                                <Form.Group controlId="formFileSm" className="upload_form mb-3">
+                                    {/* <Form.Label>Small file input example</Form.Label> */}
+                                    <Form.Control type="file" 
+                                        placeholder="Enter Link of Story Cover"
+                                        name="link"
+                                        onChange={onImageChange}
+                                        // onChange={(e) =>
+                                        //     dispatch({ type: "avatar", upload: e.target.files[0], })
+        
+                                        // }        
+                                    />
+                                </Form.Group>}
                             </Col>
 
                             {/* Edit Detail */}

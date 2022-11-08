@@ -9,8 +9,10 @@ import Swal from 'sweetalert2'
 //import component Bootstrap React
 import { Card, Container, Row, Col, Button, Form, InputGroup } from 'react-bootstrap'
 
+// const imgbbUploader = require("imgbb-uploader");
+
 const initialState = {
-    avatar: "",
+    avatar: null,
     username: "",
 	name: "",
 	birthdate: "",
@@ -21,7 +23,7 @@ const initialState = {
 const reducer = (currentState, action) => {
     switch (action.type) {
         case "avatar":
-            return { ...currentState, avatar: action.payload };
+            return { ...currentState, avatar: action.upload };
         case "username":
             return { ...currentState, username: action.payload };
 		case "name":
@@ -44,49 +46,26 @@ export default function EditProfilePage(props) {
 	});
 
     const [preload, setPreLoad] = useState([]);
+    const [imagePlaceholder, setImagePlaceholder] = useState('');
 
     useEffect(() => {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${userId}`)
         .then((response) => {
             setPreLoad(response.data.data);
+            setImagePlaceholder(response.data.data.avatar);
             console.log(response.data.data);
         })
           .catch((err) => {
             console.log(err);
-          });
-        }, []);
+        });
+    }, []);
         
-        const [user, dispatch] = useReducer(reducer, initialState);
-        const [disable, setDisable] = useState(false);
-        
-    const submitProfile = (e) => {        
-		e.preventDefault();
-        setDisable(true);
-        console.log(user);
+    const [user, dispatch] = useReducer(reducer, initialState);
+    const [disable, setDisable] = useState(false);
 
-        const formData = new FormData();
-		formData.append("id", userId);
-		if (user.avatar !== ""){
-			formData.append("avatar", user.avatar);
-		}
-		if (user.username !== null){
-			formData.append("username", user.username);
-		}
-		if (user.name !== ""){
-			formData.append("name", user.name);
-		}
-		if (user.birthdate !== ""){
-			formData.append("birthdate", user.birthdate);
-		}
-		if (user.occupation !== ""){
-			formData.append("occupation", user.occupation);
-		}
-		if (user.address !== ""){
-			formData.append("address", user.address);
-		}
-
-		axios
+    function postData (formData){
+        axios
           .create({
             headers: {
               Authorization : `Bearer ${sessionStorage.getItem("token")}`
@@ -118,8 +97,88 @@ export default function EditProfilePage(props) {
             console.log(error)
 			return;
 		  });
-		
+    }
+
+    function uploadImage (img, formData) {
+        console.log("Image : ", img);
+        let body = new FormData()
+        body.set('key', 'fbf6a1214e399aee19712877bc787d54')
+        body.append('image', img)
+    
+        return axios({
+          method: 'POST',
+          url: 'https://api.imgbb.com/1/upload',
+          data: body
+        })
+        .then((response) => {
+            console.log(response.data);
+            console.log(response.data.data.display_url)
+
+            formData.append("avatar", response.data.data.display_url);
+
+            postData(formData);
+        })
+          .catch((err) => {
+            console.log(err);
+        });
+      }   
+        
+    const submitProfile = (e) => {        
+		e.preventDefault();
+        setDisable(true);
+        console.log(user);
+
+        const formData = new FormData();
+		formData.append("id", userId);
+        let temp = '';
+
+		if (user.username !== null){
+			formData.append("username", user.username);
+		}
+		if (user.name !== ""){
+			formData.append("name", user.name);
+		}
+		if (user.birthdate !== ""){
+			formData.append("birthdate", user.birthdate);
+		}
+		if (user.occupation !== ""){
+			formData.append("occupation", user.occupation);
+		}
+		if (user.address !== ""){
+			formData.append("address", user.address);
+		}
+
+        if (user.avatar !== null){
+            console.log(user.avatar);
+			// formData.append("avatar", user.avatar);
+
+            const reader = new FileReader()
+            reader.readAsDataURL(user.avatar)      
+            reader.onload = () => {
+                console.log('called: ', reader)
+                const img = reader.result.split(",").pop();
+                uploadImage(img, formData);
+        
+                // postData(formData);
+            }  
+		}
+
+        if (user.avatar === null){
+            postData(formData);
+        }	
 	};
+
+    const onImageChange = (e) => {
+        dispatch({ type: "avatar", upload: e.target.files[0], })
+
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+              setImagePlaceholder(e.target.result);
+            };
+            reader.readAsDataURL(e.target.files[0]);
+          }
+    }
 
     return (
         <div>
@@ -138,13 +197,13 @@ export default function EditProfilePage(props) {
                         <Row>
                             <Col md='auto' className="upload_col">
                                 {
-                                    preload.avatar !== null ?(
-                                        <img src={preload.avatar} alt="Cover" style={{width: 300, height: 300, borderRadius: 300/ 2}}/>
+                                    imagePlaceholder !== '' ?(
+                                        <img src={imagePlaceholder} alt="Cover" style={{width: 300, height: 300, borderRadius: 300/ 2}}/>
                                     ):(
                                         <img src={ImgAsset.avatar2} alt="Cover" width="300px"/>
                                     )
                                 }
-                                <InputGroup size="md" className="upload_form2 mb-3">
+                                {/* <InputGroup size="md" className="upload_form2 mb-3">
                                     <InputGroup.Text id="basic-addon1" className='upload_icon'>
                                         <img
                                             src={ImgAsset.icon_upload}
@@ -164,7 +223,19 @@ export default function EditProfilePage(props) {
                                     <Form.Text id="passwordHelpBlock" muted>
                                         Please enter a valid link of your profile picture
                                     </Form.Text>
-                                </InputGroup>
+                                </InputGroup> */}
+                                <Form.Group controlId="formFileSm" className="upload_form2 mb-3">
+                                    {/* <Form.Label>Small file input example</Form.Label> */}
+                                    <Form.Control type="file" 
+                                        placeholder="Enter Link of Story Cover"
+                                        name="avatar"
+                                        onChange={onImageChange}
+                                        // onChange={(e) =>
+                                        //     dispatch({ type: "avatar", upload: e.target.files[0], })
+        
+                                        // }        
+                                    />
+                                </Form.Group>
                             </Col>
                             <Col>
                                 <Form className='form_edit_profile' onSubmit={submitProfile}>

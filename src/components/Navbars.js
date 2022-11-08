@@ -106,10 +106,11 @@ export default function Navbars () {
                                 src = {ImgAsset.compass_browse}
                                 width="30"
                                 height="30"
-                                className="d-inline-block"
+                                className="nav_icon_img d-inline-block"
                                 alt="Icon Browse"
                                 />
                                 <span className='nav_icon_text'>Browse</span>
+                                <div className='navbar_browse'></div>
                             </Nav.Link>
                             <Nav.Link as={Link} to="/updates" className="nav_icon_field nav-link">
                                 <img

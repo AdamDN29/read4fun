@@ -10,9 +10,29 @@
 
 /* Browse and Updates */
 .nav_icon_field {
-    vertical-align: middle;
-    
+  vertical-align: middle !important;
 }
+
+/* .navbar_browse {
+    vertical-align: middle !important;
+    background:url('../resources/navbar_browse.svg') no-repeat 0 0;
+    background-color: #D3455B solid;
+    margin: 10px;
+    width: 193px !important;
+    height: 25px;
+    align-items: center;
+} */
+
+/* .nav_icon_field2 {
+  vertical-align: middle;
+  background:url('../resources/navbar_updates.svg') no-repeat 0 0;
+  background-repeat: none !important;
+  margin: 10px;
+  width: 150px;
+  height: 50px;
+  width: 50%;
+  margin: 0 auto;
+} */
 
 
 /* .nav_icon_img:hover{
@@ -23,8 +43,9 @@
     margin-left: 8px;
     color: #2A2E2E;
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 600;
     vertical-align: middle;
+    font-family: "nunito_sanssemibold";
     /* font-family: Nunito Verdana, Geneva, Tahoma, sans-serif; */
     /* display: flex;
     align-items: center; */
