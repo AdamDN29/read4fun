@@ -1,0 +1,28 @@
+.title {
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E black;
+    font-size: 45px !important;
+   margin-top: 15px !important;
+    /* font-size: max(32px) !important; */
+    margin-bottom: 10px !important;
+    margin-left: -5px !important;
+}
+
+
+.description{
+     font-family: "nunito_sansextrabold";
+    color: #5d6161 ;
+    font-size: 25px !important;
+   margin-top: 15px !important;
+    margin-bottom: 10px !important;
+}
+
+.title-low{
+    font-family: "nunito_sansextrabold";
+    color: black;
+    font-size: 25px !important;
+   margin-top: 15px !important;
+    /* font-size: max(32px) !important; */
+    margin-bottom: 10px !important;
+    margin-left: -5px !important;
+}
