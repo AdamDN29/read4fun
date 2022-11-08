@@ -10,13 +10,22 @@ import axios from "axios";
 
 function Ranking() {
     const [storys, setStory] = useState([]);
+    const [sortView, setSortView] = useState([]);
+    const [sortLike, setSortLike] = useState([]);
+    const [sortBookmark, setSortBookmark] = useState([]);
 
     useEffect(() => {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
           .then((response) => {
-            setStory(response.data);
             console.log(response);
+            // setStory(response.data);
+            const views = [...response.data].sort((a, b) => a.view - b.view);
+            const likes = [...response.data].sort((a, b) => a.like - b.like);
+            const bookmarks = [...response.data].sort((a, b) => a.bookmark - b.bookmark);
+            setSortView(views);
+            setSortLike(likes);
+            setSortBookmark(bookmarks);
           })
           .catch((err) => {
             console.log(err);
@@ -27,18 +36,17 @@ function Ranking() {
         <div>
             <Row>
                 <Col><p className='ranking_title'>Most View</p>
-                    {storys.slice(0,5).map((story) => (
+                    {sortView.slice(0,5).map((story) => (
                         <Link className="link" 
                         to={`/story/${story.title}`}
                         state={{story_id: story.id}}>
                             <Row className="story_link">
-                                <Col xs lg="3"> 
-                                    <img
-                                    width="76px"
-                                    height="114px"
-                                    src={ImgAsset.ssc1}
-                                    alt="Cover"
-                                    />
+                                <Col md="auto">
+                                    {story.link !== null ? (
+                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
+                                    ) : (
+                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
+                                    )} 
                                 </Col>
                                 <Col className='story_field'> 
                                     <h6 className='stort_title'>{story.title}</h6>
@@ -73,16 +81,15 @@ function Ranking() {
                 </Col>
 
                 <Col><p className='ranking_title'>Most Like</p>
-                    {storys.slice(0,5).map((story) => (
+                    {sortLike.slice(0,5).map((story) => (
                         <Link  to={`/storypage/${story.id}`}>
                             <Row className="story_link">
-                                <Col xs lg="3"> 
-                                    <img
-                                    width="76px"
-                                    height="114px"
-                                    src={ImgAsset.ssc1}
-                                    alt="Cover"
-                                    />
+                                <Col md="auto"> 
+                                    {story.link !== null ? (
+                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
+                                    ) : (
+                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
+                                    )}
                                 </Col>
                                 <Col className='story_field'> 
                                 <h6 className='stort_title'>{story.title}</h6>
@@ -117,16 +124,15 @@ function Ranking() {
                 </Col>
 
                 <Col><p className='ranking_title'>Most Bookmark</p>
-                    {storys.slice(0,5).map((story) => (
+                    {sortBookmark.slice(0,5).map((story) => (
                         <Link  to={`/storypage/${story.id}`}>
                             <Row className="story_link">
-                                <Col xs lg="3"> 
-                                    <img
-                                    width="76px"
-                                    height="114px"
-                                    src={ImgAsset.ssc1}
-                                    alt="Cover"
-                                    />
+                                <Col md="auto"> 
+                                    {story.link !== null ? (
+                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
+                                    ) : (
+                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
+                                    )}
                                 </Col>
                                 <Col className='story_field'> 
                                 <h6 className='stort_title'>{story.title}</h6>

@@ -16,7 +16,7 @@
 }
 
 .btn_password {
-    background-color: red !important;
+    background-color: #D3455B !important;
 }
 
 .upload_section {
@@ -25,6 +25,11 @@
 
 .upload_picture {
     margin: 0 35px;
+}
+
+.upload_form2{
+    margin-top: 15px;
+    width: 300px !important;
 }
 
 .upload_link{

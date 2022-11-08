@@ -31,8 +31,8 @@ function Register() {
             console.log(response);
  
             Swal.fire({
-                title: 'Registrasi Akun Telah Berhasil',
-                text: "Silahkan Cek Email Anda untuk Verifikasi Akun",
+                title: 'Registration Succesful',
+                text: "Please Check Your Email to Verify Your Account",
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 confirmButtonText: 'Login',
@@ -44,6 +44,13 @@ function Register() {
         })
         .catch((error) => {
             console.log("ERROR: ", error);
+            Swal.fire({
+				icon: 'error',
+				title: 'Registration Failed.',
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				confirmButtonColor: '#D3455B',
+			}) 
         })
     };
     

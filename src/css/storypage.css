@@ -28,6 +28,8 @@
 
 .cover_img {
     margin-right: 20px;
+    height: 450px;
+    width: 350px;
 }
 
 .author_text{
@@ -90,12 +92,17 @@
 
 .btn_sp{
     background-color: #2A2E2E !important;
+    
     font-size: auto !important;
     font-size: max(14px) !important;
     font-family: "nunito_sansbold";
     text-transform: none !important;
     margin-left: 5px;
     margin-right: 5px;
+}
+
+.white_p{
+    color: white !important;
 }
 
 .btn_sp:hover{
@@ -135,8 +142,8 @@
 .like_section{
     vertical-align: middle !important;
     padding-top: 125px;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 40px;
+    padding-right: 40px;
     padding-bottom: 50px;
     /* display: flexbox; */
     /* justify-content: center; */
@@ -216,6 +223,7 @@
 
 .latest_chapter:hover{
     color: #2A2E2E;
+    cursor: pointer;
 }
 
 .icon_sort{

@@ -3,12 +3,15 @@ import ImgAsset from '../resources';
 import '../css/DashboardUser.css'
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
+import ReactTimeAgo from 'react-time-ago'
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, CloseButton } from 'react-bootstrap'
 import { useState, useEffect } from "react";
+import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-
+import StoryCard from '../components/StoryCard';
+import Swal from "sweetalert2"
 
 function DashboardUser() {
 
@@ -18,28 +21,58 @@ function DashboardUser() {
 	});
 
     const [profile, setProfile] = useState([]);
-    const [story, setStory] = useState([]);
+    const [storys, setStory] = useState([]);
+    const [bookmarks, setBookmark] = useState([]);
+
+    const [flag, setFlag] = useState(false);
 
     useEffect(() => {
         // Get Data Profile User
         axios
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${userId}`)
           .then((response) => {
-            setProfile(response.data.data);
+            setProfile(response.data.data);       
             console.log(response.data.data);
-        
+
         // Get Data Story User
-            // axios
-            // .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${userId}`)
-            // .then((response) => {
-            //     setStory(response.data);
-            //     console.log(response.data);
-            // })
+            axios
+            // .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/user/${userId}`)
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
+            .then((response) => {
+                setStory(response.data);
+                setFlag(true);
+                console.log(response.data);
+            })
+
+        // Get Data Bookmark User
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
+            .then((response) => {
+                let sortedBookmark = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
+                setBookmark(sortedBookmark);           
+                console.log(response.data);
+            })
           })
           .catch((err) => {
             console.log(err);
           });
-      }, []);
+    }, []);
+
+    // Delete Bookmark
+    function deleteBookmark () {
+        Swal.fire({
+            icon: 'question',
+            title: 'Are you sure you want to delete this bookmark ?',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonColor: '#D3455B',
+            confirmButtonText: 'Delete',
+            showCancelButton: true,
+            preConfirm: () => {
+                window.location.href = "/dashboard";
+            }	  
+        }) 	
+    }
 
     return (
         <div>
@@ -52,30 +85,12 @@ function DashboardUser() {
                 <Col md={"auto"} className='detailAvatar'>
                     {
                         profile.avatar !== null ?(
-                            <>
-                            <img
-                            src = {profile.avatar}
-                            style={{width: 225, height: 225, borderRadius: 225/ 2}}
-                            />
-                            </>
+                            <img src = {profile.avatar} style={{width: 225, height: 225, borderRadius: 225/ 2}}/>
                         ):(
-                            <>
-                            <img
-                            height="225px"
-                            src = {ImgAsset.avatar}
-                            />
-                            </>
+                            <img src = {ImgAsset.avatar}/>
                         )
                     } 
                 </Col>
-
-                {/* <Col>
-                    <Row className='title_area'>
-                        <h2 className='username_user'>STMJ_MuWantap</h2>
-                        <Button className='btn_editprofile'>Edit Profile</Button>
-                    </Row>
-                
-                </Col> */}
 
                 <Col> 
                     <Row>
@@ -83,7 +98,7 @@ function DashboardUser() {
                             <h2 className='username_user'>{profile.username}</h2>
                         </Col>
                         <Col>
-                            <Button className='btn_editprofile'>Edit Profile</Button>
+                            <Button href='/editprofile' className='btn_editprofile'>Edit Profile</Button>
                         </Col>
                     </Row>
 
@@ -164,35 +179,54 @@ function DashboardUser() {
             <Row>
                 {/* Bookmark User */}
                 <Col md="4">
-                    <div className='bookmark_box'>
-                        <h2 className='bookmark_title'>Bookmarks</h2>
-                        <div className='bookmark_story'>
-                            <p className='bookmark_story_title'>Shadow Slave</p>
-                            <p className='bookmark_story_date'>2 days ago</p>
-                        </div>
-                        <div className='bookmark_story'>
-                            <p className='bookmark_story_title'>The Beginning After The End</p>
-                            <p className='bookmark_story_date'>3 days ago</p>
-                        </div>
-                        <div className='bookmark_story'>
-                            <p className='bookmark_story_title'>Normal People</p>
-                            <p className='bookmark_story_date'>1 week ago</p>
-                        </div>
-                    </div>
+                    <Row className='bookmark_box'>
+                        <Col >
+                            <Row ><h2 className='bookmark_title'>Bookmarks</h2></Row>
+                            <>
+                            {bookmarks.slice(0,4).map((bookmark) => {
+                                const date = bookmark.updated_at					
+                                const dt = new Date(date)
+                                return(
+                                   <Row className='bookmark_story'> 
+                                        <Col className='col_bookmark'>
+                                            <Link
+                                            to={`/story/${bookmark.title}`}
+                                            state={{story_id: bookmark.id}}>
+                                            <Row>
+                                                <p className='bookmark_story_title'>{bookmark.title}</p>
+                                                <p className='bookmark_story_date'><i><ReactTimeAgo date={dt} locale="en-US"/></i></p>
+                                            </Row>
+                                            </Link>
+                                        </Col> 
+                                        <Col md={2}>
+                                            <Button onClick={deleteBookmark} className='btn_del_bookmark'>
+                                                <img  width="20px"  height="20px" className="icon_del" src = {ImgAsset.icon_delete}/>
+                                            </Button>
+                                        </Col>
+                                    </Row>   
+                            )})}
+                            </>
+                        </Col>
+                    </Row>
                 </Col>
                 {/* Story User */}
                 <Col>
                     <div className='userstory_box'>
                         <Row className='title_box'>
                             <Col><h2 className='userstory_title'>Your Story</h2></Col>     
-                            <Col><Button className='btn_addstory'>
-                                <img
-                                    width="15px"
-                                    height="15px"
-                                    className="detail_list_icon5"
-                                    src = {ImgAsset.icon_add}
-                                /> Add Story
-                                </Button>
+                            <Col>
+                                <Link className="link_chapter" 
+                                to={`/editdetail/newStory`}
+                                >
+                                    <Button className='btn_addstory'>
+                                    <img
+                                        width="15px"
+                                        height="15px"
+                                        className="detail_list_icon5"
+                                        src = {ImgAsset.icon_add}
+                                    /> Add Story
+                                    </Button>
+                                </Link>
                             </Col>
                         </Row>
                         
@@ -203,209 +237,161 @@ function DashboardUser() {
                                 className="detail_list_icon3"
                                 src = {ImgAsset.book_updates}
                             />
-                            <span className="icon_text3">2 Stories</span>
+                            <span className="icon_text3">{storys.length} Story</span>
                         </div>
                         {/* User Story List */}
                         <div className='list_Story_box'>
-                            {/* Story Box */}
-                            <Row className='story_box'>
-                                <Col md="auto">
-                                    <img
-                                        // width="25px"
-                                        height="225px"
-                                        // className="detail_list_icon3"
-                                        src = {ImgAsset.image_placeholder}
-                                    />
-                                </Col>
-                                <Col>
-                                    <Row>
-                                        <h2 className='list_story_title'>Story of My Life</h2>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon4"
-                                                        src = {ImgAsset.icon_type2}
-                                                    />
-                                                    <span className="size_s icon_text3">Novel</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon4"
-                                                        src = {ImgAsset.icon_status2}
-                                                    />
-                                                    <span className="size_s icon_text3">On Going</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon4"
-                                                        src = {ImgAsset.icon_chapter2}
-                                                    />
-                                                    <span className="size_s icon_text3">100 Chapters</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon4"
-                                                        src = {ImgAsset.icon_update2}
-                                                    />
-                                                    <span className="size_s icon_text3"><i>2 days ago</i></span>
-                                                </div>
-                                            </Row>
-                                        </Col>
-                                        <Col>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon4"
-                                                        src = {ImgAsset.icon_view2}
-                                                    />
-                                                    <span className="size_s icon_text3">1,02 M</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon4"
-                                                        src = {ImgAsset.icon_like2}
-                                                    />
-                                                    <span className="size_s icon_text3">4,52 K</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon4"
-                                                        src = {ImgAsset.icon_bookmark2}
-                                                    />
-                                                    <span className="size_s icon_text3">79</span>
-                                                </div>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
+                            
+                            {     
+                                flag === false ?(
+                                    <>
+                                    <p>No User Stories</p>
+                                    </>
+                                ):(
+                                    <>
+                                    {
+                                        storys.map((story)=>{
+                                            const date = story.updated_at					
+                                            const dt = new Date(date)
+                                            return(
+                                                <>
+                                                {/* Story Box */}
+                                                <Link key={story.id} className="link_chapter" 
+                                                    to={`/userstory/${story.title}`}
+                                                    state={{story_id: story.id}}
+                                                >
+                                                <Row className='story_box'>
+                                                    <Col md="auto">
+                                                        {
+                                                            story.link !== null ?(
+                                                                <img width="175px" height="250px" className='cover_image_dashboard' src = {story.link}/>
+                                                            ):(
+                                                                <img width="175px" height="250px" className='cover_image_dashboard' src = {ImgAsset.image_placeholder}/>
+                                                            )
+                                                        }
+                                                        
+                                                    </Col>
+                                                    <Col>
+                                                        <Row>
+                                                            <h2 className='list_story_title'>{story.title}</h2>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col>
+                                                                <Row>
+                                                                    <div className="detail_list3">
+                                                                        <img
+                                                                            width="20px"
+                                                                            height="20px"
+                                                                            className="detail_list_icon3"
+                                                                            src = {ImgAsset.icon_type2}
+                                                                        />
+                                                                        <span className="size_s icon_text3">{story.type}</span>
+                                                                    </div>
+                                                                </Row>
+                                                                <Row>
+                                                                    <div className="detail_list3">
+                                                                        <img
+                                                                            width="20px"
+                                                                            height="20px"
+                                                                            className="detail_list_icon3"
+                                                                            src = {ImgAsset.icon_status2}
+                                                                        />
+                                                                        <span className="size_s icon_text3">{story.status}</span>
+                                                                    </div>
+                                                                </Row>
+                                                                <Row>
+                                                                    <div className="detail_list3">
+                                                                        <img
+                                                                            width="20px"
+                                                                            height="20px"
+                                                                            className="detail_list_icon3"
+                                                                            src = {ImgAsset.icon_chapter2}
+                                                                        />
+                                                                        <span className="size_s icon_text3">
+                                                                            { story.chapter !== null ? (
+                                                                                <>{story.chapter}</>
+                                                                                ):(<>0</>)
+                                                                            }  Chapters  
+                                                                        </span>
+                                                                    </div>
+                                                                </Row>
+                                                                <Row>
+                                                                    <div className="detail_list3">
+                                                                        <img
+                                                                            width="20px"
+                                                                            height="20px"
+                                                                            className="detail_list_icon3"
+                                                                            src = {ImgAsset.icon_update2}
+                                                                        />
+                                                                        <span className="size_s icon_text3"><i><ReactTimeAgo date={dt} locale="en-US"/></i></span>
+                                                                    </div>
+                                                                </Row>
+                                                            </Col>
+                                                            <Col>
+                                                                <Row>
+                                                                    <div className="detail_list3">
+                                                                        <img
+                                                                            width="20px"
+                                                                            height="20px"
+                                                                            className="detail_list_icon3"
+                                                                            src = {ImgAsset.icon_view2}
+                                                                        />
+                                                                        <span className="size_s icon_text3"> 
+                                                                            { story.view !== null ? (
+                                                                                <>{story.view}</>
+                                                                                ):(<>1</>)
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </Row>
+                                                                <Row>
+                                                                    <div className="detail_list3">
+                                                                        <img
+                                                                            width="20px"
+                                                                            height="20px"
+                                                                            className="detail_list_icon3"
+                                                                            src = {ImgAsset.icon_like2}
+                                                                        />
+                                                                        <span className="size_s icon_text3">
+                                                                            { story.like !== null ? (
+                                                                                <>{story.like}</>
+                                                                                ):(<>1</>)
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </Row>
+                                                                <Row>
+                                                                    <div className="detail_list3">
+                                                                        <img
+                                                                            width="20px"
+                                                                            height="20px"
+                                                                            className="detail_list_icon3"
+                                                                            src = {ImgAsset.icon_bookmark2}
+                                                                        />
+                                                                        <span className="size_s ">
+                                                                            { story.bookmark !== null ? (
+                                                                                <>{story.bookmark}</>
+                                                                                ):(<>1</>)
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </Row>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                </Row>
+                                                </Link>           
+                                                </>
+        
+                                            )
+                                        })
 
-                             {/* Story Box */}
-                             <Row className='story_box'>
-                                <Col md="auto">
-                                    <img
-                                        // width="25px"
-                                        height="225px"
-                                        // className="detail_list_icon3"
-                                        src = {ImgAsset.image_placeholder}
-                                    />
-                                </Col>
-                                <Col>
-                                    <Row>
-                                        <h2 className='list_story_title'>Story of My Life</h2>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon3"
-                                                        src = {ImgAsset.icon_type2}
-                                                    />
-                                                    <span className="size_s icon_text3">Novel</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon3"
-                                                        src = {ImgAsset.icon_status2}
-                                                    />
-                                                    <span className="size_s icon_text3">On Going</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon3"
-                                                        src = {ImgAsset.icon_chapter2}
-                                                    />
-                                                    <span className="size_s icon_text3">100 Chapters</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon3"
-                                                        src = {ImgAsset.icon_update2}
-                                                    />
-                                                    <span className="size_s icon_text3"><i>2 days ago</i></span>
-                                                </div>
-                                            </Row>
-                                        </Col>
-                                        <Col>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon3"
-                                                        src = {ImgAsset.icon_view2}
-                                                    />
-                                                    <span className="size_s icon_text3">1,02 M</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon3"
-                                                        src = {ImgAsset.icon_like2}
-                                                    />
-                                                    <span className="size_s icon_text3">4,52 K</span>
-                                                </div>
-                                            </Row>
-                                            <Row>
-                                                <div className="detail_list3">
-                                                    <img
-                                                        width="20px"
-                                                        height="20px"
-                                                        className="detail_list_icon3"
-                                                        src = {ImgAsset.icon_bookmark2}
-                                                    />
-                                                    <span className="size_s icon_text3">79</span>
-                                                </div>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
+                                    }
+                                    </>
+                                )
+                             
+                            }
+               
                         </div>
                     </div>
                     

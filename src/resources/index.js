@@ -60,5 +60,9 @@ export default {
     image_placeholder: require('./image_placeholder.svg').default,
     shadowslavecover: require('./shadowslavecover.jpg').default,
     ssc1: require('./ssc1.svg').default,
+
+    // Navbar
+    navbar_browse: require('./navbar_browse.svg').default,
+    navbar_updates: require('./navbar_updates.svg').default,
    
 }

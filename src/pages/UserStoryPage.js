@@ -12,12 +12,24 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
+import Swal from "sweetalert2"
+
 
 function UserStoryPage() {
+    const location = useLocation();
+    const { story_id } = location.state;
+    console.log(story_id);
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
     const [chapters, setChapter] = useState([]);
+    const [firstChapter, setFirstChapter] = useState([]);
+    const [lastChapter, setLastChapter] = useState([]);
+    const [flag, setFlag] = useState(false);
+
+    const [newChapter, setNewChapter] = useState();
+    console.log(newChapter);
+    console.log("Chapters : ", chapters);
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -27,14 +39,17 @@ function UserStoryPage() {
 
     const lastSessionNumber = currentPage * sessionsPerPage;
     const firstSessionIndex = lastSessionNumber - sessionsPerPage;
-    const [lastChapter, setLastChapter] = useState([]);
+    
 
+    // Get Data Story 
     useEffect(() => {
         axios
-          .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/7`)
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
           .then((response) => {
             setStory(response.data);
             console.log(response.data);
+            const tempNewChapter = {id : 0, title : '', number : '', content : '', story : { id : response.data.id, title : response.data.title, type: response.data.type}};
+            setNewChapter(tempNewChapter);
 
             axios
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
@@ -48,16 +63,19 @@ function UserStoryPage() {
           });
       }, []);
 
+    // Get Story Chapter 
     useEffect(() => {
         axios
-          .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter`)
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/story/${story_id}`)
           .then((response) => {
             console.log(response.data);
             const chapterAsc = [...response.data].sort((a, b) => a.number - b.number);
             setChapter(chapterAsc);
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length); 
-            setLastChapter(response.data[(response.data.length) - 1]);      
+            setFirstChapter(response.data[0]);
+            setLastChapter(response.data[(response.data.length) - 1]); 
+            setFlag(true);     
           })
           .catch((err) => {
             console.log(err);
@@ -80,6 +98,47 @@ function UserStoryPage() {
         }
     }
 
+    // Delete Story
+    function deleteStory () {
+        Swal.fire({
+            icon: 'question',
+            title: 'Are you sure you want to delete this story ?',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonColor: '#D3455B',
+            confirmButtonText: 'Delete',
+            showCancelButton: true,
+            preConfirm: () => {
+                axios
+                .delete(`${process.env.REACT_APP_BACKEND_URL}/api/story/delete/${story.id}`)
+                .then((response) => {
+                    console.log(response)
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Delete Story Succesfull',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#B8D9A0',
+                        preConfirm: () => {
+                            // navigate(-1);
+                        }	  
+                    }) 		
+                })
+                .catch((err) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Delete Story Failed',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#D3455B',
+                    }) 
+                    return;
+                });
+            }	  
+        }) 	
+    }
+
     return (
         <div>
         <Navbars />   
@@ -89,28 +148,15 @@ function UserStoryPage() {
                 {/* Story Cover */}
                 <Col md='auto'>
                     {
-                        story.link !== null ?(
-                            <>
-                            <img
-                                height="450px"
-                                className="cover_img card-img-top"
-                                src={story.link}
-                                alt="Cover"
-                            />
-                            </>
+                        story.link !== null ?( 
+                            <img width="300px" height="450px" className="cover_img" src={story.link} alt="Cover"/>
                         ):(
-                            <>
-                            <img
-                                height="450px"
-                                className="cover_img card-img-top"
-                                src={ImgAsset.image_placeholder}
-                                alt="Cover"
-                            />
-                            </>
+                            <img width="300px" height="450px" className="cover_img" src={ImgAsset.image_placeholder} alt="Cover"/>
                         )
                     }
                 </Col>
-
+                
+                {/* Detail Story */}
                 <Col md={5}>
                     <h2 className='story_title2'>{story.title}</h2>
                     <h4 className='section_title'><i>Author :</i> <a href="/dashboard" className='author_text'>{author.username}</a></h4>
@@ -141,7 +187,12 @@ function UserStoryPage() {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_chapter2}
                                 />
-                                <span className="icon_text">{story.chapter}</span>
+                                <span className="icon_text">
+                                    { story.chapter !== null ? (
+                                        <>{story.chapter}</>
+                                        ):(<>0</>)
+                                    }  Chapters  
+                                </span>
                             </div>
                         </Col>
                     </Row>
@@ -190,6 +241,7 @@ function UserStoryPage() {
                             </div>
                         </Col>
                     </Row>
+
                     {/* Genre */}
                     <div className='row_detail'>
                         <h4 className='section_title2'><i>Genre</i></h4>
@@ -204,25 +256,43 @@ function UserStoryPage() {
                     </div>
 
                     {/* Button */}
-                    <Button href="/editdetail" className='btn_sp'>Edit Detail</Button>
-                    <Button href="/writingpage" className='btn_sp'>Add New Chapter</Button>
-                    <Button className='btn_report btn_sp'>Delete Story</Button>
+                    <Link to={`/editdetail/${story.id}`}><Button className='btn_sp'>Edit Detail</Button></Link>
+                    {
+                        story.type === "Novel" ?(
+                            <>
+                            <Link 
+                            to={`/userstory/${story.title}/writing/newChapter`}
+                            state={{chapter_content: newChapter}}    
+                            >
+                            <Button className='btn_sp'>Add New Chapter</Button>
+                            </Link>
+                            </>
+                        ):(
+                            <>
+                                {chapters.length !== 0 ? (
+                                    <Link className="link_chapter" 
+                                        to={`/userstory/${story.title}/writing/${firstChapter.number}`}
+                                        state={{chapter_content: firstChapter}}
+                                    >
+                                        <Button className='btn_sp'>Edit Story</Button>
+                                    </Link>
+                                ):(
+                                    <Link className="link_chapter" 
+                                        to={`/userstory/${story.title}/writing/newChapter`}
+                                        state={{chapter_content: newChapter}}
+                                    >
+                                        <Button className='btn_sp'>Add Story</Button>
+                                    </Link>
+                                )
+                                }
+                            </>
+                        )
+                    }
+                    <Button onClick={deleteStory} className='btn_report btn_sp'>Delete Story</Button>
                 </Col>
-
 
                 {/* Like */}
                 <Col >
-                    {/* <div className='like_section'>
-                        <p className='like_question'>Like This Story ?</p>
-                        <div className='like_icon_place'>
-                        </div>
-                        <img
-                            className="like_icon_place"
-                            width="100px"
-                            height="100px"
-                            src = {ImgAsset.icon_like2}
-                        />
-                    </div> */}
                 </Col>
             </Row>
             
@@ -241,64 +311,91 @@ function UserStoryPage() {
                     <>
                     <div className='info_section'> 
                         <h1 className='section_title3'>Chapters</h1>
-                        <p> <i>You can edit and delete your story chapter by click the story chapter you want</i></p>
-                        <div className='release_content'>Latest Release : 
-                            <a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
-                                <img
-                                    className="icon_sort"
-                                    src = {ImgAsset.icon_sort}
-                                    onClick ={sortChange}
-                                />
-                        </div>
+                        {
+                            flag === false ?(
+                                <>
+                                    <p>There are no chapters in this novel yet</p>
+                                    <Link 
+                                    to={`/userstory/${story.title}/writing/newChapter`}
+                                    state={{chapter_content: newChapter}}    
+                                    ><p className='latest_chapter'>Add a new chapter</p>
+                                    </Link>
+                                </>
+                            ):(
+                                <>
+                                <p> <i>You can edit and delete your story chapter by click the story chapter you want</i></p>
+                                <div className='release_content'>Latest Release : 
+                                    <Link 
+                                        to={`/userstory/${story.title}/writing/${lastChapter.number}`}
+                                        state={{chapter_content: lastChapter}}    
+                                    >
+                                            <a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
+                                    </Link>
+                                        <img
+                                            className="icon_sort"
+                                            src = {ImgAsset.icon_sort}
+                                            onClick ={sortChange}
+                                        />
+                                </div>
 
-                        <div>
-                            <Row xs={1} md={2} className="g-4">
+                                <div>
+                                    <Row xs={1} md={2} className="g-4">
 
-                            {chapters
-                                .slice(firstSessionIndex,lastSessionNumber)
-                                .map((chapter) => {
-                                        const date = chapter.updated_at					
-                                        const dt = new Date(date)
+                                    {chapters
+                                        .slice(firstSessionIndex,lastSessionNumber)
+                                        .map((chapter) => {
+                                                let updated_at = new Date(chapter.updated_at).toString()
+                                                // const date = chapter.updated_at					
+                                                // const dt = new Date(date)
 
-                                        return (
-                                            <Link className="link_chapter" to={`/writing`}>
-                                                <Col>
-                                                <Card className='chapter_card'>
-                                                    <Card.Body className='chapter_card_body'>
-                                                    <Card.Title>
-                                                        <Row>
-                                                            <Col xs={2} className='number_chapter'> {chapter.number}
-                                                            </Col>
-                                                            <Col className='title_chapter'> {chapter.title}
-                                                            </Col>
-                                                        </Row>
-                                                    </Card.Title>
-                                                    <Card.Text>
-                                                        <Row>
-                                                            <Col xs={2}> 
-                                                            </Col>
-                                                            <Col className='date_chapter'><ReactTimeAgo date={dt} locale="en-US"/>
-                                                            </Col>
-                                                        </Row>
-                                                    </Card.Text>
-                                                    </Card.Body>
-                                                </Card>
-                                                </Col>
-                                            </Link>
-                                        )               
-                                    })}
-                            </Row>
-                        </div>
-                        <div className='pagination'>
-                            <Pagination
-                                itemsCount={allSessionsCount}
-                                itemsPerPage={sessionsPerPage}
-                                currentPage={currentPage}
-                                setCurrentPage={setCurrentPage}
-                                alwaysShown={false}
-                                flagScroll = "2"
-                            />
-                        </div>
+                                                return (
+                                                    <Link key={chapter.id} className="link_chapter" 
+                                                    to={`/userstory/${story.title}/writing/${chapter.number}`}
+                                                    state={{chapter_content: chapter}}
+                                                    >
+                                                        <Col>
+                                                        <Card className='chapter_card'>
+                                                            <Card.Body className='chapter_card_body'>
+                                                            <Card.Title>
+                                                                <Row>
+                                                                    <Col xs={2} className='number_chapter'> {chapter.number}
+                                                                    </Col>
+                                                                    <Col className='title_chapter'> {chapter.title}
+                                                                    </Col>
+                                                                </Row>
+                                                            </Card.Title>
+                                                            <Card.Text>
+                                                                <Row>
+                                                                    <Col xs={2}> 
+                                                                    </Col>
+                                                                    <Col className='date_chapter'>
+                                                                        {/* <ReactTimeAgo date={dt} locale="en-US"/> */}
+                                                                        {updated_at}
+                                                                    </Col>
+                                                                </Row>
+                                                            </Card.Text>
+                                                            </Card.Body>
+                                                        </Card>
+                                                        </Col>
+                                                    </Link>
+                                                )               
+                                            })}
+                                    </Row>
+                                </div>
+                                <div className='pagination'>
+                                    <Pagination
+                                        itemsCount={allSessionsCount}
+                                        itemsPerPage={sessionsPerPage}
+                                        currentPage={currentPage}
+                                        setCurrentPage={setCurrentPage}
+                                        alwaysShown={false}
+                                        flagScroll = "2"
+                                    />
+                                </div>
+                                </>
+                            )
+                        }
+                        
 
                     </div>
                 </>

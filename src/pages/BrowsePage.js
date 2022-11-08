@@ -69,6 +69,7 @@ function BrowsePage() {
     const lastSessionNumber = currentPage * sessionsPerPage;
     const firstSessionIndex = lastSessionNumber - sessionsPerPage;
 
+    // Get Data Story
     useEffect(() => {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
@@ -82,7 +83,8 @@ function BrowsePage() {
           });
       }, []);
 
-	const onSearchHandler = (e) => {
+	// Search Handler
+    const onSearchHandler = (e) => {
 		e.preventDefault();
         console.log(query);
         if( e !== null || e !== ""){
@@ -94,6 +96,7 @@ function BrowsePage() {
         }
 	};
 
+    // Get data when Browse
     function browseStory (query){
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
@@ -144,10 +147,10 @@ function BrowsePage() {
                         <Col xs='1'> <Button type="submit" className='btn_search2' onClick={temp} >Search</Button> </Col>
                     </Row>
                 </Form>
-           </div>
+            </div>
 
              {/* Filter Section */}
-             <div className='info_section2'> 
+            <div className='info_section2'> 
                 <Row>
                     <Col >
                         <Row >
@@ -177,6 +180,8 @@ function BrowsePage() {
                         </Row>
                         
                     </Col>
+
+                    {/* Genre Section */}
                     <Col > 
                         <h4 className='section_title4'>Genre</h4>
                         <Row>
@@ -223,9 +228,9 @@ function BrowsePage() {
                 </div>
                 </Row>
                             
-           </div>
+            </div>
 
-            {/* Story Section */}
+            {/* Story Result Section */}
             <div className='info_section2' id="result"> 
                 {/* <h1 className='section_title3'>Result</h1> */}
                 {/* <StoryBrowse querys={apply}/> */}
@@ -248,12 +253,14 @@ function BrowsePage() {
                             state={{story_id: story.id}}>
                             <Col>
                             <Row className="story_row">
-                                <Col xs md={4}> 
-                                    <img
-                                    src={ImgAsset.ssc1}
-                                    className="cover_story"
-                                    alt="Cover"
-                                    />
+                                <Col xs md="auto"> 
+                                {
+                                    story.link !== null ?(
+                                        <img width="175px" height="250px" src={story.link} className="cover_updates" alt="Cover"/>
+                                    ):(
+                                        <img width="175px" height="250px" src={ImgAsset.image_placeholder} className="cover_updates" alt="Cover"/>
+                                    )
+                                }
                                 </Col>
                                 <Col md="auto" className='story_field2'> 
                                     <h6 className='stort_title2'>{story.title}</h6>
@@ -280,7 +287,12 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_chapter2}
                                         />
-                                        <span className="icon_text2">{story.chapter} Chapters</span>
+                                        <span className="icon_text2">
+                                            { story.chapter !== null ? (
+                                                <>{story.chapter}</>
+                                                ):(<>0</>)
+                                            }  Chapters   
+                                        </span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -288,7 +300,12 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_view2}
                                         />
-                                        <span className="icon_text2">2.84 M</span>
+                                        <span className="icon_text2">
+                                            { story.view !== null ? (
+                                                <>{story.view}</>
+                                                ):(<>1</>)
+                                            } Views
+                                        </span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -296,7 +313,12 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_like2}
                                         />
-                                        <span className="icon_text2">18.35 K</span>
+                                        <span className="icon_text2">
+                                            { story.like !== null ? (
+                                                <>{story.like}</>
+                                                ):(<>1</>)
+                                            } Likes
+                                        </span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -304,7 +326,12 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_bookmark2}
                                         />
-                                        <span className="icon_text2">145</span>
+                                        <span className="icon_text2">
+                                            { story.bookmark !== null ? (
+                                                <>{story.bookmark}</>
+                                                ):(<>1</>)
+                                            } Bookmarks
+                                        </span>
                                     </div>
                                     <div className="detail_list2">
                                         <img
@@ -312,7 +339,7 @@ function BrowsePage() {
                                             className="detail_list_icon"
                                             src = {ImgAsset.icon_update2}
                                         />
-                                        <span className="icon_text2"><ReactTimeAgo date={dt} locale="en-US"/></span>
+                                        <span className="icon_text2"><i><ReactTimeAgo date={dt} locale="id"/></i></span>
                                     </div>
                                 </Col>
                             </Row>

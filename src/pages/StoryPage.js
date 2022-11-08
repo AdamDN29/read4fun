@@ -1,5 +1,6 @@
 import React from 'react';
 import '../css/storypage.css'
+import 'animate.css';
 import ImgAsset from '../resources';
 import ReactTimeAgo from 'react-time-ago'
 
@@ -11,6 +12,7 @@ import Pagination from "../components/Pagination";
 import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2"
 import axios from "axios";
 
 function StoryPage(props) {
@@ -22,12 +24,19 @@ function StoryPage(props) {
 		const localData = sessionStorage.getItem("id");
 		return localData ? localData : null;
 	});
+    const [userToken, setUserToken] = useState(() => {
+		const localData = sessionStorage.getItem("token");
+		return localData ? localData : null;
+	});
     const [user, setUser] = useState([]);
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
     const [chapters, setChapter] = useState([]);
     const [listChapters, setListChapters] = useState([]);
+    const [firstChapter, setFirstChapter] = useState([]);
+    const [lastChapter, setLastChapter] = useState([]);
+    const [flag, setFlag] = useState(false);
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -37,8 +46,8 @@ function StoryPage(props) {
 
     const lastSessionNumber = currentPage * sessionsPerPage;
     const firstSessionIndex = lastSessionNumber - sessionsPerPage;
-    const [lastChapter, setLastChapter] = useState([]);
 
+    // Get Data Story
     useEffect(() => {
         axios
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
@@ -58,9 +67,10 @@ function StoryPage(props) {
           });
       }, []);
 
+    // Get Story Chapter
     useEffect(() => {
         axios
-          .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter`)
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/story/${story_id}`)
           .then((response) => {
             console.log(response.data);
             const chapterAsc = [...response.data].sort((a, b) => a.number - b.number);
@@ -68,7 +78,9 @@ function StoryPage(props) {
             setListChapters(chapterAsc);  
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length); 
-            setLastChapter(response.data[(response.data.length) - 1]);           
+            setFirstChapter(response.data[0]);
+            setLastChapter(response.data[(response.data.length) - 1]);
+            setFlag(true);           
           })
           .catch((err) => {
             console.log(err);
@@ -89,6 +101,7 @@ function StoryPage(props) {
     // Sort Settings
     const [sortFlag, setSortFlag] = useState(true);
 
+    // Change Sort of Chapter Story
     function sortChange (){
         setSortFlag(!sortFlag);
 
@@ -102,6 +115,77 @@ function StoryPage(props) {
         }
     }
 
+    // Pop Up Not Logged In
+    function notLoginPop (){
+        Swal.fire({
+            title: 'Oopss.. !',
+            text: 'Please Login First',
+            icon: 'warning',
+            confirmButtonColor: '#B8D9A0'
+        })
+    }
+
+    // Report Function
+    const reportStory = async () => {
+        if (userId !== null){
+            const { value: report_content } = await Swal.fire({
+                title: 'Report Story',
+                input: 'textarea',
+                inputLabel: 'Your Report',
+                inputPlaceholder: 'Enter Your Report',
+                confirmButtonColor: '#D3455B',
+                confirmButtonText: 'Send Report',
+                showCancelButton: true,
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                  },
+                  hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                  }
+              })
+              
+              if (report_content) {
+
+                const formData = new FormData();
+
+                formData.append('story_id', story.id);
+                formData.append('explanation', report_content);
+
+                await axios
+                .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/report`, 
+                    formData, {
+                        headers: {
+                            'Authorization' : `Bearer ${userToken}`
+                        }
+                })
+                .then((response) => {
+                    console.log(response);
+        
+                    Swal.fire({
+                        title: 'Sent !',
+                        text: 'Your report has been sent',
+                        // text: `Your Report : ${report_content}`,
+                        icon: 'success',
+                        confirmButtonColor: '#B8D9A0'
+                    })
+                })
+                .catch((error) => {
+                    console.log("ERROR: ", error);
+                    Swal.fire({
+                        title: 'Error !',
+                        text: `Your report failed to send because ${error.response.data.error}`,
+                        icon: 'error',
+                        confirmButtonColor: '#B8D9A0'
+                    })
+                })
+
+                
+              }
+        } else{
+            notLoginPop();
+        }
+    }
+
     return (
         <div>
         <Navbars/>
@@ -111,31 +195,22 @@ function StoryPage(props) {
                 {/* Story Cover */}
                 <Col md='auto'>
                     {
-                        story.link !== null ?(
-                            <>
-                            <img
-                                height="450px"
-                                className="cover_img card-img-top"
-                                src={story.link}
-                                alt="Cover"
-                            />
-                            </>
+                        story.link !== null ?( 
+                            <img width="300px" height="450px" className="cover_img" src={story.link} alt="Cover"/>
                         ):(
-                            <>
-                            <img
-                                height="450px"
-                                className="cover_img card-img-top"
-                                src={ImgAsset.image_placeholder}
-                                alt="Cover"
-                            />
-                            </>
+                            <img width="300px" height="450px" className="cover_img" src={ImgAsset.image_placeholder} alt="Cover"/>
                         )
                     }     
                 </Col>
-
+                
                 <Col xs={5}>
                     <h2 className='story_title2'>{story.title}</h2>
-                    <h4 className='section_title'><i>Author :</i> <a href="/author" className='author_text'>{author.username}</a></h4>
+                    <h4 className='section_title'><i>Author : </i> 
+                        <Link 
+                        to="/author"  
+                        state={{author_id: author.id}}
+                        className='author_text'>{author.username}</Link>
+                    </h4>
 
                     {/* Detail */}
                     <Row className='row_detail'>
@@ -163,7 +238,12 @@ function StoryPage(props) {
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_chapter2}
                                 />
-                                <span className="icon_text">{story.chapter}</span>
+                                <span className="icon_text">
+                                    { story.chapter !== null ? (
+                                        <>{story.chapter}</>
+                                        ):(<>0</>)
+                                    }  Chapters      
+                                </span>
                             </div>
                         </Col>
                     </Row>
@@ -227,9 +307,20 @@ function StoryPage(props) {
                     </div>
 
                     {/* Button */}
-                    <Button className='btn_sp'>Read First Chapter</Button>
+                    
+                        <Button className='btn_sp' disabled={!flag}>
+                            <Link  className='white_p'
+                                key={firstChapter.id}
+                                to={`/story/${story.title}/chapter`}
+                                state={{chapter_content: firstChapter, list_chapter: listChapters}}
+                            >
+                            { story.type === "Novel" ?(<>Read First Chapter</>):(<>Read Story</>)}
+                            </Link>
+                        </Button>
+                    
+                    
                     <Button className='btn_sp'>Add to Bookmark</Button>
-                    <Button className='btn_report btn_sp'>Report</Button>
+                    <Button onClick={reportStory} className='btn_report btn_sp'>Report</Button>
 
                 </Col>
 
@@ -265,69 +356,82 @@ function StoryPage(props) {
                     <>
                     <div className='info_section'> 
                         <h1 className='section_title3'>Chapters</h1>
-                        <div className='release_content'>Latest Release : 
-                            <a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
-                                <img
-                                    className="icon_sort"
-                                    src = {ImgAsset.icon_sort}
-                                    onClick ={sortChange}
-                                />
-                        </div>
-
-                        <div>
-                            <Row xs={1} md={2} className="g-4">
-
-                            {chapters
-                                .slice(firstSessionIndex,lastSessionNumber)
-                                .map((chapter, index) => {
-                                const date = chapter.updated_at					
-                                const dt = new Date(date)
-
-                                return (
+                        {
+                            flag === false ?(
+                                <p>There are no chapters in this novel yet</p>
+                            ):(
+                                <>
+                                <div className='release_content'>Latest Release : 
                                     <Link className="link_chapter" 
-                                    to={`/story/${story.title}/chapter/${chapter.number}`}
-                                    state={{chapter_content: chapter, list_chapter: listChapters}}>
-                                        <Col>
-                                        <Card className='chapter_card'>
-                                            <Card.Body className='chapter_card_body'>
-                                            <Card.Title>
-                                                <Row>
-                                                    <Col xs={2} className='number_chapter'> {chapter.number}
-                                                    </Col>
-                                                    <Col className='title_chapter'> {chapter.title}
-                                                    </Col>
-                                                </Row>
-                                            </Card.Title>
-                                            <Card.Text>
-                                                <Row>
-                                                    <Col xs={2}> 
-                                                    </Col>
-                                                    <Col className='date_chapter'><ReactTimeAgo date={dt} locale="en-US"/>
-                                                    </Col>
-                                                </Row>
-                                            </Card.Text>
-                                            </Card.Body>
-                                        </Card>
-                                        </Col>
+                                    to={`/story/${story.title}/chapter`}
+                                    state={{chapter_content: lastChapter, list_chapter: listChapters}}
+                                    ><a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
                                     </Link>
-                                )
-                                
-                            })}
-                            
-                            
-                            </Row>
-                        </div>
+                                        <img
+                                            className="icon_sort"
+                                            src = {ImgAsset.icon_sort}
+                                            onClick ={sortChange}
+                                        />
+                                </div>
 
-                        <div className='pagination'>
-                            <Pagination
-                                itemsCount={allSessionsCount}
-                                itemsPerPage={sessionsPerPage}
-                                currentPage={currentPage}
-                                setCurrentPage={setCurrentPage}
-                                alwaysShown={false}
-                                flagScroll = "2"
-                            />
-                        </div>
+                                <div>
+                                    <Row xs={1} md={2} className="g-4">
+
+                                    {chapters
+                                        .slice(firstSessionIndex,lastSessionNumber)
+                                        .map((chapter, index) => {
+                                        const date = chapter.updated_at					
+                                        const dt = new Date(date)
+
+                                        return (
+                                            <Link className="link_chapter" 
+                                            key={chapter.id}
+                                            to={`/story/${story.title}/chapter`}
+                                            state={{chapter_content: chapter, list_chapter: listChapters}}
+                                            >
+                                                <Col>
+                                                <Card className='chapter_card'>
+                                                    <Card.Body className='chapter_card_body'>
+                                                    <Card.Title>
+                                                        <Row>
+                                                            <Col xs={2} className='number_chapter'> {chapter.number}
+                                                            </Col>
+                                                            <Col className='title_chapter'> {chapter.title}
+                                                            </Col>
+                                                        </Row>
+                                                    </Card.Title>
+                                                    <Card.Text>
+                                                        <Row>
+                                                            <Col xs={2}> 
+                                                            </Col>
+                                                            <Col className='date_chapter'><ReactTimeAgo date={dt} locale="en-US"/>
+                                                            </Col>
+                                                        </Row>
+                                                    </Card.Text>
+                                                    </Card.Body>
+                                                </Card>
+                                                </Col>
+                                            </Link>
+                                        )
+                                        
+                                    })}       
+                                    </Row>
+                                </div>
+
+                                <div className='pagination'>
+                                    <Pagination
+                                        itemsCount={allSessionsCount}
+                                        itemsPerPage={sessionsPerPage}
+                                        currentPage={currentPage}
+                                        setCurrentPage={setCurrentPage}
+                                        alwaysShown={false}
+                                        flagScroll = "2"
+                                    />
+                                </div>
+                                
+                                </>
+                            )
+                        }      
                     </div>
                 </>
                 ):(<></>)
