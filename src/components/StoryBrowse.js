@@ -9,6 +9,30 @@ import { Card, Container, Row, Col , Badge, ListGroup, Pagination } from 'react-
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+const allGenres = [
+    {id: 1, label: 'Action'},
+    {id: 2, label: 'Adventure'},
+    {id: 3, label: 'Comedy'},
+    {id: 4, label: 'Drama'},
+    {id: 5, label: 'Fantasy'},
+    {id: 6, label: 'Historical'},
+    {id: 7, label: 'Horror'},
+    {id: 8, label: 'Magical Realism'},
+    {id: 9, label: 'Martial Arts'},
+    {id: 10, label: 'Mature'},
+    {id: 11, label: 'Mystery'},
+    {id: 12, label: 'Psychological'},
+    {id: 13, label: 'Romance'},
+    {id: 14, label: 'Real Experience'},
+    {id: 15, label: 'Sci-Fi'},
+    {id: 16, label: 'School Life'},
+    {id: 17, label: 'Slice of Life'},
+    {id: 18, label: 'Sports'},
+    {id: 19, label: 'Supernatural'},
+    {id: 20, label: 'Tragedy'},
+    {id: 21, label: 'Video Games'},
+];
+
 function StoryBrowse(props) {
     const story = props.storys;
 
@@ -137,9 +161,12 @@ function StoryBrowse(props) {
                             ):(
                                 <>
                                 {
-                                    genres.map((genre) => (
-                                        <Badge bg="#B8D9A0" className='genre_badge2' >{genre.genre_name}</Badge>
-                                    ))
+                                    genres.map((genre) => {
+                                        var array = [...allGenres]; 
+                                        var index = array.indexOf(genre.genre_id)
+                                        return(
+                                        <Badge bg="#B8D9A0" className='genre_badge2' >{allGenres[index]}</Badge>
+                                    )})
                                 }
                                 </>
                             )

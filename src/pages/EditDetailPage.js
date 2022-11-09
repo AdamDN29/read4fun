@@ -86,11 +86,9 @@ function EditDetailPage() {
     const [imagePlaceholder, setImagePlaceholder] = useState('');
 
     const [story, dispatch] = useReducer(reducer, initialState);
-    const [genres, setGenre] = useState([]);
+    const [genres, setGenre] = useState([1, 5, 7, 12, 21]);
 
     const [myGenre, setMyGenre] = useState([]); 
-
-    const tempGenre = [1, 5, 7, 12, 21];
 
     useEffect(()=>{
         // Check if create or edit story
@@ -125,7 +123,7 @@ function EditDetailPage() {
 
     const genreChecker  = (genre_id)  => {
         let temps = false;
-        tempGenre.map((genre) => {
+        genres.map((genre) => {
             if (genre === genre_id){
                 temps = true;
             }
@@ -134,20 +132,22 @@ function EditDetailPage() {
     }
 
     const changeMyGenre =  (e) => {
+        var num = Number(e.target.value)
         var array = [...myGenre]; 
-        var index = array.indexOf(e.target.value)
+        var index = array.indexOf(num)
         if (index !== -1) {
             array.splice(index, 1);
             setMyGenre(array);
         }else{
-            setMyGenre(current => [...current, e.target.value]);
-        }
-        
+            setMyGenre(current => [...current, num]);
+        }       
     }
     console.log ("List of My Genre : ", myGenre);
 
     function postMyGenre (){
-        var array = [...tempGenre]; 
+        var array = [...genres]; 
+        console.log("My Genre : ", myGenre)
+        console.log("Story Genre : ", genres)
         
         myGenre.map((genre) => {
             var index = array.indexOf(genre)
@@ -174,7 +174,7 @@ function EditDetailPage() {
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
                         // window.location.href = "/userstory";
-                        navigate(-1);
+                        // navigate(-1);
                     }	  
                 }) 		
             })
@@ -543,10 +543,10 @@ function EditDetailPage() {
                                             />
                                     </Form.Group>
 
-                                    <Button onClick={()=> navigate(-1)} variant="primary" className="btn_back" >
+                                    <Button onClick={postMyGenre} variant="primary" className="btn_back" >
                                         Back
                                     </Button>
-                                    <Button variant="primary"  className="btn_save" type="submit" onClick={postMyGenre}>
+                                    <Button variant="primary"  className="btn_save" type="submit" onClick={submitData}>
                                         Save Detail
                                     </Button>
                                     

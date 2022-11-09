@@ -14,6 +14,29 @@ import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
 import Swal from "sweetalert2"
 
+const allGenres = [
+    {id: 1, label: 'Action'},
+    {id: 2, label: 'Adventure'},
+    {id: 3, label: 'Comedy'},
+    {id: 4, label: 'Drama'},
+    {id: 5, label: 'Fantasy'},
+    {id: 6, label: 'Historical'},
+    {id: 7, label: 'Horror'},
+    {id: 8, label: 'Magical Realism'},
+    {id: 9, label: 'Martial Arts'},
+    {id: 10, label: 'Mature'},
+    {id: 11, label: 'Mystery'},
+    {id: 12, label: 'Psychological'},
+    {id: 13, label: 'Romance'},
+    {id: 14, label: 'Real Experience'},
+    {id: 15, label: 'Sci-Fi'},
+    {id: 16, label: 'School Life'},
+    {id: 17, label: 'Slice of Life'},
+    {id: 18, label: 'Sports'},
+    {id: 19, label: 'Supernatural'},
+    {id: 20, label: 'Tragedy'},
+    {id: 21, label: 'Video Games'},
+];
 
 function UserStoryPage() {
     const location = useLocation();
@@ -265,11 +288,14 @@ function UserStoryPage() {
                             ):(
                                 <>
                                 {
-                                    genres.map((genre) => (
-                                        <Link to="/browse" state={{link_query: genre.genre_name}}>
-                                            <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
-                                        </Link>
-                                    ))
+                                    genres.map((genre) => {
+                                        var array = [...allGenres]; 
+                                        var index = array.indexOf(genre.genre_id)
+                                        return (
+                                        <Link to="/browse" state={{link_query: allGenres[index].label}}>
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{allGenres[index].label}</Badge>{' '}
+                                        </Link>)
+                                    })
                                 }
                                 </>
                             )

@@ -9,6 +9,7 @@ footer{
 
 .dev_text{
     font-family: "nunito_sanssemibold_italic";
+    text-align: center;
     color: rgb(168, 164, 164);
     margin-top: 15px;
     margin-bottom: 5px;
