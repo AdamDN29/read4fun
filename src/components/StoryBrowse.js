@@ -2,32 +2,26 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import ImgAsset from '../resources'
 import '../css/storybrowse.css'
+import ReactTimeAgo from 'react-time-ago'
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, ListGroup, Pagination } from 'react-bootstrap'
+import { Card, Container, Row, Col , Badge, ListGroup, Pagination } from 'react-bootstrap'
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 function StoryBrowse(props) {
-    const temp = props.temp;
-    console.log("temp: ",temp);
+    const story = props.storys;
 
-    const [querys, setQuery] = useState("");
+    const date = story.updated_at					
+    const dt = new Date(date)
 
-    useEffect(() => {
-       setQuery(temp);
-       console.log("query: ",querys);
-      }, []);
-
-    //   setQuery(temp);
-    //   console.log("query: ",querys);
-    const [storys, setStory] = useState([]);
+    const [genres, setGenre] = useState([]);
 
     useEffect(() => {
         axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${querys}`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story.id}`)
           .then((response) => {
-            setStory(response.data);
+            setGenre(response.data);
             console.log(response);
           })
           .catch((err) => {
@@ -36,114 +30,132 @@ function StoryBrowse(props) {
       }, []);
 
     return (
-        <div>
-            <div>
-                <Row xs={1} md={2} >
-                    {/* {Array.from({ length: 10 }).map((_, idx) => ( */}
-                    {storys.map((story) => {
+        <Col>
+            <Row className="story_row">
+                <Col xs md="auto"> 
+                    {
+                        story.link !== null ?(
+                            <img width="175px" height="250px" src={story.link} className="cover_updates" alt="Cover"/>
+                        ):(
+                            <img width="175px" height="250px" src={ImgAsset.image_placeholder} className="cover_updates" alt="Cover"/>
+                        )
+                    }
+                </Col>
+                <Col className='story_field2'> 
+                    <Row><h6 className='stort_title2'>{story.title}</h6></Row>
 
-                        return(
-                        // <Link className="link" 
-                        // to={`/story/${story.title}`}
-                        // state={{story_id: story.id}}>
-                        <Link className="link" 
-                            to={`/story/${story.title}`}
-                            state={{story_id: story.id}}>
-                            <Col>
-                            <Row className="story_row">
-                                <Col xs md={4}> 
-                                    <img
-                                    src={ImgAsset.ssc1}
-                                    className="cover_story"
-                                    alt="Cover"
-                                    />
-                                </Col>
-                                <Col md="auto" className='story_field2'> 
-                                    <h6 className='stort_title2'>{story.title}</h6>
-                                    <div className="detail_list2">
-                                        <img
-                                            width="16px"
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_type2}
-                                        />
-                                        <span className="icon_text2">{story.type}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_status2}
-                                        />
-                                        <span className="icon_text2">{story.status}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_chapter2}
-                                        />
-                                        <span className="icon_text2">{story.chapter}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_view2}
-                                        />
-                                        <span className="icon_text2">2.84 M</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_like2}
-                                        />
-                                        <span className="icon_text2">18.35 K</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_bookmark2}
-                                        />
-                                        <span className="icon_text2">145</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_update2}
-                                        />
-                                        <span className="icon_text2">2 days ago</span>
-                                    </div>
-                                </Col>
-                            </Row>
-                            </Col>
-                        </Link>
-                    )})}
-                </Row>
-            </div>
-            <div className='pagination'>
-                    <Pagination size="md">
-                        <Pagination.First />
-                        <Pagination.Prev />
-                        <Pagination.Item>{1}</Pagination.Item>
-                        <Pagination.Ellipsis />
+                    <Row>
+                        <Col>
+                            <div className="detail_list2">
+                                <img
+                                    width="16px"
+                                    height="16px"
+                                    className="detail_list_icon"
+                                    src = {ImgAsset.icon_type2}
+                                />
+                                <span className="icon_text2">{story.type}</span>
+                            </div>
+                            <div className="detail_list2">
+                                <img
+                                    height="16px"
+                                    className="detail_list_icon"
+                                    src = {ImgAsset.icon_status2}
+                                />
+                                <span className="icon_text2">{story.status}</span>
+                            </div>
+                            <div className="detail_list2">
+                                <img
+                                    height="16px"
+                                    className="detail_list_icon"
+                                    src = {ImgAsset.icon_chapter2}
+                                />
+                                <span className="icon_text2">
+                                    { story.chapter !== null ? (
+                                        <>{story.chapter}</>
+                                        ):(<>0</>)
+                                    }  Chapters   
+                                </span>
+                            </div>
+                                                
+                            <div className="detail_list2">
+                                <img
+                                    height="16px"
+                                    className="detail_list_icon"
+                                    src = {ImgAsset.icon_update2}
+                                />
+                                <span className="icon_text2"><i><ReactTimeAgo date={dt} locale="id"/></i></span>
+                            </div>
+                        </Col>
+                        <Col >
+                            <div className="detail_list2">
+                                <img
+                                    height="16px"
+                                    className="detail_list_icon"
+                                    src = {ImgAsset.icon_view2}
+                                />
+                                <span className="icon_text2">
+                                    { story.view !== null ? (
+                                        <>{story.view}</>
+                                        ):(<>1</>)
+                                    } Views
+                                </span>
+                            </div>
+                            <div className="detail_list2">
+                                <img
+                                    height="16px"
+                                    className="detail_list_icon"
+                                    src = {ImgAsset.icon_like2}
+                                />
+                                <span className="icon_text2">
+                                    { story.like !== null ? (
+                                        <>{story.like}</>
+                                        ):(<>1</>)
+                                    } Likes
+                                </span>
+                                </div>
+                            <div className="detail_list2">
+                                <img
+                                    height="16px"
+                                    className="detail_list_icon"
+                                    src = {ImgAsset.icon_bookmark2}
+                                />
+                                <span className="icon_text2">
+                                    { story.bookmark !== null ? (
+                                        <>{story.bookmark}</>
+                                        ):(<>1</>)
+                                    } Bookmarks
+                                </span>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row><h6 className='genre_title_text'>Genre</h6> </Row>
+                    <Row>
+                        <Col>
+                        {
+                            genres.length === 0 ? (
+                                <p className='p_note'><i>Genre not set</i></p>
+                            ):(
+                                <>
+                                {
+                                    genres.map((genre) => (
+                                        <Badge bg="#B8D9A0" className='genre_badge2' >{genre.genre_name}</Badge>
+                                    ))
+                                }
+                                </>
+                            )
+                        }
+                            
 
-                        <Pagination.Item>{10}</Pagination.Item>
-                        <Pagination.Item>{11}</Pagination.Item>
-                        <Pagination.Item active>{12}</Pagination.Item>
-                        <Pagination.Item>{13}</Pagination.Item>
-                        <Pagination.Item disabled>{14}</Pagination.Item>
-
-                        <Pagination.Ellipsis />
-                        <Pagination.Item>{20}</Pagination.Item>
-                        <Pagination.Next />
-                        <Pagination.Last />
-                    </Pagination>
-                </div>
-        </div>
+                            {/* <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
+                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
+                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
+                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
+                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge> */}
+                        </Col>      
+                    </Row>                 
+                </Col>                          
+            </Row>
+        </Col>
     );
 }
 

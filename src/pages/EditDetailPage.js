@@ -22,7 +22,7 @@ const allType = [
 	'Short Story'
 ];
 
-const genres = [
+const allGenres = [
     {id: 1, label: 'Action'},
     {id: 2, label: 'Adventure'},
     {id: 3, label: 'Comedy'},
@@ -85,6 +85,13 @@ function EditDetailPage() {
     const [preload, setPreLoad] = useState([]);
     const [imagePlaceholder, setImagePlaceholder] = useState('');
 
+    const [story, dispatch] = useReducer(reducer, initialState);
+    const [genres, setGenre] = useState([]);
+
+    const [myGenre, setMyGenre] = useState([]); 
+
+    const tempGenre = [1, 5, 7, 12, 21];
+
     useEffect(()=>{
         // Check if create or edit story
         if (story_id === "newStory"){
@@ -92,11 +99,23 @@ function EditDetailPage() {
             setPreLoad(tempNewStory);
         }
         else{
+            // Get Data Story
             axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
             .then((response)=> {
                 setPreLoad(response.data);
-                setImagePlaceholder(response.data.data.avatar);
+                setImagePlaceholder(response.data.link);
                 console.log(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+            // Get Genre Story
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
+            .then((response) => {
+                console.log(response.data);
+                setGenre(response.data);      
             })
             .catch((err) => {
                 console.log(err);
@@ -104,7 +123,41 @@ function EditDetailPage() {
         }  
 	},[])
 
-    const [story, dispatch] = useReducer(reducer, initialState);
+    const genreChecker  = (genre_id)  => {
+        let temps = false;
+        tempGenre.map((genre) => {
+            if (genre === genre_id){
+                temps = true;
+            }
+        })
+        return temps;
+    }
+
+    const changeMyGenre =  (e) => {
+        var array = [...myGenre]; 
+        var index = array.indexOf(e.target.value)
+        if (index !== -1) {
+            array.splice(index, 1);
+            setMyGenre(array);
+        }else{
+            setMyGenre(current => [...current, e.target.value]);
+        }
+        
+    }
+    console.log ("List of My Genre : ", myGenre);
+
+    function postMyGenre (){
+        var array = [...tempGenre]; 
+        
+        myGenre.map((genre) => {
+            var index = array.indexOf(genre)
+            if (index !== -1) {
+                console.log("Hapus Genre Story : ", genre)
+            }else{
+                console.log("Tambah Genre Story : ", genre)
+            }
+        })
+    }
 
     function postData (dataForm){
         // Post Data Edit Story
@@ -150,7 +203,7 @@ function EditDetailPage() {
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
                         // window.location.href = "/userstory";
-                        navigate(-1);
+                        // navigate(-1);
                     }	  
                 }) 		
             })
@@ -340,7 +393,6 @@ function EditDetailPage() {
                                     <Form.Group className="mb-3" controlId="formBasicPassword">
                                         <Form.Label className="label_form">Type</Form.Label>
                                         <Form.Select
-                                            required
                                             defaultValue ={preload.type}
                                             onChange={(e) =>
                                                 dispatch({ type: "type", payload: e.target.value })
@@ -371,8 +423,7 @@ function EditDetailPage() {
                                     {/* Status Form */}
                                     <Form.Group className="mb-3" controlId="formBasicPassword">
                                         <Form.Label className="label_form">Status</Form.Label>
-                                        <Form.Select
-                                            required
+                                        <Form.Select                                            
                                             defaultValue ={preload.status}
                                             onChange={(e) =>
                                                 dispatch({ type: "status", payload: e.target.value })
@@ -404,38 +455,75 @@ function EditDetailPage() {
                                     {/* Genre Form */}
                                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
                                         <Form.Label className="label_form">Genre</Form.Label>
-                                        <Row>
-                                            <Col xs={3}> 
-                                                {genres.slice(0,7).map((genre) => (               
+                                        <Row xs={1} md={3}>
+                                            {/* {allGenres.map((genre) => {  
+                                                const checked_status = genreChecker(2);
+                                                console.log(checked_status);
+
+                                                return(
+                                                <Col>
+                                                    <Row>
+                                                        <Col>
                                                         <Form.Check 
                                                         type="checkbox"
                                                         id={`${genre.id}`}
                                                         label={`${genre.label}`}
+                                                        defaultChecked={checked_status}
                                                         className='form_check'
                                                         />
-                                                    )
+                                                        </Col>
+                                                    </Row>
+                                                </Col>            
+                                                        
+                                                )}
+                                            ) } */}
+                                            <Col xs={3}> 
+                                                {allGenres.slice(0,7).map((genre) => {
+                                                    const checked_status = genreChecker(genre.id);
+
+                                                    return (               
+                                                        <Form.Check 
+                                                        type="checkbox"
+                                                        id={`${genre.id}`}
+                                                        label={`${genre.label}`}
+                                                        defaultChecked={checked_status}
+                                                        value={genre.id}
+                                                        onChange={changeMyGenre}
+                                                        className='form_check'
+                                                        />
+                                                    )}
                                                 )}
                                             </Col>
                                             <Col xs={3}> 
-                                                {genres.slice(7,14).map((genre) => ( 
+                                                {allGenres.slice(7,14).map((genre) => {
+                                                    const checked_status = genreChecker(genre.id);
+                                                    return ( 
                                                         <Form.Check 
                                                         type="checkbox"
                                                         id={`${genre.id}`}
                                                         label={`${genre.label}`}
+                                                        defaultChecked={checked_status}
+                                                        value={genre.id}
+                                                        onChange={changeMyGenre}
                                                         className='form_check'
                                                         />
-                                                    )
+                                                    )}
                                                 )}   
                                             </Col>
                                             <Col xs={3}> 
-                                                {genres.slice(14,21).map((genre) => (
+                                                {allGenres.slice(14,21).map((genre) => {
+                                                    const checked_status = genreChecker(genre.id);
+                                                    return (
                                                         <Form.Check 
                                                         type="checkbox"
                                                         id={`${genre.id}`}
                                                         label={`${genre.label}`}
+                                                        defaultChecked={checked_status}
+                                                        value={genre.id}
+                                                        onChange={changeMyGenre}
                                                         className='form_check'
                                                         />
-                                                    )
+                                                    )}
                                                 )}   
                                             </Col>
                                         </Row>
@@ -458,7 +546,7 @@ function EditDetailPage() {
                                     <Button onClick={()=> navigate(-1)} variant="primary" className="btn_back" >
                                         Back
                                     </Button>
-                                    <Button variant="primary"  className="btn_save" type="submit" onClick={submitData}>
+                                    <Button variant="primary"  className="btn_save" type="submit" onClick={postMyGenre}>
                                         Save Detail
                                     </Button>
                                     

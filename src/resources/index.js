@@ -64,5 +64,8 @@ export default {
     // Navbar
     navbar_browse: require('./navbar_browse.svg').default,
     navbar_updates: require('./navbar_updates.svg').default,
+
+    // Not Found
+    not_found: require('./not_found.svg').default,
    
 }

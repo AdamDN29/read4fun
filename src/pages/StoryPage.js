@@ -33,6 +33,7 @@ function StoryPage(props) {
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
     const [chapters, setChapter] = useState([]);
+    const [genres, setGenre] = useState([]);
     const [listChapters, setListChapters] = useState([]);
     const [firstChapter, setFirstChapter] = useState([]);
     const [lastChapter, setLastChapter] = useState([]);
@@ -97,6 +98,19 @@ function StoryPage(props) {
 			})
 		}		
 	}, [])
+
+    // Get Genre Story
+    useEffect(() => {
+        axios
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
+          .then((response) => {
+            console.log(response.data);
+            setGenre(response.data);      
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    }, []);
 
     // Sort Settings
     const [sortFlag, setSortFlag] = useState(true);
@@ -296,14 +310,23 @@ function StoryPage(props) {
                     {/* Genre */}
                     <div className='row_detail'>
                         <h4 className='section_title2'><i>Genre</i></h4>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Fantasy</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Action</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Adventure</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Romance</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Mystery</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Magical Realism</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Psychological</Badge>{' '}</Link>
-                        {/* <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Comedy</Badge>{' '}</Link> */}
+                        {
+                            genres.length === 0 ? (
+                                <p className='p_note'><i>Genre not set</i></p>
+                            ):(
+                                <>
+                                {
+                                    genres.map((genre) => (
+                                        <Link to="/browse" state={{link_query: genre.genre_name}}>
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
+                                        </Link>
+                                    ))
+                                }
+                                </>
+                            )
+                        }
+                        
+                        {/* <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Action</Badge>{' '}</Link> */}
                     </div>
 
                     {/* Button */}

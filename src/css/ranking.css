@@ -1,5 +1,5 @@
 .ranking_title{
-    color: #2e2c2a;
+    color: #2A2E2E;
     font-size: 24px;
     font-style: italic;
     font-weight: bold;
@@ -19,10 +19,11 @@
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    padding-right: 0px !important;
 }
 
 .stort_title{
-    color: #2e2c2a !important;
+    color: #2A2E2E !important;
 }
 
 .detail_list2{
@@ -42,3 +43,16 @@
   .icon_text{
     vertical-align: bottom;
   }
+
+.tabs_title{
+  color: #2A2E2E !important;
+  text-transform: none !important;
+  text-align: center !important;
+  font-style: italic;
+  font-size: 22px !important;
+  /* padding-left: 0px !important; */
+}  
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  border-bottom: 3px solid #B8D9A0 !important;
+}

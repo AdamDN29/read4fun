@@ -39,7 +39,10 @@ function Homepage() {
             {/* Short Story Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Short Story</h1>
-                <Link to="/browse" className='more_link'>View More</Link>
+                <Link className="more_link" 
+                    to={`/browse`}
+                    state={{link_query: 'Short Story'}}
+                >View More</Link>
 
                 <StoryCard key={1} type_story="short story"/>
             </div>
@@ -47,7 +50,10 @@ function Homepage() {
             {/* Novel Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Novel</h1>
-                <Link to="/browse" className='more_link'>View More</Link>
+                <Link className="more_link" 
+                    to={`/browse`}
+                    state={{link_query: 'Novel'}}
+                >View More</Link>
                 
                 <StoryCard key={2} type_story="novel"/>
             </div>
@@ -70,7 +76,10 @@ function Homepage() {
             {/* Ranking Section  */}
             <div className='section_header'>
                 <h1 className='story_type'>Ranking</h1>
-                <Link to="/browse" className='more_link'>View More</Link>
+                <Link className="more_link" 
+                    to={`/browse`}
+                    state={{link_query: ""}}
+                >View More</Link>
                
                 <Ranking/>
             </div>           

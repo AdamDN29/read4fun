@@ -1,16 +1,17 @@
 footer{
     background-color: #2A2E2E;
     /* height: auto; */
-    height: 265px;
+    /* height: 265px; */
     /* height: max-content; */
-    /* min-height: 260px; */
+    display: block;
+    overflow: auto;
 }
 
 .dev_text{
     font-family: "nunito_sanssemibold_italic";
     color: rgb(168, 164, 164);
     margin-top: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     font-size: 16px;
     border-top: rgb(168, 164, 164) solid 2px;
     padding-top: 15px;

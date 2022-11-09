@@ -7,14 +7,16 @@ import Sliderslick from "react-slick";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import arrayShuffle from 'array-shuffle';
+import { Spinner } from 'react-bootstrap'
 
 function StoryCard(props) {
   const typeStory = props.type_story;
   console.log(typeStory);
+
   const [storys, setStory] = useState([]);
   const [infinite, setInfinite] = useState(true);
-  var temp = process.env.REACT_APP_BACKEND_URL;
-  console.log(temp);
+  const [isLoading, setIsLoading] = useState(true);
+
   const settingsSlick = {
     infinite: infinite,
     speed: 500,
@@ -52,14 +54,16 @@ function StoryCard(props) {
 
   useEffect(() => {
     axios
-    .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/type/${typeStory}`)
+    .get(`https://read4fun-backend.herokuapp.com/api/story/type/${typeStory}`)
       .then((response) => {
         const shuffled = arrayShuffle(response.data);
         setStory(shuffled);
         console.log(response.data);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setIsLoading(false);
       });
   }, []);
 
@@ -76,6 +80,13 @@ function StoryCard(props) {
     <div>
       <section id="marketplace-product">
         <div className="container-fluid d-flex justify-content-center">
+        {
+          isLoading === true ? (
+            <center>
+              <Spinner size="sm" animation="border" width="500px" height="500px"/> 
+            </center>
+          ):
+          (
           <Sliderslick {...settingsSlick} className="slickSlider">
             {storys.map((story) => {
 
@@ -165,6 +176,8 @@ function StoryCard(props) {
               </div>
             )})}
           </Sliderslick>
+          )
+        }
         </div>
       </section>
     </div>

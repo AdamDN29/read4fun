@@ -11,9 +11,9 @@ import StoryBrowse from '../components/StoryBrowse'
 import Pagination from "../components/Pagination";
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, Form, FloatingLabel, InputGroup  } from 'react-bootstrap'
+import { Spinner, Container, Row, Col , Button, Form, Badge, InputGroup, ButtonGroup, ToggleButton  } from 'react-bootstrap'
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import GoTopButton from '../components/GoTopButton';
 import { useScroll } from "../helper/scroll";
@@ -52,12 +52,36 @@ const genres = [
     {id: 21, label: 'Video Games'},
 ];
 
+const allTypes = [
+    { name: 'All', value: '1' },
+    { name: 'Short Story', value: '2' },
+    { name: 'Novel', value: '3' },
+];
+
+const allStatus = [
+    { name: 'All', value: '1' },
+    { name: 'On Going', value: '2' },
+    { name: 'Complete', value: '3' },
+];
+
+const allSort = [
+    { name: 'Most View', value: '1' },
+    { name: 'Most Like', value: '2' },
+    { name: 'Most Bookmark', value: '3' },
+    { name: 'Update', value: '4' },
+];
+
 
 function BrowsePage() {
+    const location = useLocation();
+    const { link_query } = location.state;
+    console.log(link_query);
+
     const [query, setQuery] = useState("");    
     console.log(query);
 
     const [storys, setStory] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -69,45 +93,162 @@ function BrowsePage() {
     const lastSessionNumber = currentPage * sessionsPerPage;
     const firstSessionIndex = lastSessionNumber - sessionsPerPage;
 
+    //Filter Type
+    const [typeValue, setTypeValue] = useState('All');
+
+    //Filter Status
+    const [statusValue, setStatusValue] = useState('All');
+
+    //Sort Status
+    const [sortValue, setSortValue] = useState('1');
+
+    
+
     // Get Data Story
     useEffect(() => {
+        if (link_query !== ""){
+            console.log("Filterrr !!!!")
+            setTypeValue('Novel');
+            getLinkStory();
+        }
+        else {
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbanned`)
+            .then((response) => {
+                console.log(response.data)
+                const sortedStory = [...response.data].sort((a, b) => a.title - b.title);
+                setStory(sortedStory);
+                console.log("Total Data: ", response.data.length);
+                setallSessionsCount(response.data.length);
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                setIsLoading(false);
+            });
+        }
+
+        
+    }, []);
+
+    const getLinkStory = () => {
         axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/type/${link_query}`)
           .then((response) => {
-            setStory(response.data);
+            const sortedStory = [...response.data].sort((a, b) => b.view - a.view);
+            setStory(sortedStory);
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length);
+            setIsLoading(false);
+            console.log(response);
           })
           .catch((err) => {
             console.log(err);
-          });
-      }, []);
+            setIsLoading(false);
+        });
+    }
+
+    
 
 	// Search Handler
     const onSearchHandler = (e) => {
 		e.preventDefault();
         console.log(query);
+        setIsLoading(true);
         if( e !== null || e !== ""){
             setQuery(query);
             console.log("apply :", query);
-            browseStory(query);
+            searchStory(query);
         }else{
             return;
         }
 	};
 
-    // Get data when Browse
-    function browseStory (query){
+    // Get data when Search
+    function searchStory (query){
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
           .then((response) => {
             setStory(response.data);
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length);
+            setIsLoading(false);
             console.log(response);
           })
           .catch((err) => {
             console.log(err);
+            setIsLoading(false);
+        });
+        setCurrentPage(1);
+    }
+
+    
+
+    // Get data when Filter
+    function filterStory (){
+        setIsLoading(true);
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbanned`)
+          .then((response) => {
+            temp();
+            let sortedStory;
+            let filtered1;
+            let filtered2;
+
+            if (typeValue !== 'All'){
+                console.log("Filter by Type")
+                filtered1 = response.data.filter(story => {
+                    return story.type === typeValue;
+                });
+            }else{
+                filtered1 = response.data;
+            }
+
+            if (statusValue !== 'All'){
+                filtered2 = filtered1.filter(story => {
+                    return story.status === statusValue;
+                });
+            }else{
+                filtered2 = filtered1;
+            }
+           
+
+            if (sortValue === "1"){
+                sortedStory = [...filtered2].sort((a, b) => b.view - a.view);
+                console.log("Sort by View")
+                
+            }
+            else if(sortValue === "2"){
+                sortedStory = [...filtered2].sort((a, b) => b.like - a.like);
+                console.log("Sort by Like")
+                
+            }
+            else if(sortValue === "3"){
+                sortedStory = [...filtered2].sort((a, b) => b.bookmark - a.bookmark);
+                console.log("Sort by Bookmark")
+                
+            }
+            else if(sortValue === "4"){
+                sortedStory = filtered2.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
+                console.log("Sort by Update")
+                
+            }
+            setStory(sortedStory);
+
+            console.log("Submit Filter: ", sortedStory.length);
+            setallSessionsCount(sortedStory.length);
+            console.log(response);
+            setCurrentPage(1);
+            setIsLoading(false);
+
+            if (sortedStory.length === 0){
+                console.log("Not Found");
+            }
+
+          })
+          .catch((err) => {
+            console.log(err);
+            setIsLoading(false);
         });
         setCurrentPage(1);
     }
@@ -115,7 +256,7 @@ function BrowsePage() {
     // Scroll to Section
     const temp = () => {
         scrollToSection("result");
-      }
+    }
 
     return (
         <div>
@@ -144,38 +285,77 @@ function BrowsePage() {
                                 {/* <InputGroup.Text id="basic-addon2"><Button className='btn_search2'>Search</Button></InputGroup.Text> */}
                             </InputGroup>
                         </Col>
-                        <Col xs='1'> <Button type="submit" className='btn_search2' onClick={temp} >Search</Button> </Col>
+                        <Col md='auto'> <Button type="submit" className='btn_search2' onClick={temp} >Search</Button> </Col>
                     </Row>
                 </Form>
             </div>
 
              {/* Filter Section */}
             <div className='info_section2'> 
+                
                 <Row>
                     <Col >
                         <Row >
                             <div className='row_detail'>
                                 <h4 className='section_title4'>Type</h4>
-                                <Button className='btn_active btn_filter'>All</Button>
-                                <Button className='btn_filter'>Short Story</Button>
-                                <Button className='btn_filter'>Novel</Button>
+                                <ButtonGroup className='btn_group_filter'>
+                                    {allTypes.map((type, idx) => (
+                                    <ToggleButton
+                                        key={idx}
+                                        id={`type-${idx}`}
+                                        type="radio"
+                                        className={`filter_btn ${typeValue === type.name ? "active_btn" : ""}`}
+                                        name="type"
+                                        value={type.name}
+                                        checked={typeValue === type.name}
+                                        onChange={(e) => setTypeValue(e.currentTarget.value)}
+                                    >
+                                        {type.name}
+                                    </ToggleButton>
+                                    ))}
+                                </ButtonGroup>
                             </div>
                         </Row>
                         <Row>
                             <div className='row_detail'>
                                 <h4 className='section_title4'>Status</h4>
-                                <Button className='btn_active btn_filter'>All</Button>
-                                <Button className='btn_filter'>Ongoing</Button>
-                                <Button className='btn_filter'>Completed</Button>
+                                <ButtonGroup className='btn_group_filter'>
+                                    {allStatus.map((status, idx) => (
+                                    <ToggleButton
+                                        key={idx}
+                                        id={`status-${idx}`}
+                                        type="radio"
+                                        className={`filter_btn ${statusValue === status.name ? "active_btn" : ""}`}
+                                        name="status"
+                                        value={status.name}
+                                        checked={statusValue === status.name}
+                                        onChange={(e) => setStatusValue(e.currentTarget.value)}
+                                    >
+                                        {status.name}
+                                    </ToggleButton>
+                                    ))}
+                                </ButtonGroup>
                             </div>
                         </Row>
                         <Row>
                             <div className='row_detail'>
                                 <h4 className='section_title4'>Sort By</h4>
-                                <Button className='btn_active btn_filter'>Most View</Button>
-                                <Button className='btn_filter'>Most Like</Button>
-                                <Button className='btn_filter'>Most Bookmark</Button>
-                                <Button className='btn_filter'>Update</Button>
+                                <ButtonGroup className='btn_group_filter'>
+                                    {allSort.map((sort, idx) => (
+                                    <ToggleButton
+                                        key={idx}
+                                        id={`sort-${idx}`}
+                                        type="radio"
+                                        className={`filter_btn ${sortValue === sort.value ? "active_btn" : ""}`}
+                                        name="sort"
+                                        value={sort.value}
+                                        checked={sortValue === sort.value}
+                                        onChange={(e) => setSortValue(e.currentTarget.value)}
+                                    >
+                                        {sort.name}
+                                    </ToggleButton>
+                                    ))}
+                                </ButtonGroup>
                             </div>
                         </Row>
                         
@@ -224,10 +404,9 @@ function BrowsePage() {
                 </Row>
                 <Row>
                 <div align="right">
-                    <Button className='btn_apply' onClick={temp}>Apply Filter</Button>
+                    <Button className='btn_apply' onClick={filterStory}>Apply Filter</Button>
                 </div>
-                </Row>
-                            
+                </Row>          
             </div>
 
             {/* Story Result Section */}
@@ -236,117 +415,49 @@ function BrowsePage() {
                 {/* <StoryBrowse querys={apply}/> */}
 
                 <div>
-                <Row xs={1} md={2} >
-                    {/* {Array.from({ length: 10 }).map((_, idx) => ( */}
-                    {storys
-                        .slice(firstSessionIndex,lastSessionNumber)
-                        .map((story) => {
-                        const date = story.updated_at					
-                        const dt = new Date(date)
+                {
+                    isLoading === true ? (
+                        <center>
+                            <Spinner size="lg" animation="border" width="500px" height="500px"/> 
+                            <p className='loadingtext'>Loading ...</p>
+                        </center>
+                    ):
+                    (
+                    <>
+                        {
+                            storys.length === 0 ? (     
+                                <div className="notFoundField">
+                                    <center>
+                                    <img width="500px" height="500px" src={ImgAsset.not_found}  alt="Not Found"/>
+                                    <p className='notFoundText'>Story Not Found !</p>
+                                    </center>
+                                </div>
+                            ):(
+                            <Row xs={1} md={2} >
+                            {storys
+                            .slice(firstSessionIndex,lastSessionNumber)
+                            .map((story) => {
+                            // const date = story.updated_at					
+                            // const dt = new Date(date)
 
-                        return(
-                        // <Link className="link" 
-                        // to={`/story/${story.title}`}
-                        // state={{story_id: story.id}}>
-                        <Link className="link" 
-                            to={`/story/${story.title}`}
-                            state={{story_id: story.id}}>
-                            <Col>
-                            <Row className="story_row">
-                                <Col xs md="auto"> 
-                                {
-                                    story.link !== null ?(
-                                        <img width="175px" height="250px" src={story.link} className="cover_updates" alt="Cover"/>
-                                    ):(
-                                        <img width="175px" height="250px" src={ImgAsset.image_placeholder} className="cover_updates" alt="Cover"/>
-                                    )
-                                }
-                                </Col>
-                                <Col md="auto" className='story_field2'> 
-                                    <h6 className='stort_title2'>{story.title}</h6>
-                                    <div className="detail_list2">
-                                        <img
-                                            width="16px"
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_type2}
-                                        />
-                                        <span className="icon_text2">{story.type}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_status2}
-                                        />
-                                        <span className="icon_text2">{story.status}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_chapter2}
-                                        />
-                                        <span className="icon_text2">
-                                            { story.chapter !== null ? (
-                                                <>{story.chapter}</>
-                                                ):(<>0</>)
-                                            }  Chapters   
-                                        </span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_view2}
-                                        />
-                                        <span className="icon_text2">
-                                            { story.view !== null ? (
-                                                <>{story.view}</>
-                                                ):(<>1</>)
-                                            } Views
-                                        </span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_like2}
-                                        />
-                                        <span className="icon_text2">
-                                            { story.like !== null ? (
-                                                <>{story.like}</>
-                                                ):(<>1</>)
-                                            } Likes
-                                        </span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_bookmark2}
-                                        />
-                                        <span className="icon_text2">
-                                            { story.bookmark !== null ? (
-                                                <>{story.bookmark}</>
-                                                ):(<>1</>)
-                                            } Bookmarks
-                                        </span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="16px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_update2}
-                                        />
-                                        <span className="icon_text2"><i><ReactTimeAgo date={dt} locale="id"/></i></span>
-                                    </div>
-                                </Col>
+                                return(
+                                // <Link className="link" 
+                                // to={`/story/${story.title}`}
+                                // state={{story_id: story.id}}>
+                                <Link className="link" 
+                                    to={`/story/${story.title}`}
+                                    state={{story_id: story.id}}>
+                                    <StoryBrowse key={story.id} storys={story}/>
+                                </Link>
+                            )})}
+                                
                             </Row>
-                            </Col>
-                        </Link>
-                    )})}
-                </Row>
+                            )
+                        }
+                    </>
+                    )
+                }               
+                
             </div>
                 <div className='pagination'>
                     <Pagination
