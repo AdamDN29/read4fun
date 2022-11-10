@@ -11,7 +11,7 @@ import '../css/storybrowse.css'
 import '../css/updatespage.css'
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, ListGroup, Badge} from 'react-bootstrap'
+import { Spinner, Container, Row, Col , Button, ListGroup, Badge} from 'react-bootstrap'
 import { Link } from "react-router-dom";
 import { scroller } from "react-scroll";
 import axios from "axios";
@@ -29,7 +29,7 @@ const scrollToSection = (flag) => {
 
 function UpdatesPage() {
     const [storys, setStory] = useState([]);
-    
+    const [isLoading, setIsLoading] = useState(true);
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -48,9 +48,11 @@ function UpdatesPage() {
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length);
             console.log(response);
+            setIsLoading(false);
           })
           .catch((err) => {
             console.log(err);
+            setIsLoading(false);
           });
       }, []);
     
@@ -66,6 +68,14 @@ function UpdatesPage() {
                 <h1 className="titlepage" id="title">Recently Updates</h1>
                     <div>
                         <div>
+                        {
+                            isLoading === true ? (
+                                <center>
+                                    <Spinner size="lg" animation="border" width="500px" height="500px"/> 
+                                    <p className='loadingtext'>Loading ...</p>
+                                </center>
+                            ):
+                            (
                             <Row xs={1} md={2} >
                             {storys
                                 .slice(firstSessionIndex,lastSessionNumber)
@@ -105,6 +115,8 @@ function UpdatesPage() {
                                     </Link>
                                 )})}
                             </Row>
+                            )
+                        }
                         </div>
                         <div className='pagination'>
                                 <Pagination

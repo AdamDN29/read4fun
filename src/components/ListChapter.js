@@ -52,7 +52,15 @@ export default function ListChapter (props) {
                                     <Link 
                                     to={`/story/${chapter.story.title}/chapter`}
                                     state={{chapter_content: chapter, list_chapter: listChapters}}>
-                                        <Badge bg="#B8D9A0" className='genre_badge' >Chapter {chapter.number}</Badge>{' '}
+                                        <Badge bg="#B8D9A0" className='genre_badge' >
+                                            {
+                                                chapter.story.type !== "Novel" ? (
+                                                    <>Read Story</>
+                                                ):(
+                                                    <>Chapter {chapter.number}</>
+                                                )
+                                            }                                                 
+                                        </Badge>{' '}
                                     </Link>
                                 </Col>
                                 <Col ><span className="time_detail icon_text2"><i><ReactTimeAgo date={dt} locale="id"/></i></span>

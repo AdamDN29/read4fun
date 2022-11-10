@@ -15,6 +15,30 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2"
 import axios from "axios";
 
+const allGenres = [
+    {id: 1, label: 'Action'},
+    {id: 2, label: 'Adventure'},
+    {id: 3, label: 'Comedy'},
+    {id: 4, label: 'Drama'},
+    {id: 5, label: 'Fantasy'},
+    {id: 6, label: 'Historical'},
+    {id: 7, label: 'Horror'},
+    {id: 8, label: 'Magical Realism'},
+    {id: 9, label: 'Martial Arts'},
+    {id: 10, label: 'Mature'},
+    {id: 11, label: 'Mystery'},
+    {id: 12, label: 'Psychological'},
+    {id: 13, label: 'Romance'},
+    {id: 14, label: 'Real Experience'},
+    {id: 15, label: 'Sci-Fi'},
+    {id: 16, label: 'School Life'},
+    {id: 17, label: 'Slice of Life'},
+    {id: 18, label: 'Sports'},
+    {id: 19, label: 'Supernatural'},
+    {id: 20, label: 'Tragedy'},
+    {id: 21, label: 'Video Games'},
+];
+
 function StoryPage(props) {
     const location = useLocation();
     const { story_id } = location.state;
@@ -29,10 +53,13 @@ function StoryPage(props) {
 		return localData ? localData : null;
 	});
     const [user, setUser] = useState([]);
+    const [liked, setLiked] = useState(false);
+    const [bookmarked, setBookmarked] = useState(false);
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
     const [chapters, setChapter] = useState([]);
+    const [genres, setGenre] = useState([]);
     const [listChapters, setListChapters] = useState([]);
     const [firstChapter, setFirstChapter] = useState([]);
     const [lastChapter, setLastChapter] = useState([]);
@@ -97,6 +124,19 @@ function StoryPage(props) {
 			})
 		}		
 	}, [])
+
+    // Get Genre Story
+    useEffect(() => {
+        axios
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
+          .then((response) => {
+            console.log(response.data);
+            setGenre(response.data);      
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    }, []);
 
     // Sort Settings
     const [sortFlag, setSortFlag] = useState(true);
@@ -183,6 +223,55 @@ function StoryPage(props) {
               }
         } else{
             notLoginPop();
+        }
+    }
+
+    // Change Like
+    function changeLike (){
+        console.log("Change Like")
+        
+        if(liked === true){
+            Swal.fire({
+                icon: 'question',
+                title: 'Unlike this Story ?',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonColor: '#D3455B',
+                showCancelButton: true,
+                preConfirm: () => {
+                    setLiked(false);
+                }	  
+            }) 		
+            
+        }else{
+            setLiked(true);
+        }
+    }
+
+    // Change Bookmark
+    function changeBookmark () {
+        console.log("Change Bookmark")
+        
+        if(bookmarked === true){
+            Swal.fire({
+                icon: 'question',
+                title: 'Delete Story from bookmark ?',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonColor: '#D3455B',
+                showCancelButton: true,
+                preConfirm: () => {
+                    setBookmarked(false);
+                }	  
+            }) 		 
+        }else{
+            setBookmarked(true);
+            Swal.fire({
+                title: 'Bookmarked',
+                text: 'This Story has been added to your bookmarks',
+                icon: 'success',
+                confirmButtonColor: '#B8D9A0'
+            })
         }
     }
 
@@ -296,14 +385,26 @@ function StoryPage(props) {
                     {/* Genre */}
                     <div className='row_detail'>
                         <h4 className='section_title2'><i>Genre</i></h4>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Fantasy</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Action</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Adventure</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Romance</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Mystery</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Magical Realism</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Psychological</Badge>{' '}</Link>
-                        {/* <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Comedy</Badge>{' '}</Link> */}
+                        {
+                            genres.length === 0 ? (
+                                <p className='p_note'><i>Genre not set</i></p>
+                            ):(
+                                <>
+                                {
+                                    genres.map((genre) => {
+                                        var array = [...allGenres]; 
+                                        var index = array.indexOf(genre.genre_id)
+                                        return (
+                                        <Link to="/browse" state={{link_query: allGenres[index].label}}>
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{allGenres[index].label}</Badge>{' '}
+                                        </Link>)
+                                    })
+                                }
+                                </>
+                            )
+                        }
+                        
+                        {/* <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Action</Badge>{' '}</Link> */}
                     </div>
 
                     {/* Button */}
@@ -319,7 +420,9 @@ function StoryPage(props) {
                         </Button>
                     
                     
-                    <Button className='btn_sp'>Add to Bookmark</Button>
+                    <Button onClick={changeBookmark} className='btn_sp'>
+                        {bookmarked ? ("Bookmarked"):("Add to Bookmark")}                        
+                    </Button>
                     <Button onClick={reportStory} className='btn_report btn_sp'>Report</Button>
 
                 </Col>
@@ -328,7 +431,9 @@ function StoryPage(props) {
                 <Col >
                     <div className='like_section'>
                         <p className='like_question'>Like This Story ?</p>
-                        <div className='like_icon_place'>
+                        <div className={liked ? ("like_icon_place_active"):("like_icon_place")}
+                            onClick={changeLike}
+                        >
                         </div>
                         {/* <img
                             className="like_icon_place"

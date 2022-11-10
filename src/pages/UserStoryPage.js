@@ -14,6 +14,29 @@ import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
 import Swal from "sweetalert2"
 
+const allGenres = [
+    {id: 1, label: 'Action'},
+    {id: 2, label: 'Adventure'},
+    {id: 3, label: 'Comedy'},
+    {id: 4, label: 'Drama'},
+    {id: 5, label: 'Fantasy'},
+    {id: 6, label: 'Historical'},
+    {id: 7, label: 'Horror'},
+    {id: 8, label: 'Magical Realism'},
+    {id: 9, label: 'Martial Arts'},
+    {id: 10, label: 'Mature'},
+    {id: 11, label: 'Mystery'},
+    {id: 12, label: 'Psychological'},
+    {id: 13, label: 'Romance'},
+    {id: 14, label: 'Real Experience'},
+    {id: 15, label: 'Sci-Fi'},
+    {id: 16, label: 'School Life'},
+    {id: 17, label: 'Slice of Life'},
+    {id: 18, label: 'Sports'},
+    {id: 19, label: 'Supernatural'},
+    {id: 20, label: 'Tragedy'},
+    {id: 21, label: 'Video Games'},
+];
 
 function UserStoryPage() {
     const location = useLocation();
@@ -23,6 +46,7 @@ function UserStoryPage() {
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
     const [chapters, setChapter] = useState([]);
+    const [genres, setGenre] = useState([]);
     const [firstChapter, setFirstChapter] = useState([]);
     const [lastChapter, setLastChapter] = useState([]);
     const [flag, setFlag] = useState(false);
@@ -76,6 +100,19 @@ function UserStoryPage() {
             setFirstChapter(response.data[0]);
             setLastChapter(response.data[(response.data.length) - 1]); 
             setFlag(true);     
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    }, []);
+
+    // Get Genre Story
+    useEffect(() => {
+        axios
+          .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
+          .then((response) => {
+            console.log(response.data);
+            setGenre(response.data);      
           })
           .catch((err) => {
             console.log(err);
@@ -245,13 +282,24 @@ function UserStoryPage() {
                     {/* Genre */}
                     <div className='row_detail'>
                         <h4 className='section_title2'><i>Genre</i></h4>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Fantasy</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Action</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Adventure</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Romance</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Mystery</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Magical Realism</Badge>{' '}</Link>
-                        <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Psychological</Badge>{' '}</Link>
+                        {
+                            genres.length === 0 ? (
+                                <p className='p_note'><i>Genre not set</i></p>
+                            ):(
+                                <>
+                                {
+                                    genres.map((genre) => {
+                                        var array = [...allGenres]; 
+                                        var index = array.indexOf(genre.genre_id)
+                                        return (
+                                        <Link to="/browse" state={{link_query: allGenres[index].label}}>
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{allGenres[index].label}</Badge>{' '}
+                                        </Link>)
+                                    })
+                                }
+                                </>
+                            )
+                        }
                         {/* <Link to="/browsepage"><Badge bg="#B8D9A0" className='genre_badge' >Comedy</Badge>{' '}</Link> */}
                     </div>
 

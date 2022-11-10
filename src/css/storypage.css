@@ -97,8 +97,7 @@
     font-size: max(14px) !important;
     font-family: "nunito_sansbold";
     text-transform: none !important;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .white_p{
@@ -166,6 +165,7 @@
     align-items: center;
     display: table;
     margin: 0 auto;
+    cursor: pointer;
 }
 .like_icon_place:hover{
     background-image: url('../resources/icon_like4.svg');
@@ -174,6 +174,17 @@
 
 .like_icon_place:active{
     background-image: url('../resources/icon_like4.svg');
+}
+
+.like_icon_place_active{
+    width: 100px;
+    height: 100px;
+    background-image: url('../resources/icon_like4.svg');
+    vertical-align: middle;
+    align-items: center;
+    display: table;
+    margin: 0 auto;
+    cursor: pointer;
 }
 
 .section_title3{
