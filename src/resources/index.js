@@ -65,4 +65,15 @@ export default {
     navbar_browse: require('./navbar_browse.svg').default,
     navbar_updates: require('./navbar_updates.svg').default,
    
+
+    //Picture Profile
+    Andre: require('./Andre.svg').default,
+    Adam: require('./Adam.svg').default,
+    Rafiq: require('./Rafiq.svg').default,
+    Bagas: require('./Bagas.svg').default,
+    Chandra: require('./Chandra.svg').default,
+
+    //addon1
+    Our_Value: require('./Our_Value.svg').default,
+
 }

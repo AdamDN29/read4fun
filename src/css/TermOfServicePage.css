@@ -1,3 +1,4 @@
+
 .title {
     font-family: "nunito_sansextrabold";
     color: #2A2E2E black;
@@ -28,7 +29,6 @@
     margin-left: -5px !important;
 }
 
-
 body::-webkit-scrollbar {
 width: 0.5rem;
 }
@@ -37,7 +37,7 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-   background: #2A2E2E;
+    background: #2A2E2E;
     length: 1.5rem;
     width: 1rem;
 }

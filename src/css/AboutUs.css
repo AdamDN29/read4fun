@@ -1,0 +1,48 @@
+.middle{
+    padding-left: 100px !important;
+    font-family: "nunito_sansextrabold";
+    color: #5d6161 ;
+   margin-top: 15px !important;
+    margin-bottom: 10px !important;
+   
+}
+.middle-des{
+    padding-left: 50px !important;
+    font-family: "nunito_sansextrabold";
+    color: #5d6161 ;
+   margin-top: 15px !important;
+    margin-bottom: 10px !important;
+   
+}
+.title {
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E black;
+    font-size: 25px !important;
+    margin-bottom: 10px !important;
+}
+.title-low {
+    font-family: "nunito_sansextrabold";
+    color: #2A2E2E black;
+    font-size: 25px !important;
+}
+
+.description{
+     font-family: "nunito_sansextrabold";
+    color: #5d6161 ;
+    font-size: 20px !important;
+   margin-top: 15px !important;
+    margin-bottom: 10px !important;
+}
+
+body::-webkit-scrollbar {
+width: 0.5rem;
+}
+body::-webkit-scrollbar-track {
+    background: #B8D9A0;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #2A2E2E;
+    length: 1.5rem;
+    width: 1rem;
+}

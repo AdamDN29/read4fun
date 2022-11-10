@@ -29,3 +29,17 @@
     color: #2A2E2E;
     opacity: 0.4;
 }
+
+body::-webkit-scrollbar {
+width: 0.5rem;
+
+}
+body::-webkit-scrollbar-track {
+    background: #B8D9A0;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #2A2E2E;
+    length: 1.5rem;
+    width: 1rem;
+}
