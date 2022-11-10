@@ -1,9 +1,11 @@
 import React from 'react';
 import ImgAsset from '../resources';
-import '../css/DashboardUser.css'
-import Navbars from '../components/Navbars'
-import Footer from '../components/Footer'
-import ReactTimeAgo from 'react-time-ago'
+import '../css/DashboardUser.css';
+import Navbars from '../components/Navbars';
+import Footer from '../components/Footer';
+import ReactTimeAgo from 'react-time-ago';
+import GetLike from '../hook/GetLike';
+import GetBookmark from '../hook/GetBookmark';
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, CloseButton } from 'react-bootstrap'
@@ -25,6 +27,8 @@ function DashboardUser() {
     const [bookmarks, setBookmark] = useState([]);
 
     const [flag, setFlag] = useState(false);
+    const temp1 = [0];
+    const temp2 = [0];
 
     useEffect(() => {
         // Get Data Profile User
@@ -46,7 +50,7 @@ function DashboardUser() {
 
         // Get Data Bookmark User
             axios
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userBookmark/${userId}`)
             .then((response) => {
                 let sortedBookmark = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
                 setBookmark(sortedBookmark);           
@@ -59,8 +63,9 @@ function DashboardUser() {
     }, []);
 
     // Delete Bookmark
-    function deleteBookmark () {
-        Swal.fire({
+    const deleteBookmark = async (story_id) => {
+     
+        const deleteUserBookmark = await Swal.fire({
             icon: 'question',
             title: 'Are you sure you want to delete this bookmark ?',
             allowOutsideClick: false,
@@ -69,9 +74,46 @@ function DashboardUser() {
             confirmButtonText: 'Delete',
             showCancelButton: true,
             preConfirm: () => {
-                window.location.href = "/dashboard";
+                if (story_id !== null){
+                    axios
+                    .create({
+                         headers: {
+                        Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                        }
+                    })
+                    .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbookmark/${story_id}`)
+                    .then((response) => {
+                        console.log(response.data);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'You remove this Story from Bookmark',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            confirmButtonColor: '#B8D9A0',
+                            preConfirm: ()=>{
+                                axios
+                                .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userBookmark/${userId}`)
+                                .then((response) => {
+                                    let sortedBookmark = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
+                                    setBookmark(sortedBookmark);           
+                                    console.log(response.data);
+                                })
+                            }
+                        }) 
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed to remove this Story from Bookmark',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            confirmButtonColor: '#D3455B',
+                        }) 
+                    }); 
+                }  
             }	  
-        }) 	
+        }) 	       
     }
 
     return (
@@ -87,7 +129,7 @@ function DashboardUser() {
                         profile.avatar !== null ?(
                             <img src = {profile.avatar} style={{width: 225, height: 225, borderRadius: 225/ 2}}/>
                         ):(
-                            <img src = {ImgAsset.avatar}/>
+                            <img src = {ImgAsset.avatar} width="225px" height="225px"/>
                         )
                     } 
                 </Col>
@@ -183,28 +225,39 @@ function DashboardUser() {
                         <Col >
                             <Row ><h2 className='bookmark_title'>Bookmarks</h2></Row>
                             <>
-                            {bookmarks.slice(0,4).map((bookmark) => {
-                                const date = bookmark.updated_at					
-                                const dt = new Date(date)
-                                return(
-                                   <Row className='bookmark_story'> 
-                                        <Col className='col_bookmark'>
-                                            <Link
-                                            to={`/story/${bookmark.title}`}
-                                            state={{story_id: bookmark.id}}>
-                                            <Row>
-                                                <p className='bookmark_story_title'>{bookmark.title}</p>
-                                                <p className='bookmark_story_date'><i><ReactTimeAgo date={dt} locale="en-US"/></i></p>
-                                            </Row>
-                                            </Link>
-                                        </Col> 
-                                        <Col md={2}>
-                                            <Button onClick={deleteBookmark} className='btn_del_bookmark'>
-                                                <img  width="20px"  height="20px" className="icon_del" src = {ImgAsset.icon_delete}/>
-                                            </Button>
-                                        </Col>
-                                    </Row>   
-                            )})}
+                            {
+                                bookmarks.length === 0 ? (
+                                    <>
+                                    <p><i>There is no story in Bookmark</i></p>
+                                    </>
+                                ):(
+                                    <>
+                                     {bookmarks.map((bookmark) => {
+                                        const date = bookmark.updated_at					
+                                        const dt = new Date(date)
+                                        return(
+                                        <Row key={bookmark.id} className='bookmark_story'> 
+                                                <Col className='col_bookmark'>
+                                                    <Link
+                                                    to={`/story/${bookmark.title}`}
+                                                    state={{story_id: bookmark.id}}>
+                                                    <Row>
+                                                        <p className='bookmark_story_title'>{bookmark.title}</p>
+                                                        <p className='bookmark_story_date'><i><ReactTimeAgo date={dt} locale="en-US"/></i></p>
+                                                    </Row>
+                                                    </Link>
+                                                </Col> 
+                                                <Col md={2}>
+                                                    <Button onClick={() => deleteBookmark(bookmark.id)} className='btn_del_bookmark'>
+                                                        <img  width="20px"  height="20px" className="icon_del" src = {ImgAsset.icon_delete}/>
+                                                    </Button>
+                                                </Col>
+                                            </Row>   
+                                    )})}
+                                    </>
+                                )
+                            }
+                           
                             </>
                         </Col>
                     </Row>
@@ -217,6 +270,7 @@ function DashboardUser() {
                             <Col>
                                 <Link className="link_chapter" 
                                 to={`/editdetail/newStory`}
+                                state={{story_id: 0, list_genre: temp1, id_genre: temp2}}
                                 >
                                     <Button className='btn_addstory'>
                                     <img
@@ -245,7 +299,7 @@ function DashboardUser() {
                             {     
                                 flag === false ?(
                                     <>
-                                    <p>No User Stories</p>
+                                    <p><i>No User Stories</i></p>
                                     </>
                                 ):(
                                     <>
@@ -253,6 +307,7 @@ function DashboardUser() {
                                         storys.map((story)=>{
                                             const date = story.updated_at					
                                             const dt = new Date(date)
+
                                             return(
                                                 <>
                                                 {/* Story Box */}
@@ -353,10 +408,8 @@ function DashboardUser() {
                                                                             src = {ImgAsset.icon_like2}
                                                                         />
                                                                         <span className="size_s icon_text3">
-                                                                            { story.like !== null ? (
-                                                                                <>{story.like}</>
-                                                                                ):(<>1</>)
-                                                                            }
+                                                                            {/* {story_like !== null ?(story_like):("1")}  */}
+                                                                            <GetLike key={story.id} story_id={story.id} />
                                                                         </span>
                                                                     </div>
                                                                 </Row>
@@ -369,10 +422,8 @@ function DashboardUser() {
                                                                             src = {ImgAsset.icon_bookmark2}
                                                                         />
                                                                         <span className="size_s ">
-                                                                            { story.bookmark !== null ? (
-                                                                                <>{story.bookmark}</>
-                                                                                ):(<>1</>)
-                                                                            }
+                                                                            {/* {story_bookmark !== null ?(story_bookmark):("1")}  */}
+                                                                            <GetBookmark key={story.id} story_id={story.id} />
                                                                         </span>
                                                                     </div>
                                                                 </Row>

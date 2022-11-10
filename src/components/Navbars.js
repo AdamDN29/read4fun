@@ -144,10 +144,7 @@ export default function Navbars () {
                                         {
                                             user.avatar !== null ?(
                                                 <>
-                                                <img
-                                                src = {user.avatar}
-                                                style={{width: 45, height: 45, borderRadius: 45/ 2}}
-                                                />
+                                                <img src = {user.avatar} style={{width: 45, height: 45, borderRadius: 45/ 2}}/>
                                                 </>
                                             ):(
                                                 <>

@@ -3,55 +3,37 @@ import { useState, useEffect } from "react";
 import ImgAsset from '../resources'
 import '../css/storybrowse.css'
 import ReactTimeAgo from 'react-time-ago'
+import GetLike from '../hook/GetLike';
+import GetBookmark from '../hook/GetBookmark';
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Badge, ListGroup, Pagination } from 'react-bootstrap'
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const allGenres = [
-    {id: 1, label: 'Action'},
-    {id: 2, label: 'Adventure'},
-    {id: 3, label: 'Comedy'},
-    {id: 4, label: 'Drama'},
-    {id: 5, label: 'Fantasy'},
-    {id: 6, label: 'Historical'},
-    {id: 7, label: 'Horror'},
-    {id: 8, label: 'Magical Realism'},
-    {id: 9, label: 'Martial Arts'},
-    {id: 10, label: 'Mature'},
-    {id: 11, label: 'Mystery'},
-    {id: 12, label: 'Psychological'},
-    {id: 13, label: 'Romance'},
-    {id: 14, label: 'Real Experience'},
-    {id: 15, label: 'Sci-Fi'},
-    {id: 16, label: 'School Life'},
-    {id: 17, label: 'Slice of Life'},
-    {id: 18, label: 'Sports'},
-    {id: 19, label: 'Supernatural'},
-    {id: 20, label: 'Tragedy'},
-    {id: 21, label: 'Video Games'},
-];
-
 function StoryBrowse(props) {
     const story = props.storys;
+    const story_id = props.story_id;
+    console.log(story_id);
 
     const date = story.updated_at					
     const dt = new Date(date)
 
     const [genres, setGenre] = useState([]);
 
+    // Get Genre
     useEffect(() => {
         axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story.id}`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
           .then((response) => {
-            setGenre(response.data);
+            const sortedGenre = [...response.data].sort((a, b) => a.id - b.id);
+            setGenre(sortedGenre);
             console.log(response);
           })
           .catch((err) => {
             console.log(err);
           });
-      }, []);
+    }, []);
 
     return (
         <Col>
@@ -111,6 +93,7 @@ function StoryBrowse(props) {
                             </div>
                         </Col>
                         <Col >
+                            {/* View */}
                             <div className="detail_list2">
                                 <img
                                     height="16px"
@@ -118,25 +101,25 @@ function StoryBrowse(props) {
                                     src = {ImgAsset.icon_view2}
                                 />
                                 <span className="icon_text2">
-                                    { story.view !== null ? (
-                                        <>{story.view}</>
-                                        ):(<>1</>)
-                                    } Views
+                                    {story.view !== null ?(story.view):("1")} Views
                                 </span>
                             </div>
-                            <div className="detail_list2">
-                                <img
-                                    height="16px"
-                                    className="detail_list_icon"
-                                    src = {ImgAsset.icon_like2}
-                                />
-                                <span className="icon_text2">
-                                    { story.like !== null ? (
-                                        <>{story.like}</>
-                                        ):(<>1</>)
-                                    } Likes
-                                </span>
+
+                            {/* Like */}
+                            <div>          
+                                <div className="detail_list2">
+                                    <img
+                                        height="16px"
+                                        className="detail_list_icon"
+                                        src = {ImgAsset.icon_like2}
+                                    />
+                                    <span className="icon_text2">
+                                    <GetLike key={story_id} story_id={story_id} /> Likes
+                                    </span>
                                 </div>
+                            </div>
+                            
+                            {/* Bookmark */}
                             <div className="detail_list2">
                                 <img
                                     height="16px"
@@ -144,10 +127,7 @@ function StoryBrowse(props) {
                                     src = {ImgAsset.icon_bookmark2}
                                 />
                                 <span className="icon_text2">
-                                    { story.bookmark !== null ? (
-                                        <>{story.bookmark}</>
-                                        ):(<>1</>)
-                                    } Bookmarks
+                                <GetBookmark key={story_id} story_id={story_id} />  Bookmarks
                                 </span>
                             </div>
                         </Col>
@@ -162,10 +142,10 @@ function StoryBrowse(props) {
                                 <>
                                 {
                                     genres.map((genre) => {
-                                        var array = [...allGenres]; 
-                                        var index = array.indexOf(genre.genre_id)
+                                        // var array = [...allGenres]; 
+                                        // var index = array.indexOf(genre.genre_id)
                                         return(
-                                        <Badge bg="#B8D9A0" className='genre_badge2' >{allGenres[index]}</Badge>
+                                        <Badge bg="#B8D9A0" className='genre_badge2' >{genre.genre_name}</Badge>
                                     )})
                                 }
                                 </>

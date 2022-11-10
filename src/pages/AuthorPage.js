@@ -173,17 +173,22 @@ function AuthorPage() {
                                     <span className="icon_text3">{author.email}</span>
                                 </div>
                             </Row>
-                            <Row>
-                                <div className="detail_list3">
-                                    <img
-                                        width="25px"
-                                        height="25px"
-                                        className="detail_list_icon3"
-                                        src = {ImgAsset.icon_fullname}
-                                    />
-                                    <span className="icon_text3">{author.name !== null ?(<>{author.name}</>):(<i style={{opacity:0.5}}>Name not set yet</i>)}</span>
-                                </div>
-                            </Row>
+                            {
+                                author.name !== null ?(
+                                    <Row>
+                                        <div className="detail_list3">
+                                            <img
+                                                width="25px"
+                                                height="25px"
+                                                className="detail_list_icon3"
+                                                src = {ImgAsset.icon_fullname}
+                                            />
+                                            <span className="icon_text3">{author.name !== null ?(<>{author.name}</>):(<i style={{opacity:0.5}}>Name not set yet</i>)}</span>
+                                        </div>
+                                    </Row>
+                                ):(<></>)
+                            }
+                            
                             <Row>
                                 <div className="detail_list3">
                                     <img

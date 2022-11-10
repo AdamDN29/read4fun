@@ -7,6 +7,8 @@ import ReactTimeAgo from 'react-time-ago'
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 import Pagination from "../components/Pagination";
+import GetLike from '../hook/GetLike';
+import GetBookmark from '../hook/GetBookmark';
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
@@ -55,6 +57,8 @@ function StoryPage(props) {
     const [user, setUser] = useState([]);
     const [liked, setLiked] = useState(false);
     const [bookmarked, setBookmarked] = useState(false);
+    const [numberLike, setNumberLike] = useState();
+    const [numberBookmark, setNumberBookmark] = useState();
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
@@ -81,6 +85,8 @@ function StoryPage(props) {
           .then((response) => {
             setStory(response.data);
             console.log(response.data);
+            getNumberLike();
+            getNumberBookmark();
 
             axios
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
@@ -131,12 +137,59 @@ function StoryPage(props) {
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
           .then((response) => {
             console.log(response.data);
-            setGenre(response.data);      
+            const sortedGenre = [...response.data].sort((a, b) => a.id - b.id);
+            setGenre(sortedGenre);      
           })
           .catch((err) => {
             console.log(err);
           });
     }, []);
+
+    // Get User Like Story
+    useEffect(() => {
+        if (userId !== null){
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userLike/${userId}`)
+            .then((response) => {
+                response.data.map((like) => {
+                    if (like.story_id === story_id){
+                        setLiked(true);   
+                    }
+                })
+                
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }    
+    }, []);
+
+    // Get User Bookmark Story
+    useEffect(() => {
+        if (userId !== null){
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userBookmark/${userId}`)
+            .then((response) => {
+                response.data.map((bookmark) => {
+                    if (bookmark.story_id === story_id){
+                        setBookmarked(true);   
+                    }
+                })
+                
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }   
+    }, []);
+
+    function getNumberLike (){
+        setNumberLike(<GetLike key={story_id} story_id={story_id}/>)
+    }
+
+    function getNumberBookmark (){
+        setNumberBookmark(<GetBookmark key={story_id} story_id={story_id}/>)
+    }
 
     // Sort Settings
     const [sortFlag, setSortFlag] = useState(true);
@@ -228,51 +281,182 @@ function StoryPage(props) {
 
     // Change Like
     function changeLike (){
-        console.log("Change Like")
-        
-        if(liked === true){
-            Swal.fire({
-                icon: 'question',
-                title: 'Unlike this Story ?',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonColor: '#D3455B',
-                showCancelButton: true,
-                preConfirm: () => {
-                    setLiked(false);
-                }	  
-            }) 		
-            
-        }else{
-            setLiked(true);
+        if(userId === null){
+            notLoginPop();
         }
+        else{
+            console.log("Change Like")
+            if(liked === true){
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Unlike this Story ?',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#D3455B',
+                    showCancelButton: true,
+                    preConfirm: () => {
+                        axios
+                        .create({
+                            headers: {
+                            Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                            }
+                        })
+                        .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/unlike/${story_id}`)
+                        .then((response) => {
+                            console.log(response.data);
+                            setLiked(false);
+                            
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'You Unliked This Story',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#B8D9A0',
+                                preConfirm: () =>{
+                                    getNumberLike();
+                                }
+                            }) 	
+                    
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to Unlike This Story',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#D3455B',
+                            }) 
+                        });
+                    }	  
+                }) 		
+                
+            }else{
+                axios
+                .create({
+                    headers: {
+                      Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                      }
+                })
+                .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/like/${story_id}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setLiked(true);
+                    getNumberLike();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'You Liked This Story',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#B8D9A0',
+                        preConfirm: () =>{
+                            getNumberLike();
+                        }
+                    }) 	
+            
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to Like This Story',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#D3455B',
+                    }) 
+                });
+            }
+        }   
     }
 
     // Change Bookmark
     function changeBookmark () {
-        console.log("Change Bookmark")
-        
-        if(bookmarked === true){
-            Swal.fire({
-                icon: 'question',
-                title: 'Delete Story from bookmark ?',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonColor: '#D3455B',
-                showCancelButton: true,
-                preConfirm: () => {
-                    setBookmarked(false);
-                }	  
-            }) 		 
-        }else{
-            setBookmarked(true);
-            Swal.fire({
-                title: 'Bookmarked',
-                text: 'This Story has been added to your bookmarks',
-                icon: 'success',
-                confirmButtonColor: '#B8D9A0'
-            })
+        if(userId === null){
+            notLoginPop();
         }
+        else{
+            console.log("Change Bookmark")
+        
+            if(bookmarked === true){
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Delete Story from bookmark ?',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#D3455B',
+                    showCancelButton: true,
+                    preConfirm: () => {   
+                        axios
+                        .create({
+                            headers: {
+                            Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                            }
+                        })
+                        .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbookmark/${story_id}`)
+                        .then((response) => {
+                            console.log(response.data);
+                            setBookmarked(false);
+                            
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'You remove this Story from Bookmark',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#B8D9A0',
+                                preConfirm: () =>{
+                                    getNumberBookmark();
+                                }
+                            }) 	
+                    
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to remove this Story from Bookmark',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#D3455B',
+                            }) 
+                        });
+                    }	  
+                }) 		 
+            }else{
+                axios
+                .create({
+                    headers: {
+                    Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                    }
+                })
+                .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/bookmark/${story_id}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setBookmarked(true);
+                    getNumberBookmark();
+                    Swal.fire({
+                        title: 'Bookmarked',
+                        text: 'This Story has been added to your bookmarks',
+                        icon: 'success',
+                        confirmButtonColor: '#B8D9A0',
+                        preConfirm: () =>{
+                            getNumberBookmark();
+                        }
+                    })
+            
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to Bookmark This Story',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#D3455B',
+                    }) 
+                });
+            
+            }
+        } 
     }
 
     return (
@@ -343,8 +527,7 @@ function StoryPage(props) {
                                 <img
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_view2}
-                                />
-                                
+                                />           
                                 <span className="icon_text">
                                     { story.view !== null ? (
                                         <>{story.view}</>
@@ -360,10 +543,7 @@ function StoryPage(props) {
                                     src = {ImgAsset.icon_like2}
                                 />
                                 <span className="icon_text">
-                                    { story.like !== null ? (
-                                        <>{story.like}</>
-                                        ):(<>1</>)
-                                    }
+                                    {numberLike}
                                 </span>
                             </div>
                         </Col>
@@ -374,10 +554,7 @@ function StoryPage(props) {
                                     src = {ImgAsset.icon_bookmark2}
                                 />
                                 <span className="icon_text">
-                                    { story.bookmark !== null ? (
-                                        <>{story.bookmark}</>
-                                        ):(<>1</>)
-                                    }
+                                    {numberBookmark}
                                 </span>
                             </div>
                         </Col>
@@ -392,19 +569,15 @@ function StoryPage(props) {
                                 <>
                                 {
                                     genres.map((genre) => {
-                                        var array = [...allGenres]; 
-                                        var index = array.indexOf(genre.genre_id)
                                         return (
-                                        <Link to="/browse" state={{link_query: allGenres[index].label}}>
-                                            <Badge bg="#B8D9A0" className='genre_badge' >{allGenres[index].label}</Badge>{' '}
+                                        <Link to="/browse" state={{link_query: genre.genre_id}}>
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
                                         </Link>)
                                     })
                                 }
                                 </>
                             )
                         }
-                        
-                        {/* <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Action</Badge>{' '}</Link> */}
                     </div>
 
                     {/* Button */}

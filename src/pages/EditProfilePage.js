@@ -197,7 +197,7 @@ export default function EditProfilePage(props) {
                         <Row>
                             <Col md='auto' className="upload_col">
                                 {
-                                    imagePlaceholder !== '' ?(
+                                    imagePlaceholder !== null ?(
                                         <img src={imagePlaceholder} alt="Cover" style={{width: 300, height: 300, borderRadius: 300/ 2}}/>
                                     ):(
                                         <img src={ImgAsset.avatar2} alt="Cover" width="300px"/>

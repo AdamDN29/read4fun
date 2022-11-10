@@ -5,6 +5,8 @@ import ImgAsset from '../resources';
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 import Pagination from "../components/Pagination";
+import GetLike from '../hook/GetLike';
+import GetBookmark from '../hook/GetBookmark';
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
@@ -52,8 +54,8 @@ function UserStoryPage() {
     const [flag, setFlag] = useState(false);
 
     const [newChapter, setNewChapter] = useState();
-    console.log(newChapter);
-    console.log("Chapters : ", chapters);
+    const [listGenre, setListGenre] = useState();
+    const [idGenre, setIdGenre] = useState();
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -112,7 +114,17 @@ function UserStoryPage() {
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
           .then((response) => {
             console.log(response.data);
-            setGenre(response.data);      
+            const sortedBookmark = [...response.data].sort((a, b) => a.id - b.id);
+            setGenre(sortedBookmark); 
+            const temp1 = [];
+            const temp2 = [];
+            response.data.map((genre, index) => {
+                temp1.push(genre.genre_id);
+                temp2.push(genre.id);
+                console.log("Temp ",index," : ", temp1)
+            })   
+            setListGenre(temp1);
+            setIdGenre(temp2);
           })
           .catch((err) => {
             console.log(err);
@@ -245,7 +257,7 @@ function UserStoryPage() {
                                     { story.view !== null ? (
                                         <>{story.view}</>
                                         ):(<>1</>)
-                                    }
+                                    } 
                                 </span>
                             </div>
                         </Col>
@@ -256,10 +268,7 @@ function UserStoryPage() {
                                     src = {ImgAsset.icon_like2}
                                 />
                                 <span className="icon_text">
-                                    { story.like !== null ? (
-                                        <>{story.like}</>
-                                        ):(<>1</>)
-                                    }
+                                    <GetLike key={story.id} story_id={story.id} /> 
                                 </span>
                             </div>
                         </Col>
@@ -270,10 +279,7 @@ function UserStoryPage() {
                                     src = {ImgAsset.icon_bookmark2}
                                 />
                                 <span className="icon_text">
-                                    { story.bookmark !== null ? (
-                                        <>{story.bookmark}</>
-                                        ):(<>1</>)
-                                    }
+                                    <GetBookmark key={story.id} story_id={story.id} />
                                 </span>
                             </div>
                         </Col>
@@ -289,11 +295,9 @@ function UserStoryPage() {
                                 <>
                                 {
                                     genres.map((genre) => {
-                                        var array = [...allGenres]; 
-                                        var index = array.indexOf(genre.genre_id)
                                         return (
-                                        <Link to="/browse" state={{link_query: allGenres[index].label}}>
-                                            <Badge bg="#B8D9A0" className='genre_badge' >{allGenres[index].label}</Badge>{' '}
+                                        <Link to="/browse" state={{link_query: genre.genre_id}}>
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
                                         </Link>)
                                     })
                                 }
@@ -304,7 +308,10 @@ function UserStoryPage() {
                     </div>
 
                     {/* Button */}
-                    <Link to={`/editdetail/${story.id}`}><Button className='btn_sp'>Edit Detail</Button></Link>
+                        <Link 
+                            to={`/editdetail/${story.title}`}
+                            state={{story_id: story.id, list_genre: listGenre, id_genre: idGenre}}    
+                            ><Button className='btn_sp'>Edit Detail</Button></Link>
                     {
                         story.type === "Novel" ?(
                             <>
@@ -363,11 +370,12 @@ function UserStoryPage() {
                             flag === false ?(
                                 <>
                                     <p>There are no chapters in this novel yet</p>
-                                    <Link 
-                                    to={`/userstory/${story.title}/writing/newChapter`}
-                                    state={{chapter_content: newChapter}}    
-                                    ><p className='latest_chapter'>Add a new chapter</p>
-                                    </Link>
+                                    <p className='latest_chapter'>
+                                        <Link className='latest_chapter'
+                                        to={`/userstory/${story.title}/writing/newChapter`}
+                                        state={{chapter_content: newChapter}}    
+                                        > Add a new chapter </Link>
+                                    </p> 
                                 </>
                             ):(
                                 <>
