@@ -200,8 +200,8 @@ function StoryPage(props) {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getBookmark/${story_id}`)
           .then((response) => {
-            console.log("Like : ", response);
-            setNumberBookmark(response.data)
+            console.log("Bookmark : ", response);
+            setNumberBookmark(response.data.length)
         })
         .catch((err) => {
             console.log(err);
@@ -360,7 +360,6 @@ function StoryPage(props) {
                 .then((response) => {
                     console.log(response.data);
                     setLiked(true);
-                    getNumberLike();
                     Swal.fire({
                         icon: 'success',
                         title: 'You Liked This Story',
@@ -450,7 +449,6 @@ function StoryPage(props) {
                 .then((response) => {
                     console.log(response.data);
                     setBookmarked(true);
-                    getNumberBookmark();
                     Swal.fire({
                         title: 'Bookmarked',
                         text: 'This Story has been added to your bookmarks',

@@ -72,7 +72,7 @@ function CommentSection(props) {
         dataForm.append("username", user.username);
         dataForm.append("comment", userComment.comment);
 
-        if (user.avatar !== null){
+        if (user.avatar !== ""){
             dataForm.append("avatar_link", user.avatar);
         }else{
             dataForm.append("avatar_link", "");
@@ -281,7 +281,7 @@ function CommentSection(props) {
                                     <Row>
                                         <Col xs={1} > 
                                             {
-                                                comentator.avatar !== null ?(
+                                                comment.avatar_link !== null ?(
                                                     <img
                                                         style={{width: 50, height: 50, borderRadius: 50/ 2}}
                                                         className='avatar_place'
