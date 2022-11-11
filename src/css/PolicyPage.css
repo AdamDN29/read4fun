@@ -1,6 +1,6 @@
 .title {
     font-family: "nunito_sansextrabold";
-    color: #2A2E2E black;
+    color: #2A2E2E #2A2E2E;
     font-size: 45px !important;
    margin-top: 15px !important;
     /* font-size: max(32px) !important; */
@@ -10,17 +10,17 @@
 
 
 .description{
-     font-family: "nunito_sansextrabold";
-    color: #5d6161 ;
+    font-family: "nunito_sanssemibold";
+    color: #2A2E2E ;
     font-size: 20px !important;
-   margin-top: 15px !important;
+    margin-top: 15px !important;
     margin-bottom: 10px !important;
    
 }
 
 .title-low{
     font-family: "nunito_sansextrabold";
-    color: black;
+    color: #2A2E2E;
     font-size: 25px !important;
    margin-top: 15px !important;
     /* font-size: max(32px) !important; */

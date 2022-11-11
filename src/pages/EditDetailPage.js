@@ -197,7 +197,7 @@ function EditDetailPage() {
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
                         // window.location.href = "/userstory";
-                        // navigate(-1);
+                        navigate(-1);
                     }	  
                 }) 		
             })
@@ -215,6 +215,11 @@ function EditDetailPage() {
         // Post Data Create Story
         else{
             axios
+            .create({
+                headers: {
+                  Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                  }
+                })
             .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/create`, dataForm)
             .then((response) => {
                 console.log(response.data)
@@ -227,7 +232,7 @@ function EditDetailPage() {
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
                         // window.location.href = "/userstory";
-                        // navigate(-1);
+                        navigate(-1);
                     }	  
                 }) 		
             })

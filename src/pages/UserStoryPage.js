@@ -7,11 +7,12 @@ import Footer from '../components/Footer'
 import Pagination from "../components/Pagination";
 import GetLike from '../hook/GetLike';
 import GetBookmark from '../hook/GetBookmark';
+import CommentSection from '../components/CommentSection';
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
 import { Link, useParams, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useNavigate } from "react";
 import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
 import Swal from "sweetalert2"
@@ -44,6 +45,8 @@ function UserStoryPage() {
     const location = useLocation();
     const { story_id } = location.state;
     console.log(story_id);
+
+    const navigate = useNavigate();
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
@@ -170,7 +173,7 @@ function UserStoryPage() {
                         allowEscapeKey: false,
                         confirmButtonColor: '#B8D9A0',
                         preConfirm: () => {
-                            // navigate(-1);
+                            navigate(-1);
                         }	  
                     }) 		
                 })
@@ -459,131 +462,7 @@ function UserStoryPage() {
             }
 
            {/* Comments Section */}
-            <div className='info_section'> 
-                <h1 className='section_title3'>Comments</h1>
-                <div className='comment_field'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            {
-                                author.avatar !== null ?(
-                                    <>
-                                    <img
-                                    src = {author.avatar}
-                                    className="avatar_place"
-                                    style={{width: 50, height: 50, borderRadius: 50/ 2}}
-                                    />
-                                    </>
-                                ):(
-                                    <>
-                                    <img
-                                    src = {ImgAsset.avatar2}
-                                    className="avatar_place"
-                                    alt="avatar"
-                                    />
-                                    </>
-                                )
-                            }
-                        </Col>
-                        <Col > 
-                            <div className='comment_form'>
-                                {/* Not Logged In */}
-                                {/* <div className='notlogin_box'>
-                                    <Col><p className='login_note'>You Must Be Logged In to Comment</p></Col>
-                                    <Col><Button href='/login' className='btn_comment_form'>Login</Button></Col>
-                                </div> */}
-
-                                {/* Logged In */}
-                                <div className='login_box'>
-                                    <FloatingLabel
-                                        controlId="floatingTextarea"
-                                        label="Comment"
-                                        className="mb-3"
-                                    >
-                                        <Form.Control as="textarea" placeholder="Leave a comment here" />
-                                    </FloatingLabel>
-                                    <Button className='btn_comment_form'>Post Comment</Button>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='release_content'>3 Comments  </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>   
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>              
-                        </Col>
-                    </Row>
-                </div>
-
-            </div>
+           <CommentSection key={story_id} userId={author.id} story_id={story_id}/>
          
         </Container>
         <Footer />   

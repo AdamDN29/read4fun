@@ -550,22 +550,23 @@ function BrowsePage() {
                             </Row>
                             )
                         }
+                        <div className='pagination'>
+                            <Pagination
+                                itemsCount={allSessionsCount}
+                                itemsPerPage={sessionsPerPage}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                alwaysShown={false}
+                                flagScroll = "2"
+                            />
+                        </div>
+                        <GoTopButton visible={scrollPosition > 400} />
                     </>
                     )
                 }               
                 
             </div>
-                <div className='pagination'>
-                    <Pagination
-                        itemsCount={allSessionsCount}
-                        itemsPerPage={sessionsPerPage}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        alwaysShown={false}
-                        flagScroll = "2"
-                    />
-                </div>
-                <GoTopButton visible={scrollPosition > 400} />
+                
             </div>
             
           

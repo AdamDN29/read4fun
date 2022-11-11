@@ -340,6 +340,9 @@
     vertical-align: middle;
     align-items: center;
 }
+.btn_comment_form:hover{
+    background-color: #B8D9A0 !important;
+}
 
 .comment_field2{
     display: block;
@@ -375,6 +378,13 @@
     font-size: max(16px) !important;
     margin-top: 5px ;
     margin-bottom: 0px ;
+    white-space: pre-line;
+}
+
+.first_comment{
+    font-family: "nunito_sansbold";
+    color: #2A2E2E;
+    font-size: max(20px) !important;
 }
 
 body::-webkit-scrollbar {
