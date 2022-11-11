@@ -254,7 +254,7 @@ function WritingPage() {
                                         <Form.Label className="label_form">Chapter Title</Form.Label>
                                         <Form.Control 
                                             type="text" 
-                                            placeholder="Enter Chapter Number" 
+                                            placeholder="Enter Chapter Title" 
                                             name='number'
                                             defaultValue ={thisChapter.title}
                                             onBlur={(e) =>

@@ -41,7 +41,7 @@ function AuthorPage() {
         
         // Get Data Story User
             axios
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/user/${author_id}`)
+            .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/user/${author_id}`)
             .then((response) => {
                 setStory(response.data);
                 setFlag(true);

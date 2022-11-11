@@ -1,12 +1,12 @@
 import React from 'react';
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect, useReducer, useRef } from "react";
 import ImgAsset from '../resources'
 import '../css/storypage.css'
 import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
 import Swal from "sweetalert2"
 
-import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
+import { Spinner, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
 
 const initialState = {
     comment: "",
@@ -27,6 +27,8 @@ function CommentSection(props) {
     const [user, setUser] = useState([]);
     const [comments, setComments] = useState([]);
     const [comentator, setComentator] = useState([]);
+    const [textValue, setTextValue] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [userComment, dispatch] = useReducer(reducer, initialState);
 
@@ -52,6 +54,7 @@ function CommentSection(props) {
 				console.log(response);
                 const sortedComment = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
 				setComments(sortedComment);	
+                setIsLoading(false);
 			})
             .catch((err) => {
                 console.log(err);
@@ -93,11 +96,10 @@ function CommentSection(props) {
                     allowEscapeKey: false,
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
-                        // window.location.href = "/userstory";
-                        // navigate(-1);
                         getComment();
                     }	  
-                }) 		
+                }) 
+                handleReset();		
             })
             .catch((err) => {
                 Swal.fire({
@@ -120,6 +122,11 @@ function CommentSection(props) {
         }
 
     }
+
+    const formRef = useRef(null);
+    const handleReset = () => {
+        formRef.current.reset();
+      };
 
     function getComment (){
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/commentUserId/${story_id}`)
@@ -206,6 +213,7 @@ function CommentSection(props) {
                                 <>
                                 {/* Logged In */}
                                 <div className='login_box'>
+                                <Form ref={formRef} onSubmit={submitData}>
                                     <FloatingLabel
                                         controlId="floatingTextarea"
                                         label="Comment"
@@ -213,12 +221,16 @@ function CommentSection(props) {
                                     >
                                         <Form.Control as="textarea" 
                                             placeholder="Leave a comment here" 
+                                            ref={formRef}
                                             onBlur={(e) =>
                                                 dispatch({ type: "comment", payload: e.target.value })
                                             }
                                         />
                                     </FloatingLabel>
-                                    <Button className='btn_comment_form' onClick={submitData}>Post Comment</Button>
+                                    <Button className='btn_comment_form' type='submit'>Post Comment</Button>
+                                </Form>
+                                    
+                                    
                                 </div>
                                 </>                    
                             )
@@ -238,6 +250,13 @@ function CommentSection(props) {
         </div>
 
         <div>
+        {
+          isLoading === true ? (
+            <center>
+              <Spinner size="sm" animation="border" width="500px" height="500px"/> 
+            </center>
+          ):
+          (<>
             {
                 <>
                 { comments.length === 0 ? (
@@ -256,7 +275,7 @@ function CommentSection(props) {
                         comments.map((comment) => {
                             const date = comment.updated_at					
                             const dt = new Date(date)
-                            getProfileComment(comment.user_id);
+                            // getProfileComment(comment.user_id);
                             return (
                                 <div className='comment_field2'>
                                     <Row>
@@ -266,7 +285,7 @@ function CommentSection(props) {
                                                     <img
                                                         style={{width: 50, height: 50, borderRadius: 50/ 2}}
                                                         className='avatar_place'
-                                                        src = {comentator.avatar}
+                                                        src = {comment.avatar_link}
                                                     />
                                                 ):(
                                                     <img
@@ -278,7 +297,7 @@ function CommentSection(props) {
                                             
                                         </Col>
                                         <Col > 
-                                            <p className='comment_username'>{comentator.username}</p>
+                                            <p className='comment_username'>{comment.username}</p>
                                             <p className='comment_date'><ReactTimeAgo date={dt} locale="en-US"/></p>
                                         </Col>
                                     </Row>
@@ -301,6 +320,10 @@ function CommentSection(props) {
                 }
                 </>
             }
+          </>
+          )
+        }
+            
             
         </div>
 

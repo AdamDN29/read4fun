@@ -185,11 +185,28 @@ function StoryPage(props) {
     }, []);
 
     function getNumberLike (){
-        setNumberLike(<GetLike key={story_id} story_id={story_id}/>)
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getLike/${story_id}`)
+          .then((response) => {
+            console.log("Like : ", response);
+            setNumberLike(response.data)
+        })
+        .catch((err) => {
+            console.log(err);
+        });   
     }
 
     function getNumberBookmark (){
-        setNumberBookmark(<GetBookmark key={story_id} story_id={story_id}/>)
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getBookmark/${story_id}`)
+          .then((response) => {
+            console.log("Like : ", response);
+            setNumberBookmark(response.data)
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+        
     }
 
     // Sort Settings

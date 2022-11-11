@@ -89,7 +89,7 @@ export default function Navbars () {
         <div>
             <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
                 <Container>
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand href="/homepage">
                         <img
                         src = {ImgAsset.logo}
                         // width="150"

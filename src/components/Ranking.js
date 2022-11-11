@@ -28,10 +28,10 @@ function Ranking() {
             const views = [...response.data].sort((a, b) => b.view - a.view);
             const likes = [...response.data].sort((a, b) => b.like - a.like);
             const bookmarks = [...response.data].sort((a, b) => b.bookmark - a.bookmark);
-            setSortView(views);
-            setSortLike(likes);
-            setSortBookmark(bookmarks);
-            setStory(views);
+            setSortView(views.slice(0, 15));
+            setSortLike(likes.slice(0, 15));
+            setSortBookmark(bookmarks.slice(0, 15));
+            setStory(views.slice(0, 15));
             setIsLoading(false);
           })
           .catch((err) => {

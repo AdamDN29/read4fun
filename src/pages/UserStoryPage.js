@@ -41,12 +41,14 @@ const allGenres = [
     {id: 21, label: 'Video Games'},
 ];
 
+
+
 function UserStoryPage() {
     const location = useLocation();
     const { story_id } = location.state;
     console.log(story_id);
 
-    const navigate = useNavigate();
+    
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
@@ -79,6 +81,22 @@ function UserStoryPage() {
             console.log(response.data);
             const tempNewChapter = {id : 0, title : '', number : '', content : '', story : { id : response.data.id, title : response.data.title, type: response.data.type}};
             setNewChapter(tempNewChapter);
+
+            if(response.data.banned === 1){
+                Swal.fire({
+                    icon: "warning",
+                    title: "Your Story Is Banned!",
+                    text: "Reason: Story violidates terms and condition",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: "#B8D9A0",
+                    preConfirm: () => {
+                        window.location.href = "/dashboard";
+                    },
+                    footer:
+                      '<center><p>Please contact <a href="mailto:read4fun.developer@gmail.com"> read4fun.developer@gmail.com </a> <br>if you think this is a mistake </p></center>',
+                  });
+            }
 
             axios
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
@@ -173,7 +191,7 @@ function UserStoryPage() {
                         allowEscapeKey: false,
                         confirmButtonColor: '#B8D9A0',
                         preConfirm: () => {
-                            navigate(-1);
+                            window.location.href='/dashboard'
                         }	  
                     }) 		
                 })
