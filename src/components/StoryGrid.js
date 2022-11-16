@@ -44,8 +44,9 @@ function StoryGrid() {
 
                 return (
                     <Link className="link" 
-                    to={`/story/${story.title}`}
-                    state={{story_id: story.id}}>
+                    to={`/story/${story.id}`}
+                    // state={{story_id: story.id}}
+                    >
                     <Col className='story_col'>
                         <Card className="story_card card mx-1">
                             

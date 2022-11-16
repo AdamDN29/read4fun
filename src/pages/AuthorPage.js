@@ -43,7 +43,10 @@ function AuthorPage() {
             axios
             .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/user/${author_id}`)
             .then((response) => {
-                setStory(response.data);
+                const filtered = response.data.filter(story => {
+                    return story.banned !== 1;
+                });
+                setStory(filtered);
                 setFlag(true);
                 console.log(response.data);
             })
@@ -132,20 +135,10 @@ function AuthorPage() {
             <Row className="Border">
                 <Col md={"auto"} className='detailAvatar'>
                     {
-                        author.avatar !== null ?(
-                            <>
-                            <img
-                            src = {author.avatar}
-                            style={{width: 225, height: 225, borderRadius: 225/ 2}}
-                            />
-                            </>
+                        author.avatar !== null ?(      
+                            <img src = {author.avatar} style={{width: 225, height: 225, borderRadius: 225/ 2}} />
                         ):(
-                            <>
-                            <img
-                            height="225px"
-                            src = {ImgAsset.avatar}
-                            />
-                            </>
+                            <img height="225px" src = {ImgAsset.avatar}/>
                         )
                     } 
                 </Col>
@@ -261,11 +254,10 @@ function AuthorPage() {
                                             const dt = new Date(date)
                                             return(
                                                 <>
-                                                
                                                 {/* Story Box */}
                                                 <Link key={story.id} className="link_chapter" 
-                                                    to={`/story/${story.title}`}
-                                                    state={{story_id: story.id}}
+                                                    to={`/story/${story.id}`}
+                                                    // state={{story_id: story.id}}
                                                 >
                                                 <Col className="addMargin">
                                                 <Row className='story_box'>

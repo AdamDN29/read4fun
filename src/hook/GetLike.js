@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export default function GetLike (props){
 	const story_id = props.story_id;
-    const [Like, setLike] = useState(1);
+    const [Like, setLike] = useState(0);
 
     useEffect(() => {
 		axios

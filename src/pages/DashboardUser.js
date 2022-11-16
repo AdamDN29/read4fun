@@ -8,7 +8,7 @@ import GetLike from '../hook/GetLike';
 import GetBookmark from '../hook/GetBookmark';
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, CloseButton } from 'react-bootstrap'
+import { Card, Container, Row, Col , Button, CloseButton, Badge } from 'react-bootstrap'
 import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -41,7 +41,7 @@ function DashboardUser() {
         // Get Data Story User
             axios
             // .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/user/${userId}`)
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
             .then((response) => {
                 setStory(response.data);
                 setFlag(true);
@@ -239,8 +239,9 @@ function DashboardUser() {
                                         <Row key={bookmark.id} className='bookmark_story'> 
                                                 <Col className='col_bookmark'>
                                                     <Link
-                                                    to={`/story/${bookmark.title}`}
-                                                    state={{story_id: bookmark.id}}>
+                                                    to={`/story/${bookmark.id}`}
+                                                    // state={{story_id: bookmark.id}}
+                                                    >
                                                     <Row>
                                                         <p className='bookmark_story_title'>{bookmark.title}</p>
                                                         <p className='bookmark_story_date'><i><ReactTimeAgo date={dt} locale="en-US"/></i></p>
@@ -312,8 +313,8 @@ function DashboardUser() {
                                                 <>
                                                 {/* Story Box */}
                                                 <Link key={story.id} className="link_chapter" 
-                                                    to={`/userstory/${story.title}`}
-                                                    state={{story_id: story.id}}
+                                                    to={`/userstory/${story.id}`}
+                                                    // state={{story_id: story.id}}
                                                 >
                                                 <Row className='story_box'>
                                                     <Col md="auto">
@@ -328,7 +329,9 @@ function DashboardUser() {
                                                     </Col>
                                                     <Col>
                                                         <Row>
-                                                            <h2 className='list_story_title'>{story.title}</h2>
+                                                            <h2 className='list_story_title'>{story.title} 
+                                                                { story.banned === 1 ? (<div className='banned_text'>Banned</div>):(<></>)}        
+                                                            </h2>
                                                         </Row>
                                                         <Row>
                                                             <Col>
@@ -395,7 +398,7 @@ function DashboardUser() {
                                                                             { story.view !== null ? (
                                                                                 <>{story.view}</>
                                                                                 ):(<>1</>)
-                                                                            }
+                                                                            } Views
                                                                         </span>
                                                                     </div>
                                                                 </Row>
@@ -409,7 +412,7 @@ function DashboardUser() {
                                                                         />
                                                                         <span className="size_s icon_text3">
                                                                             {/* {story_like !== null ?(story_like):("1")}  */}
-                                                                            <GetLike key={story.id} story_id={story.id} />
+                                                                            <GetLike key={story.id} story_id={story.id} /> Likes
                                                                         </span>
                                                                     </div>
                                                                 </Row>
@@ -423,12 +426,25 @@ function DashboardUser() {
                                                                         />
                                                                         <span className="size_s ">
                                                                             {/* {story_bookmark !== null ?(story_bookmark):("1")}  */}
-                                                                            <GetBookmark key={story.id} story_id={story.id} />
+                                                                            <GetBookmark key={story.id} story_id={story.id} /> Bookmarks
                                                                         </span>
                                                                     </div>
                                                                 </Row>
                                                             </Col>
                                                         </Row>
+                                                        {
+                                                            story.banned === 1 ? (
+                                                                <>
+                                                                <Row>
+                                                                    <p className='text_banned banned_explaination'><b>Report :</b></p>
+                                                                </Row>
+                                                                <Row>
+                                                                    <p className='banned_explaination'>{story.explaination}</p>
+                                                                </Row>
+                                                                </>
+                                                            ):(<></>)
+                                                        }
+                                                        
                                                     </Col>
                                                 </Row>
                                                 </Link>           

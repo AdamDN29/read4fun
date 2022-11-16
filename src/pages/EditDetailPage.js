@@ -103,8 +103,8 @@ function EditDetailPage() {
             // Get Data Story
             axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
             .then((response)=> {
-                setPreLoad(response.data);
-                setImagePlaceholder(response.data.link);
+                setPreLoad(response.data[0]);
+                setImagePlaceholder(response.data[0].link);
                 console.log(response.data);
             })
             .catch((err) => {

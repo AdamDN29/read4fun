@@ -199,6 +199,7 @@
     color: #2A2E2E;
     font-size: 24px !important;
     margin-bottom: 15px;
+    display: flex;
 }
 
 .size_s{
@@ -239,6 +240,35 @@
 .icon_del{
     margin-right: 0px !important;
 }
+
+.banned_text{
+    font-family: "nunito_sansextrabold";
+    text-align: center;
+    border-radius: 10px !important;
+    background-color: #D3455B !important;
+    color: white !important;
+    padding: 6px 10px 3px 10px !important;
+    font-size: auto !important;
+    font-size: max(16px) !important;
+    margin-left: 10px !important;
+}
+
+.banned_explaination{
+    font-family: "nunito_sansregular";
+    font-size: 16px;
+    color: #2A2E2E;
+    margin-bottom: 0px !important;
+}
+
+.text_banned{
+    color: #D3455B !important;
+}
+
+
+
+
+
+
 
 
 
@@ -355,6 +385,7 @@
   border-color: #B8D9A0 !important;
   color: #B8D9A0 !important;
 }
+
 
 body::-webkit-scrollbar {
 width: 0.5rem;

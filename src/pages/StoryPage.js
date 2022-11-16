@@ -18,43 +18,17 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2"
 import axios from "axios";
 
-const allGenres = [
-    {id: 1, label: 'Action'},
-    {id: 2, label: 'Adventure'},
-    {id: 3, label: 'Comedy'},
-    {id: 4, label: 'Drama'},
-    {id: 5, label: 'Fantasy'},
-    {id: 6, label: 'Historical'},
-    {id: 7, label: 'Horror'},
-    {id: 8, label: 'Magical Realism'},
-    {id: 9, label: 'Martial Arts'},
-    {id: 10, label: 'Mature'},
-    {id: 11, label: 'Mystery'},
-    {id: 12, label: 'Psychological'},
-    {id: 13, label: 'Romance'},
-    {id: 14, label: 'Real Experience'},
-    {id: 15, label: 'Sci-Fi'},
-    {id: 16, label: 'School Life'},
-    {id: 17, label: 'Slice of Life'},
-    {id: 18, label: 'Sports'},
-    {id: 19, label: 'Supernatural'},
-    {id: 20, label: 'Tragedy'},
-    {id: 21, label: 'Video Games'},
-];
-
-function StoryPage(props) {
-    const location = useLocation();
-    const { story_id } = location.state;
+function StoryPage() {
+    // const location = useLocation();
+    // const { story_id } = location.state;
+    const { story_id } = useParams();
     console.log(story_id);
 
     const [userId, setUserId] = useState(() => {
 		const localData = sessionStorage.getItem("id");
 		return localData ? localData : null;
 	});
-    const [userToken, setUserToken] = useState(() => {
-		const localData = sessionStorage.getItem("token");
-		return localData ? localData : null;
-	});
+
     const [user, setUser] = useState([]);
     const [liked, setLiked] = useState(false);
     const [bookmarked, setBookmarked] = useState(false);
@@ -84,13 +58,13 @@ function StoryPage(props) {
         axios
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
           .then((response) => {
-            setStory(response.data);
+            setStory(response.data[0]);
             console.log(response.data);
             getNumberLike();
             getNumberBookmark();
 
             axios
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data[0].user_id}`)
             .then((response) => {
                 setAuthor(response.data.data);
                 console.log(response.data.data);
@@ -153,7 +127,7 @@ function StoryPage(props) {
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userLike/${userId}`)
             .then((response) => {
                 response.data.map((like) => {
-                    if (like.story_id === story_id){
+                    if (like.story_id === Number(story_id)){
                         setLiked(true);   
                     }
                 })
@@ -172,7 +146,7 @@ function StoryPage(props) {
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userBookmark/${userId}`)
             .then((response) => {
                 response.data.map((bookmark) => {
-                    if (bookmark.story_id === story_id){
+                    if (bookmark.story_id === Number(story_id)){
                         setBookmarked(true);   
                     }
                 })
@@ -266,7 +240,7 @@ function StoryPage(props) {
                 .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/report`, 
                     formData, {
                         headers: {
-                            'Authorization' : `Bearer ${userToken}`
+                            Authorization : `Bearer ${sessionStorage.getItem("token")}`
                         }
                 })
                 .then((response) => {
@@ -586,7 +560,9 @@ function StoryPage(props) {
                                 {
                                     genres.map((genre) => {
                                         return (
-                                        <Link to="/browse" state={{link_query: genre.genre_id}}>
+                                        <Link to={"/browse/" + genre.genre_name}
+                                            // state={{link_query: genre.genre_id}}
+                                        >
                                             <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
                                         </Link>)
                                     })
@@ -600,9 +576,8 @@ function StoryPage(props) {
                     
                         <Button className='btn_sp' disabled={!flag}>
                             <Link  className='white_p'
-                                key={firstChapter.id}
-                                to={`/story/${story.title}/chapter`}
-                                state={{chapter_content: firstChapter, list_chapter: listChapters}}
+                                to={`/story/${story.id}/chapter/${firstChapter.number}`}
+                                // state={{chapter_content: firstChapter, list_chapter: listChapters}}
                             >
                             { story.type === "Novel" ?(<>Read First Chapter</>):(<>Read Story</>)}
                             </Link>
@@ -657,8 +632,8 @@ function StoryPage(props) {
                                 <>
                                 <div className='release_content'>Latest Release : 
                                     <Link className="link_chapter" 
-                                    to={`/story/${story.title}/chapter`}
-                                    state={{chapter_content: lastChapter, list_chapter: listChapters}}
+                                    to={`/story/${story.id}/chapter/${lastChapter.number}`}
+                                    // state={{chapter_content: lastChapter, list_chapter: listChapters}}
                                     ><a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
                                     </Link>
                                         <img
@@ -680,8 +655,8 @@ function StoryPage(props) {
                                         return (
                                             <Link className="link_chapter" 
                                             key={chapter.id}
-                                            to={`/story/${story.title}/chapter`}
-                                            state={{chapter_content: chapter, list_chapter: listChapters}}
+                                            to={`/story/${story.id}/chapter/${chapter.number}`}
+                                            // state={{chapter_content: chapter, list_chapter: listChapters}}
                                             >
                                                 <Col>
                                                 <Card className='chapter_card'>
@@ -734,7 +709,7 @@ function StoryPage(props) {
            
 
            {/* Comments Section */}
-           <CommentSection key={story.id} userId={userId} story_id={story_id}/>
+           <CommentSection key={story.id} userId={userId} story_id={story_id} author_Id={story.user_id}/>
          
         </Container>
         <Footer/>

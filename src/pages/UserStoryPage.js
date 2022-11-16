@@ -17,38 +17,16 @@ import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
 import Swal from "sweetalert2"
 
-const allGenres = [
-    {id: 1, label: 'Action'},
-    {id: 2, label: 'Adventure'},
-    {id: 3, label: 'Comedy'},
-    {id: 4, label: 'Drama'},
-    {id: 5, label: 'Fantasy'},
-    {id: 6, label: 'Historical'},
-    {id: 7, label: 'Horror'},
-    {id: 8, label: 'Magical Realism'},
-    {id: 9, label: 'Martial Arts'},
-    {id: 10, label: 'Mature'},
-    {id: 11, label: 'Mystery'},
-    {id: 12, label: 'Psychological'},
-    {id: 13, label: 'Romance'},
-    {id: 14, label: 'Real Experience'},
-    {id: 15, label: 'Sci-Fi'},
-    {id: 16, label: 'School Life'},
-    {id: 17, label: 'Slice of Life'},
-    {id: 18, label: 'Sports'},
-    {id: 19, label: 'Supernatural'},
-    {id: 20, label: 'Tragedy'},
-    {id: 21, label: 'Video Games'},
-];
-
-
-
 function UserStoryPage() {
-    const location = useLocation();
-    const { story_id } = location.state;
+    // const location = useLocation();
+    // const { story_id } = location.state;
+    const { story_id } = useParams();
     console.log(story_id);
 
-    
+    const [userId, setUserId] = useState(() => {
+		const localData = sessionStorage.getItem("id");
+		return localData ? localData : null;
+	});
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
@@ -77,16 +55,14 @@ function UserStoryPage() {
         axios
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
           .then((response) => {
-            setStory(response.data);
+            setStory(response.data[0]);
             console.log(response.data);
-            const tempNewChapter = {id : 0, title : '', number : '', content : '', story : { id : response.data.id, title : response.data.title, type: response.data.type}};
-            setNewChapter(tempNewChapter);
 
             if(response.data.banned === 1){
                 Swal.fire({
                     icon: "warning",
                     title: "Your Story Is Banned!",
-                    text: "Reason: Story violidates terms and condition",
+                    text: "Reason: " + response.data[0].explanation,
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     confirmButtonColor: "#B8D9A0",
@@ -97,9 +73,9 @@ function UserStoryPage() {
                       '<center><p>Please contact <a href="mailto:read4fun.developer@gmail.com"> read4fun.developer@gmail.com </a> <br>if you think this is a mistake </p></center>',
                   });
             }
-
+            // Get Data Author
             axios
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data[0].user_id}`)
             .then((response) => {
                 setAuthor(response.data.data);
                 console.log(response.data.data);
@@ -317,7 +293,9 @@ function UserStoryPage() {
                                 {
                                     genres.map((genre) => {
                                         return (
-                                        <Link to="/browse" state={{link_query: genre.genre_id}}>
+                                        <Link to={"/browse/" + genre.genre_name}
+                                            // state={{link_query: genre.genre_id}}
+                                        >
                                             <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
                                         </Link>)
                                     })
@@ -337,8 +315,8 @@ function UserStoryPage() {
                         story.type === "Novel" ?(
                             <>
                             <Link 
-                            to={`/userstory/${story.title}/writing/newChapter`}
-                            state={{chapter_content: newChapter}}    
+                            to={`/userstory/${story.id}/writing/newChapter`}
+                            // state={{chapter_content: newChapter}}    
                             >
                             <Button className='btn_sp'>Add New Chapter</Button>
                             </Link>
@@ -427,8 +405,8 @@ function UserStoryPage() {
 
                                                 return (
                                                     <Link key={chapter.id} className="link_chapter" 
-                                                    to={`/userstory/${story.title}/writing/${chapter.number}`}
-                                                    state={{chapter_content: chapter}}
+                                                    to={`/userstory/${story.id}/writing/${chapter.number}`}
+                                                    // state={{chapter_content: chapter}}
                                                     >
                                                         <Col>
                                                         <Card className='chapter_card'>
@@ -480,7 +458,7 @@ function UserStoryPage() {
             }
 
            {/* Comments Section */}
-           <CommentSection key={story_id} userId={author.id} story_id={story_id}/>
+           <CommentSection key={story_id} userId={userId} story_id={story_id} author_Id={story.user_id}/>
          
         </Container>
         <Footer />   

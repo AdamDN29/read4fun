@@ -58,8 +58,9 @@ function Ranking() {
 
         return (  
         <Link className="link" 
-            to={`/story/${story.title}`}
-            state={{story_id: story.id}}>
+            to={`/story/${story.id}`}
+            // state={{story_id: story.id}}
+            >
             <Col>
                 <Row className="story_link">
                     <Col md="auto" className="cover_ranking">
@@ -98,7 +99,7 @@ function Ranking() {
                                             src = {ImgAsset.icon_view}
                                         />
                                         <span className="icon_text">
-                                            {story.view !== null ?(story.view):("1")} View
+                                            {story.view !== null ?(story.view):("0")} View
                                         </span>
                                     </div>
                                 </div>

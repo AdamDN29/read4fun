@@ -101,7 +101,7 @@ export default function Navbars () {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/browse" state={{link_query: ""}} className="nav_icon_field nav-link">
+                            <Nav.Link as={Link} to="/browse/Story" state={{link_query: ""}} className="nav_icon_field nav-link">
                                 <img
                                 src = {ImgAsset.compass_browse}
                                 width="30"

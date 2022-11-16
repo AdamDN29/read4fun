@@ -39,7 +39,7 @@ const reducer = (currentState, action) => {
     }
 }
 
-export default function EditProfilePage(props) {
+export default function EditProfilePage() {
     const [userId, setUserId] = useState(() => {
 		const localData = sessionStorage.getItem("id");
 		return localData ? localData : null;

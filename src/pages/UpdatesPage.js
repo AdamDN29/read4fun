@@ -83,8 +83,8 @@ function UpdatesPage() {
 
                                 return(
                                     <Link key={story.id} className="link_chapter" 
-                                        to={`/story/${story.title}`}
-                                        state={{story_id: story.id}}
+                                        to={`/story/${story.id}`}
+                                        // state={{story_id: story.id}}
                                     >
                                     
                                         <Col>

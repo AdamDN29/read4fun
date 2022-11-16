@@ -14,7 +14,6 @@ import axios from "axios";
 function StoryBrowse(props) {
     const story = props.storys;
     const story_id = props.story_id;
-    console.log(story_id);
 
     const date = story.updated_at					
     const dt = new Date(date)

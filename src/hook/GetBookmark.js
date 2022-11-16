@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export default function GetBookmark (props){
 	const story_id = props.story_id;
-    const [Bookmark, setBookmark] = useState(1);
+    const [Bookmark, setBookmark] = useState(0);
 
     useEffect(() => {
 		axios

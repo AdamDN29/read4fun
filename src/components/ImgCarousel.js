@@ -18,7 +18,7 @@ function ImgCarousel(props) {
         <Carousel.Caption>
           <h3 className='title_caption'>Looking for a <a className='text_theme'>Great Place</a> to Read Novel and Short Story ?</h3>
           <p>Explore a <a className='text_theme'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
-          <p><center><Button variant="primary" href="/browse" className='btn_explore'>Explore</Button></center></p>
+          <p><center><Button variant="primary" href="/browse/Story" className='btn_explore'>Explore</Button></center></p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
@@ -44,7 +44,7 @@ function ImgCarousel(props) {
         <Carousel.Caption>
           <h3 className='title_caption2'>Find a <a className='text_theme'>Great Place</a> to Read and Write a Story  ?</h3>
           <p className='text_theme3'>Search a <a className='text_theme'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
-          <p><center><Button variant="primary" href="/browse" className='btn_search'>Search</Button></center></p>
+          <p><center><Button variant="primary" href="/browse/Story" className='btn_search'>Search</Button></center></p>
         </Carousel.Caption>
       </Carousel.Item>
     </Carousel>

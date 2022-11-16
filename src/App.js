@@ -45,21 +45,21 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path='/register' element={<Register/>} />
           
-          <Route path='/' element={<Listpages/>} />
+          <Route path='/' element={<Homepage/>} />
           <Route path='/homepage' element={<Homepage/>} />
           {/* <Route path='/story' element={<StoryPage/>} /> */}
-          <Route path="/story/:story_title" element={<StoryPage/>} />
-          <Route path='/story/:story_title/chapter' element={<ChapterPage/>} />
-          <Route path='/browse' element={<BrowsePage/>} />
+          <Route path="/story/:story_id" element={<StoryPage/>} />
+          <Route path='/story/:story_id/chapter/:chapter_number' element={<ChapterPage/>} />
+          <Route path='/browse/:link_query' element={<BrowsePage/>} />
           <Route path='/updates' element={<UpdatesPage/>} />
           <Route path='/author' element={<AuthorPage/>} />
 
           <Route path='/dashboard' element={<DashboardUser/>} />
-          <Route path='/userstory/:story_title' element={<UserStoryPage/>} />
+          <Route path='/userstory/:story_id' element={<UserStoryPage/>} />
           <Route path='/editdetail/:story_id' element={<EditDetailPage/>} />
           <Route path='/editprofile' element={<EditProfilePage/>} />
           <Route path='/changepassword' element={<ChangePasswordPage/>} />
-          <Route path='/userstory/:story_title/writing/:chapter_id' element={<WritingPage/>} />
+          <Route path='/userstory/:story_id/writing/:chapter_number' element={<WritingPage/>} />
           
           <Route path='/policy' element={<PolicyPage/>} />
           <Route path='/term_of_service' element={<TermOfServicePage/>} />

@@ -24,6 +24,7 @@ const reducer = (currentState, action) => {
 function CommentSection(props) {
     const userId = props.userId;
     const story_id = props.story_id;
+    const authorId = props.author_Id
     const [user, setUser] = useState([]);
     const [comments, setComments] = useState([]);
     const [comentator, setComentator] = useState([]);
@@ -31,6 +32,8 @@ function CommentSection(props) {
     const [isLoading, setIsLoading] = useState(true);
 
     const [userComment, dispatch] = useReducer(reducer, initialState);
+
+    console.log("Get Comments");
 
     // Get Profile User
     useEffect(() => {	
@@ -47,19 +50,18 @@ function CommentSection(props) {
 	}, [])
 
     // Get Comment Story
-    useEffect(() => {	
-		if (userId !== null){	
-			axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/commentUserId/${story_id}`)
-			.then((response)=> {
-				console.log(response);
-                const sortedComment = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
-				setComments(sortedComment);	
-                setIsLoading(false);
-			})
-            .catch((err) => {
-                console.log(err);
-            });
-		}		
+    useEffect(() => {				
+		axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/commentUserId/${story_id}`)
+		.then((response)=> {
+			console.log(response);
+            const sortedComment = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
+			setComments(sortedComment);	
+            setIsLoading(false);
+		})
+        .catch((err) => {
+            console.log(err);
+            setIsLoading(false);
+        });		
 	}, [])
 
     const submitData = (e) => {
@@ -275,6 +277,7 @@ function CommentSection(props) {
                         comments.map((comment) => {
                             const date = comment.updated_at					
                             const dt = new Date(date)
+                            console.log("Author Id :", authorId)
                             // getProfileComment(comment.user_id);
                             return (
                                 <div className='comment_field2'>
@@ -297,7 +300,15 @@ function CommentSection(props) {
                                             
                                         </Col>
                                         <Col > 
-                                            <p className='comment_username'>{comment.username}</p>
+                                            <p className='comment_username'>{comment.username}
+                                            {
+                                                comment.user_id === authorId ?(
+                                                    <Badge bg="#B8D9A0" className='author_badge' >Author</Badge>
+                                                ):(<></>)
+                                            }
+                                            
+                                            </p>
+                                            
                                             <p className='comment_date'><ReactTimeAgo date={dt} locale="en-US"/></p>
                                         </Col>
                                     </Row>
