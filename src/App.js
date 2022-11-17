@@ -32,6 +32,7 @@ import TermOfServicePage from './pages/TermOfServicePage';
 import Navbars from './components/Navbars'
 import Footer from './components/Footer'
 import ScrollToTop from './hook/ScrollToTop';
+import PrivateRoute from './hook/PrivateRoute';
 
 
 
@@ -54,12 +55,12 @@ function App() {
           <Route path='/updates' element={<UpdatesPage/>} />
           <Route path='/author' element={<AuthorPage/>} />
 
-          <Route path='/dashboard' element={<DashboardUser/>} />
-          <Route path='/userstory/:story_id' element={<UserStoryPage/>} />
-          <Route path='/editdetail/:story_id' element={<EditDetailPage/>} />
-          <Route path='/editprofile' element={<EditProfilePage/>} />
-          <Route path='/changepassword' element={<ChangePasswordPage/>} />
-          <Route path='/userstory/:story_id/writing/:chapter_number' element={<WritingPage/>} />
+          <Route path='/dashboard' element={<PrivateRoute> <DashboardUser/> </PrivateRoute>} />
+          <Route path='/userstory/:story_id' element={<PrivateRoute> <UserStoryPage/> </PrivateRoute>} />
+          <Route path='/editdetail/:story_id' element={<PrivateRoute> <EditDetailPage/> </PrivateRoute>} />
+          <Route path='/editprofile' element={<PrivateRoute> <EditProfilePage/> </PrivateRoute>} />
+          <Route path='/changepassword' element={<PrivateRoute> <ChangePasswordPage/> </PrivateRoute>} />
+          <Route path='/userstory/:story_id/writing/:chapter_number' element={<PrivateRoute> <WritingPage/> </PrivateRoute>} />
           
           <Route path='/policy' element={<PolicyPage/>} />
           <Route path='/term_of_service' element={<TermOfServicePage/>} />
