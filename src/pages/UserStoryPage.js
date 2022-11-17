@@ -58,11 +58,11 @@ function UserStoryPage() {
             setStory(response.data[0]);
             console.log(response.data);
 
-            if(response.data.banned === 1){
+            if(response.data[0].banned === 1){
                 Swal.fire({
                     icon: "warning",
                     title: "Your Story Is Banned!",
-                    text: "Reason: " + response.data[0].explanation,
+                    text: "Reason: " + response.data[0].explaination,
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     confirmButtonColor: "#B8D9A0",
@@ -381,8 +381,8 @@ function UserStoryPage() {
                                 <p> <i>You can edit and delete your story chapter by click the story chapter you want</i></p>
                                 <div className='release_content'>Latest Release : 
                                     <Link 
-                                        to={`/userstory/${story.title}/writing/${lastChapter.number}`}
-                                        state={{chapter_content: lastChapter}}    
+                                        to={`/userstory/${story.id}/writing/${lastChapter.number}`}
+                                        // state={{chapter_content: lastChapter}}    
                                     >
                                             <a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
                                     </Link>

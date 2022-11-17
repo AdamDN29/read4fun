@@ -252,7 +252,7 @@ function BrowsePage() {
 
     // Get data when Filter
     function filterStory (){
-        let filterQuery = "";
+        let filterQuery = "/unbanned";
         navigate('/browse/Story');
         setIsLoading(true);
         console.log("My Genre : ", myGenre)
@@ -260,7 +260,13 @@ function BrowsePage() {
             filterQuery="/getStory/" + myGenre[0];
         }
         else if(myGenre.length === 2){
-            filterQuery="/getMultiple/" + myGenre[0] + "/" + myGenre[1];
+            filterQuery="/get2Genre?genre1=" + myGenre[0] + "&genre2=" + myGenre[1];
+        }
+        else if(myGenre.length === 3){
+            filterQuery="/get3Genre?genre1=" + myGenre[0] + "&genre2=" + myGenre[1] + "&genre3=" + myGenre[2];
+        }
+        else if(myGenre.length === 4){
+            filterQuery="/get4Genre?genre1=" + myGenre[0] + "&genre2=" + myGenre[1] + "&genre3=" + myGenre[2] + "&genre4=" + myGenre[3];
         }
         console.log("Filter Query : ", filterQuery)
         axios
@@ -565,7 +571,7 @@ function BrowsePage() {
                                 {
                                     myGenre.length !== 0 ?  (
                                         <Link className="link" 
-                                        to={`/story/${story.id}`}
+                                        to={`/story/${story.story_id}`}
                                         // state={{story_id: story.story_id}}
                                         >
                                             <StoryBrowse key={story.id} story_id={story.story_id} storys={story}/>
