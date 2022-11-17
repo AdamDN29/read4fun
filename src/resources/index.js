@@ -79,4 +79,7 @@ export default {
     //addon1
     Our_Value: require('./Our_Value.svg').default,
 
+    //Image Comment
+    img_comment: require('./img_comment.svg').default,
+
 }

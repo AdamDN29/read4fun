@@ -2,6 +2,8 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import ImgAsset from '../resources'
 import '../css/ranking.css'
+import GetLike from '../hook/GetLike';
+import GetBookmark from '../hook/GetBookmark';
 
 //import component Bootstrap React
 import { Spinner, Container, Row, Col , Tabs, Tab } from 'react-bootstrap'
@@ -23,13 +25,13 @@ function Ranking() {
           .then((response) => {
             console.log(response);
             // setStory(response.data);
-            const views = [...response.data].sort((a, b) => a.view - b.view);
-            const likes = [...response.data].sort((a, b) => a.like - b.like);
-            const bookmarks = [...response.data].sort((a, b) => a.bookmark - b.bookmark);
-            setSortView(views);
-            setSortLike(likes);
-            setSortBookmark(bookmarks);
-            setStory(views);
+            const views = [...response.data].sort((a, b) => b.view - a.view);
+            const likes = [...response.data].sort((a, b) => b.like - a.like);
+            const bookmarks = [...response.data].sort((a, b) => b.bookmark - a.bookmark);
+            setSortView(views.slice(0, 15));
+            setSortLike(likes.slice(0, 15));
+            setSortBookmark(bookmarks.slice(0, 15));
+            setStory(views.slice(0, 15));
             setIsLoading(false);
           })
           .catch((err) => {
@@ -52,10 +54,13 @@ function Ranking() {
         }
     }
 
-    const showStory = storys.slice(0,15).map((story) => (  
+    const showStory = storys.slice(0,15).map((story) => {
+
+        return (  
         <Link className="link" 
-            to={`/story/${story.title}`}
-            state={{story_id: story.id}}>
+            to={`/story/${story.id}`}
+            // state={{story_id: story.id}}
+            >
             <Col>
                 <Row className="story_link">
                     <Col md="auto" className="cover_ranking">
@@ -83,37 +88,50 @@ function Ranking() {
                                 src = {ImgAsset.icon_status}
                             />
                             <span className="icon_text">{story.status}</span>
-                        </div>
+                        </div>         
+
                         {
                             key === 'most_view' ? (
-                                <div className="detail_list2">
-                                    <img
-                                        className="detail_list_icon"
-                                        src = {ImgAsset.icon_view}
-                                    />
-                                    <span className="icon_text">2.84 M</span>
+                                <div>          
+                                    <div className="detail_list2">
+                                        <img
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_view}
+                                        />
+                                        <span className="icon_text">
+                                            {story.view !== null ?(story.view):("0")} View
+                                        </span>
+                                    </div>
                                 </div>
                             ):(<></>)
                         }
                         {
                             key === 'most_like' ? (
-                                <div className="detail_list2">
-                                    <img
-                                        className="detail_list_icon"
-                                        src = {ImgAsset.icon_like}
-                                    />
-                                    <span className="icon_text">18.35 K</span>
+                                <div>          
+                                    <div className="detail_list2">
+                                        <img
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_like}
+                                        />
+                                        <span className="icon_text">
+                                            <GetLike key={story.id} story_id={story.id} /> Like
+                                        </span>
+                                    </div>
                                 </div>
                             ):(<></>)
                         }
                         {
                             key === 'most_bookmark' ? (
-                                <div className="detail_list2">
-                                    <img
-                                        className="detail_list_icon"
-                                        src = {ImgAsset.icon_bookmark}
-                                    />
-                                    <span className="icon_text">134</span>
+                                <div>          
+                                    <div className="detail_list2">
+                                        <img
+                                            className="detail_list_icon"
+                                            src = {ImgAsset.icon_bookmark}
+                                        />
+                                        <span className="icon_text">
+                                            <GetBookmark key={story.id} story_id={story.id} /> Bookmark
+                                        </span>
+                                    </div>
                                 </div>
                             ):(<></>)
                         }
@@ -122,7 +140,7 @@ function Ranking() {
                 </Row>
             </Col>
         </Link>        
-    ));
+    )});
 
     return (
         <div>
@@ -150,138 +168,7 @@ function Ranking() {
                 </Tab>
             </Tabs>
 
-            {/* <Row>
-                <Col><p className='ranking_title'>Most View</p>
-                    {sortView.slice(0,5).map((story) => (
-                        <Link className="link" 
-                        to={`/story/${story.title}`}
-                        state={{story_id: story.id}}>
-                            <Row className="story_link">
-                                <Col md="auto">
-                                    {story.link !== null ? (
-                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
-                                    ) : (
-                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
-                                    )} 
-                                </Col>
-                                <Col className='story_field'> 
-                                    <h6 className='stort_title'>{story.title}</h6>
-                                    <div className="detail_list2">
-                                        <img
-                                            width="14px"
-                                            height="14px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_type}
-                                        />
-                                        <span className="icon_text">{story.type}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="14px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_status}
-                                        />
-                                        <span className="icon_text">{story.status}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_view}
-                                        />
-                                        <span className="icon_text">2.84 M</span>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Link>
-                    ))}               
-                </Col>
-
-                <Col><p className='ranking_title'>Most Like</p>
-                    {sortLike.slice(0,5).map((story) => (
-                        <Link  to={`/storypage/${story.id}`}>
-                            <Row className="story_link">
-                                <Col md="auto"> 
-                                    {story.link !== null ? (
-                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
-                                    ) : (
-                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
-                                    )}
-                                </Col>
-                                <Col className='story_field'> 
-                                <h6 className='stort_title'>{story.title}</h6>
-                                    <div className="detail_list2">
-                                        <img
-                                            width="14px"
-                                            height="14px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_type}
-                                        />
-                                        <span className="icon_text">{story.type}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="14px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_status}
-                                        />
-                                        <span className="icon_text">{story.status}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_like}
-                                        />
-                                        <span className="icon_text">18.35 K</span>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Link>
-                    ))}                   
-                </Col>
-
-                <Col><p className='ranking_title'>Most Bookmark</p>
-                    {sortBookmark.slice(0,5).map((story) => (
-                        <Link  to={`/storypage/${story.id}`}>
-                            <Row className="story_link">
-                                <Col md="auto"> 
-                                    {story.link !== null ? (
-                                        <img src={story.link} alt="Cover" height="114px" width="76px"/>
-                                    ) : (
-                                        <img width="76px" height="114px" src={ImgAsset.image_placeholder} alt="Cover"/>
-                                    )}
-                                </Col>
-                                <Col className='story_field'> 
-                                <h6 className='stort_title'>{story.title}</h6>
-                                    <div className="detail_list2">
-                                        <img
-                                            width="14px"
-                                            height="14px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_type}
-                                        />
-                                        <span className="icon_text">{story.type}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            height="14px"
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_status}
-                                        />
-                                        <span className="icon_text">{story.status}</span>
-                                    </div>
-                                    <div className="detail_list2">
-                                        <img
-                                            className="detail_list_icon"
-                                            src = {ImgAsset.icon_bookmark}
-                                        />
-                                        <span className="icon_text">134</span>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Link>
-                    ))}                
-                </Col>
-            </Row> */}
+           
         </div>
     );
 }

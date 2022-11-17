@@ -89,7 +89,7 @@ export default function Navbars () {
         <div>
             <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
                 <Container>
-                    <Navbar.Brand href="/">
+                    <Navbar.Brand href="/homepage">
                         <img
                         src = {ImgAsset.logo}
                         // width="150"
@@ -101,7 +101,7 @@ export default function Navbars () {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/browse" state={{link_query: ""}} className="nav_icon_field nav-link">
+                            <Nav.Link as={Link} to="/browse/Story" state={{link_query: ""}} className="nav_icon_field nav-link">
                                 <img
                                 src = {ImgAsset.compass_browse}
                                 width="30"
@@ -144,10 +144,7 @@ export default function Navbars () {
                                         {
                                             user.avatar !== null ?(
                                                 <>
-                                                <img
-                                                src = {user.avatar}
-                                                style={{width: 45, height: 45, borderRadius: 45/ 2}}
-                                                />
+                                                <img src = {user.avatar} style={{width: 45, height: 45, borderRadius: 45/ 2}}/>
                                                 </>
                                             ):(
                                                 <>

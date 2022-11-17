@@ -96,8 +96,9 @@ function StoryCard(props) {
               {/* { 
                 story.type == props.type ? ( */}
                     <Link className="link" 
-                      to={`/story/${story.title}`}
-                      state={{story_id: story.id}}>
+                      to={`/story/${story.id}`}
+                      // state={{story_id: story.id}}
+                      >
                     {/* <Link  to={`/story/${story.id}`}> */}
                       <div className="d-flex justify-content-center ">
                         <div

@@ -11,16 +11,16 @@ function AboutUsPage() {
     return (
         <div>
         <Navbars />   
-        <Container  className="mt-3" fluid>
+        <Container  className="mt-3" >
             <Row>
-                    <Card className="border-0 rounded shadow-sm">
+                    <Card className="cardAbouUs border-0 rounded shadow-sm">
                         <Card.Body className="p-4">
                         <h1 className="title">About Us</h1>
                         </Card.Body>
                     </Card>
             </Row>
 
-    <Row>
+            <Row>
                 <Col xs={7} >
                 <Row>
                 <h6 className="title-low">Our</h6>
@@ -40,30 +40,30 @@ function AboutUsPage() {
                 <h3 className="middle-des">Team Developper</h3>
                 <h5 className="middle-des">This were the team developer who were the owner of this website-based application</h5>
                     <Col> 
-                        <Col xs={6} className="middle">
-                        <img src={ImgAsset.Rafiq} alt="Scrum Master" style={{width: 150, borderRadius: 150/ 2}}/>
-                        <strong>Muhammad Rafiq<br></br> Scrum Master</strong>
-                        </Col>
+                        <center><Col xs={6} className="middle">
+                        <center><img src={ImgAsset.Rafiq} alt="Scrum Master" style={{width: 150, borderRadius: 150/ 2}}/></center>
+                        <p className="textdev"><strong>Muhammad Rafiq<br></br> Scrum Master</strong></p>
+                        </Col></center>
 
-                        <Col xs={6} className="middle">
-                        <img src={ImgAsset.Adam} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/>
-                        <strong>Adam Din Naufan <br></br> Developper</strong>
-                        </Col>
+                        <center><Col xs={6} className="middle">
+                        <center><img src={ImgAsset.Adam} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/></center>
+                        <p className="textdev"><strong>Adam Din Naufan <br></br> Developer</strong></p>
+                        </Col></center>
 
-                        <Col xs={6} className="middle">
-                        <img src={ImgAsset.Bagas} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/>
-                        <strong>Bagas Adi Firdaus <br></br> Developper</strong>
-                        </Col>
+                        <center><Col xs={6} className="middle">
+                        <center><img src={ImgAsset.Bagas} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/></center>
+                        <p className="textdev"><strong>Bagas Adi Firdaus <br></br> Developer</strong></p>
+                        </Col></center>
 
-                        <Col xs={6} className="middle">
-                        <img src={ImgAsset.Chandra} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/>
-                        <strong>Chandra Wijaya <br></br> Developper</strong>
-                        </Col>
+                        <center><Col xs={6} className="middle">
+                        <center><img src={ImgAsset.Chandra} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/></center>
+                        <p className="textdev"><strong>Chandra Wijaya <br></br> Developer</strong></p>
+                        </Col></center>
 
-                        <Col xs={6} className="middle">
-                        <img src={ImgAsset.Andre} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/>
-                        <strong>Andre Luckyta F <br></br> Developper</strong>
-                        </Col>
+                        <center><Col xs={6} className="middle">
+                        <center><img src={ImgAsset.Andre} alt="Developper" style={{width: 150, borderRadius: 150/ 2}}/></center>
+                        <p className="textdev"><strong>Andre Luckyta F <br></br> Developer</strong></p>
+                        </Col></center>
 
 
 

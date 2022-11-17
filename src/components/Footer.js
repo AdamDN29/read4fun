@@ -28,16 +28,16 @@ function Footer() {
                           <a href="/about_us"><p className="link_text">About Us</p></a>
                         </div>
                         <div className="link_box">
-                        <Link to={`/browse`}
-                            state={{link_query: "Short Story"}}
+                        <Link to={`/browse/Short Story`}
+                            // state={{link_query: "Short Story"}}
                           ><p className="link_text"><p className="link_text">Short Story</p></p></Link>
-                          <Link to={`/browse`}
-                            state={{link_query: "Novel"}}
+                          <Link to={`/browse/Novel`}
+                            // state={{link_query: "Novel"}}
                           ><p className="link_text"><p className="link_text">Novel</p></p></Link>
                         </div>
                         <div className="link_box">
-                          <Link to={`/browse`}
-                            state={{link_query: ""}}
+                          <Link to={`/browse/Ranking`}
+                            // state={{link_query: ""}}
                           ><p className="link_text">Ranking</p></Link>
                           <a href="/updates"><p className="link_text">Updates</p></a>
                         </div>

@@ -5,43 +5,28 @@ import ImgAsset from '../resources';
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 import Pagination from "../components/Pagination";
+import GetLike from '../hook/GetLike';
+import GetBookmark from '../hook/GetBookmark';
+import CommentSection from '../components/CommentSection';
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
 import { Link, useParams, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useNavigate } from "react";
 import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
 import Swal from "sweetalert2"
 
-const allGenres = [
-    {id: 1, label: 'Action'},
-    {id: 2, label: 'Adventure'},
-    {id: 3, label: 'Comedy'},
-    {id: 4, label: 'Drama'},
-    {id: 5, label: 'Fantasy'},
-    {id: 6, label: 'Historical'},
-    {id: 7, label: 'Horror'},
-    {id: 8, label: 'Magical Realism'},
-    {id: 9, label: 'Martial Arts'},
-    {id: 10, label: 'Mature'},
-    {id: 11, label: 'Mystery'},
-    {id: 12, label: 'Psychological'},
-    {id: 13, label: 'Romance'},
-    {id: 14, label: 'Real Experience'},
-    {id: 15, label: 'Sci-Fi'},
-    {id: 16, label: 'School Life'},
-    {id: 17, label: 'Slice of Life'},
-    {id: 18, label: 'Sports'},
-    {id: 19, label: 'Supernatural'},
-    {id: 20, label: 'Tragedy'},
-    {id: 21, label: 'Video Games'},
-];
-
 function UserStoryPage() {
-    const location = useLocation();
-    const { story_id } = location.state;
+    // const location = useLocation();
+    // const { story_id } = location.state;
+    const { story_id } = useParams();
     console.log(story_id);
+
+    const [userId, setUserId] = useState(() => {
+		const localData = sessionStorage.getItem("id");
+		return localData ? localData : null;
+	});
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
@@ -52,8 +37,8 @@ function UserStoryPage() {
     const [flag, setFlag] = useState(false);
 
     const [newChapter, setNewChapter] = useState();
-    console.log(newChapter);
-    console.log("Chapters : ", chapters);
+    const [listGenre, setListGenre] = useState();
+    const [idGenre, setIdGenre] = useState();
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -70,13 +55,27 @@ function UserStoryPage() {
         axios
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
           .then((response) => {
-            setStory(response.data);
+            setStory(response.data[0]);
             console.log(response.data);
-            const tempNewChapter = {id : 0, title : '', number : '', content : '', story : { id : response.data.id, title : response.data.title, type: response.data.type}};
-            setNewChapter(tempNewChapter);
 
+            if(response.data.banned === 1){
+                Swal.fire({
+                    icon: "warning",
+                    title: "Your Story Is Banned!",
+                    text: "Reason: " + response.data[0].explanation,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: "#B8D9A0",
+                    preConfirm: () => {
+                        window.location.href = "/dashboard";
+                    },
+                    footer:
+                      '<center><p>Please contact <a href="mailto:read4fun.developer@gmail.com"> read4fun.developer@gmail.com </a> <br>if you think this is a mistake </p></center>',
+                  });
+            }
+            // Get Data Author
             axios
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data[0].user_id}`)
             .then((response) => {
                 setAuthor(response.data.data);
                 console.log(response.data.data);
@@ -112,7 +111,17 @@ function UserStoryPage() {
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
           .then((response) => {
             console.log(response.data);
-            setGenre(response.data);      
+            const sortedBookmark = [...response.data].sort((a, b) => a.id - b.id);
+            setGenre(sortedBookmark); 
+            const temp1 = [];
+            const temp2 = [];
+            response.data.map((genre, index) => {
+                temp1.push(genre.genre_id);
+                temp2.push(genre.id);
+                console.log("Temp ",index," : ", temp1)
+            })   
+            setListGenre(temp1);
+            setIdGenre(temp2);
           })
           .catch((err) => {
             console.log(err);
@@ -158,7 +167,7 @@ function UserStoryPage() {
                         allowEscapeKey: false,
                         confirmButtonColor: '#B8D9A0',
                         preConfirm: () => {
-                            // navigate(-1);
+                            window.location.href='/dashboard'
                         }	  
                     }) 		
                 })
@@ -245,7 +254,7 @@ function UserStoryPage() {
                                     { story.view !== null ? (
                                         <>{story.view}</>
                                         ):(<>1</>)
-                                    }
+                                    } 
                                 </span>
                             </div>
                         </Col>
@@ -256,10 +265,7 @@ function UserStoryPage() {
                                     src = {ImgAsset.icon_like2}
                                 />
                                 <span className="icon_text">
-                                    { story.like !== null ? (
-                                        <>{story.like}</>
-                                        ):(<>1</>)
-                                    }
+                                    <GetLike key={story.id} story_id={story.id} /> 
                                 </span>
                             </div>
                         </Col>
@@ -270,10 +276,7 @@ function UserStoryPage() {
                                     src = {ImgAsset.icon_bookmark2}
                                 />
                                 <span className="icon_text">
-                                    { story.bookmark !== null ? (
-                                        <>{story.bookmark}</>
-                                        ):(<>1</>)
-                                    }
+                                    <GetBookmark key={story.id} story_id={story.id} />
                                 </span>
                             </div>
                         </Col>
@@ -289,11 +292,11 @@ function UserStoryPage() {
                                 <>
                                 {
                                     genres.map((genre) => {
-                                        var array = [...allGenres]; 
-                                        var index = array.indexOf(genre.genre_id)
                                         return (
-                                        <Link to="/browse" state={{link_query: allGenres[index].label}}>
-                                            <Badge bg="#B8D9A0" className='genre_badge' >{allGenres[index].label}</Badge>{' '}
+                                        <Link to={"/browse/" + genre.genre_name}
+                                            // state={{link_query: genre.genre_id}}
+                                        >
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
                                         </Link>)
                                     })
                                 }
@@ -304,13 +307,16 @@ function UserStoryPage() {
                     </div>
 
                     {/* Button */}
-                    <Link to={`/editdetail/${story.id}`}><Button className='btn_sp'>Edit Detail</Button></Link>
+                        <Link 
+                            to={`/editdetail/${story.title}`}
+                            state={{story_id: story.id, list_genre: listGenre, id_genre: idGenre}}    
+                            ><Button className='btn_sp'>Edit Detail</Button></Link>
                     {
                         story.type === "Novel" ?(
                             <>
                             <Link 
-                            to={`/userstory/${story.title}/writing/newChapter`}
-                            state={{chapter_content: newChapter}}    
+                            to={`/userstory/${story.id}/writing/newChapter`}
+                            // state={{chapter_content: newChapter}}    
                             >
                             <Button className='btn_sp'>Add New Chapter</Button>
                             </Link>
@@ -363,11 +369,12 @@ function UserStoryPage() {
                             flag === false ?(
                                 <>
                                     <p>There are no chapters in this novel yet</p>
-                                    <Link 
-                                    to={`/userstory/${story.title}/writing/newChapter`}
-                                    state={{chapter_content: newChapter}}    
-                                    ><p className='latest_chapter'>Add a new chapter</p>
-                                    </Link>
+                                    <p className='latest_chapter'>
+                                        <Link className='latest_chapter'
+                                        to={`/userstory/${story.title}/writing/newChapter`}
+                                        state={{chapter_content: newChapter}}    
+                                        > Add a new chapter </Link>
+                                    </p> 
                                 </>
                             ):(
                                 <>
@@ -398,8 +405,8 @@ function UserStoryPage() {
 
                                                 return (
                                                     <Link key={chapter.id} className="link_chapter" 
-                                                    to={`/userstory/${story.title}/writing/${chapter.number}`}
-                                                    state={{chapter_content: chapter}}
+                                                    to={`/userstory/${story.id}/writing/${chapter.number}`}
+                                                    // state={{chapter_content: chapter}}
                                                     >
                                                         <Col>
                                                         <Card className='chapter_card'>
@@ -451,131 +458,7 @@ function UserStoryPage() {
             }
 
            {/* Comments Section */}
-            <div className='info_section'> 
-                <h1 className='section_title3'>Comments</h1>
-                <div className='comment_field'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            {
-                                author.avatar !== null ?(
-                                    <>
-                                    <img
-                                    src = {author.avatar}
-                                    className="avatar_place"
-                                    style={{width: 50, height: 50, borderRadius: 50/ 2}}
-                                    />
-                                    </>
-                                ):(
-                                    <>
-                                    <img
-                                    src = {ImgAsset.avatar2}
-                                    className="avatar_place"
-                                    alt="avatar"
-                                    />
-                                    </>
-                                )
-                            }
-                        </Col>
-                        <Col > 
-                            <div className='comment_form'>
-                                {/* Not Logged In */}
-                                {/* <div className='notlogin_box'>
-                                    <Col><p className='login_note'>You Must Be Logged In to Comment</p></Col>
-                                    <Col><Button href='/login' className='btn_comment_form'>Login</Button></Col>
-                                </div> */}
-
-                                {/* Logged In */}
-                                <div className='login_box'>
-                                    <FloatingLabel
-                                        controlId="floatingTextarea"
-                                        label="Comment"
-                                        className="mb-3"
-                                    >
-                                        <Form.Control as="textarea" placeholder="Leave a comment here" />
-                                    </FloatingLabel>
-                                    <Button className='btn_comment_form'>Post Comment</Button>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='release_content'>3 Comments  </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>   
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>              
-                        </Col>
-                    </Row>
-                </div>
-
-            </div>
+           <CommentSection key={story_id} userId={userId} story_id={story_id} author_Id={story.user_id}/>
          
         </Container>
         <Footer />   

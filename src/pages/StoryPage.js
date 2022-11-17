@@ -7,6 +7,9 @@ import ReactTimeAgo from 'react-time-ago'
 import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 import Pagination from "../components/Pagination";
+import GetLike from '../hook/GetLike';
+import GetBookmark from '../hook/GetBookmark';
+import CommentSection from '../components/CommentSection';
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
@@ -15,46 +18,22 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2"
 import axios from "axios";
 
-const allGenres = [
-    {id: 1, label: 'Action'},
-    {id: 2, label: 'Adventure'},
-    {id: 3, label: 'Comedy'},
-    {id: 4, label: 'Drama'},
-    {id: 5, label: 'Fantasy'},
-    {id: 6, label: 'Historical'},
-    {id: 7, label: 'Horror'},
-    {id: 8, label: 'Magical Realism'},
-    {id: 9, label: 'Martial Arts'},
-    {id: 10, label: 'Mature'},
-    {id: 11, label: 'Mystery'},
-    {id: 12, label: 'Psychological'},
-    {id: 13, label: 'Romance'},
-    {id: 14, label: 'Real Experience'},
-    {id: 15, label: 'Sci-Fi'},
-    {id: 16, label: 'School Life'},
-    {id: 17, label: 'Slice of Life'},
-    {id: 18, label: 'Sports'},
-    {id: 19, label: 'Supernatural'},
-    {id: 20, label: 'Tragedy'},
-    {id: 21, label: 'Video Games'},
-];
-
-function StoryPage(props) {
-    const location = useLocation();
-    const { story_id } = location.state;
+function StoryPage() {
+    // const location = useLocation();
+    // const { story_id } = location.state;
+    const { story_id } = useParams();
     console.log(story_id);
 
     const [userId, setUserId] = useState(() => {
 		const localData = sessionStorage.getItem("id");
 		return localData ? localData : null;
 	});
-    const [userToken, setUserToken] = useState(() => {
-		const localData = sessionStorage.getItem("token");
-		return localData ? localData : null;
-	});
+
     const [user, setUser] = useState([]);
     const [liked, setLiked] = useState(false);
     const [bookmarked, setBookmarked] = useState(false);
+    const [numberLike, setNumberLike] = useState();
+    const [numberBookmark, setNumberBookmark] = useState();
 
     const [story, setStory] = useState([]);
     const [author, setAuthor] = useState([]);
@@ -79,11 +58,13 @@ function StoryPage(props) {
         axios
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
           .then((response) => {
-            setStory(response.data);
+            setStory(response.data[0]);
             console.log(response.data);
+            getNumberLike();
+            getNumberBookmark();
 
             axios
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data.user_id}`)
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data[0].user_id}`)
             .then((response) => {
                 setAuthor(response.data.data);
                 console.log(response.data.data);
@@ -131,12 +112,76 @@ function StoryPage(props) {
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
           .then((response) => {
             console.log(response.data);
-            setGenre(response.data);      
+            const sortedGenre = [...response.data].sort((a, b) => a.id - b.id);
+            setGenre(sortedGenre);      
           })
           .catch((err) => {
             console.log(err);
           });
     }, []);
+
+    // Get User Like Story
+    useEffect(() => {
+        if (userId !== null){
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userLike/${userId}`)
+            .then((response) => {
+                response.data.map((like) => {
+                    if (like.story_id === Number(story_id)){
+                        setLiked(true);   
+                    }
+                })
+                
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }    
+    }, []);
+
+    // Get User Bookmark Story
+    useEffect(() => {
+        if (userId !== null){
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userBookmark/${userId}`)
+            .then((response) => {
+                response.data.map((bookmark) => {
+                    if (bookmark.story_id === Number(story_id)){
+                        setBookmarked(true);   
+                    }
+                })
+                
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }   
+    }, []);
+
+    function getNumberLike (){
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getLike/${story_id}`)
+          .then((response) => {
+            console.log("Like : ", response);
+            setNumberLike(response.data)
+        })
+        .catch((err) => {
+            console.log(err);
+        });   
+    }
+
+    function getNumberBookmark (){
+        axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getBookmark/${story_id}`)
+          .then((response) => {
+            console.log("Bookmark : ", response);
+            setNumberBookmark(response.data.length)
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+        
+    }
 
     // Sort Settings
     const [sortFlag, setSortFlag] = useState(true);
@@ -195,7 +240,7 @@ function StoryPage(props) {
                 .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/report`, 
                     formData, {
                         headers: {
-                            'Authorization' : `Bearer ${userToken}`
+                            Authorization : `Bearer ${sessionStorage.getItem("token")}`
                         }
                 })
                 .then((response) => {
@@ -228,51 +273,180 @@ function StoryPage(props) {
 
     // Change Like
     function changeLike (){
-        console.log("Change Like")
-        
-        if(liked === true){
-            Swal.fire({
-                icon: 'question',
-                title: 'Unlike this Story ?',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonColor: '#D3455B',
-                showCancelButton: true,
-                preConfirm: () => {
-                    setLiked(false);
-                }	  
-            }) 		
-            
-        }else{
-            setLiked(true);
+        if(userId === null){
+            notLoginPop();
         }
+        else{
+            console.log("Change Like")
+            if(liked === true){
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Unlike this Story ?',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#D3455B',
+                    showCancelButton: true,
+                    preConfirm: () => {
+                        axios
+                        .create({
+                            headers: {
+                            Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                            }
+                        })
+                        .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/unlike/${story_id}`)
+                        .then((response) => {
+                            console.log(response.data);
+                            setLiked(false);
+                            
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'You Unliked This Story',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#B8D9A0',
+                                preConfirm: () =>{
+                                    getNumberLike();
+                                }
+                            }) 	
+                    
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to Unlike This Story',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#D3455B',
+                            }) 
+                        });
+                    }	  
+                }) 		
+                
+            }else{
+                axios
+                .create({
+                    headers: {
+                      Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                      }
+                })
+                .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/like/${story_id}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setLiked(true);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'You Liked This Story',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#B8D9A0',
+                        preConfirm: () =>{
+                            getNumberLike();
+                        }
+                    }) 	
+            
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to Like This Story',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#D3455B',
+                    }) 
+                });
+            }
+        }   
     }
 
     // Change Bookmark
     function changeBookmark () {
-        console.log("Change Bookmark")
-        
-        if(bookmarked === true){
-            Swal.fire({
-                icon: 'question',
-                title: 'Delete Story from bookmark ?',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonColor: '#D3455B',
-                showCancelButton: true,
-                preConfirm: () => {
-                    setBookmarked(false);
-                }	  
-            }) 		 
-        }else{
-            setBookmarked(true);
-            Swal.fire({
-                title: 'Bookmarked',
-                text: 'This Story has been added to your bookmarks',
-                icon: 'success',
-                confirmButtonColor: '#B8D9A0'
-            })
+        if(userId === null){
+            notLoginPop();
         }
+        else{
+            console.log("Change Bookmark")
+        
+            if(bookmarked === true){
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Delete Story from bookmark ?',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    confirmButtonColor: '#D3455B',
+                    showCancelButton: true,
+                    preConfirm: () => {   
+                        axios
+                        .create({
+                            headers: {
+                            Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                            }
+                        })
+                        .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbookmark/${story_id}`)
+                        .then((response) => {
+                            console.log(response.data);
+                            setBookmarked(false);
+                            
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'You remove this Story from Bookmark',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#B8D9A0',
+                                preConfirm: () =>{
+                                    getNumberBookmark();
+                                }
+                            }) 	
+                    
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to remove this Story from Bookmark',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonColor: '#D3455B',
+                            }) 
+                        });
+                    }	  
+                }) 		 
+            }else{
+                axios
+                .create({
+                    headers: {
+                    Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                    }
+                })
+                .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/bookmark/${story_id}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setBookmarked(true);
+                    Swal.fire({
+                        title: 'Bookmarked',
+                        text: 'This Story has been added to your bookmarks',
+                        icon: 'success',
+                        confirmButtonColor: '#B8D9A0',
+                        preConfirm: () =>{
+                            getNumberBookmark();
+                        }
+                    })
+            
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed to Bookmark This Story',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonColor: '#D3455B',
+                    }) 
+                });
+            
+            }
+        } 
     }
 
     return (
@@ -343,8 +517,7 @@ function StoryPage(props) {
                                 <img
                                     className="detail_list_icon"
                                     src = {ImgAsset.icon_view2}
-                                />
-                                
+                                />           
                                 <span className="icon_text">
                                     { story.view !== null ? (
                                         <>{story.view}</>
@@ -360,10 +533,7 @@ function StoryPage(props) {
                                     src = {ImgAsset.icon_like2}
                                 />
                                 <span className="icon_text">
-                                    { story.like !== null ? (
-                                        <>{story.like}</>
-                                        ):(<>1</>)
-                                    }
+                                    {numberLike}
                                 </span>
                             </div>
                         </Col>
@@ -374,10 +544,7 @@ function StoryPage(props) {
                                     src = {ImgAsset.icon_bookmark2}
                                 />
                                 <span className="icon_text">
-                                    { story.bookmark !== null ? (
-                                        <>{story.bookmark}</>
-                                        ):(<>1</>)
-                                    }
+                                    {numberBookmark}
                                 </span>
                             </div>
                         </Col>
@@ -392,28 +559,25 @@ function StoryPage(props) {
                                 <>
                                 {
                                     genres.map((genre) => {
-                                        var array = [...allGenres]; 
-                                        var index = array.indexOf(genre.genre_id)
                                         return (
-                                        <Link to="/browse" state={{link_query: allGenres[index].label}}>
-                                            <Badge bg="#B8D9A0" className='genre_badge' >{allGenres[index].label}</Badge>{' '}
+                                        <Link to={"/browse/" + genre.genre_name}
+                                            // state={{link_query: genre.genre_id}}
+                                        >
+                                            <Badge bg="#B8D9A0" className='genre_badge' >{genre.genre_name}</Badge>{' '}
                                         </Link>)
                                     })
                                 }
                                 </>
                             )
                         }
-                        
-                        {/* <Link to="/browse"><Badge bg="#B8D9A0" className='genre_badge' >Action</Badge>{' '}</Link> */}
                     </div>
 
                     {/* Button */}
                     
                         <Button className='btn_sp' disabled={!flag}>
                             <Link  className='white_p'
-                                key={firstChapter.id}
-                                to={`/story/${story.title}/chapter`}
-                                state={{chapter_content: firstChapter, list_chapter: listChapters}}
+                                to={`/story/${story.id}/chapter/${firstChapter.number}`}
+                                // state={{chapter_content: firstChapter, list_chapter: listChapters}}
                             >
                             { story.type === "Novel" ?(<>Read First Chapter</>):(<>Read Story</>)}
                             </Link>
@@ -468,8 +632,8 @@ function StoryPage(props) {
                                 <>
                                 <div className='release_content'>Latest Release : 
                                     <Link className="link_chapter" 
-                                    to={`/story/${story.title}/chapter`}
-                                    state={{chapter_content: lastChapter, list_chapter: listChapters}}
+                                    to={`/story/${story.id}/chapter/${lastChapter.number}`}
+                                    // state={{chapter_content: lastChapter, list_chapter: listChapters}}
                                     ><a className='latest_chapter'>{" "} Chapter {lastChapter.number} : {lastChapter.title} </a>
                                     </Link>
                                         <img
@@ -491,8 +655,8 @@ function StoryPage(props) {
                                         return (
                                             <Link className="link_chapter" 
                                             key={chapter.id}
-                                            to={`/story/${story.title}/chapter`}
-                                            state={{chapter_content: chapter, list_chapter: listChapters}}
+                                            to={`/story/${story.id}/chapter/${chapter.number}`}
+                                            // state={{chapter_content: chapter, list_chapter: listChapters}}
                                             >
                                                 <Col>
                                                 <Card className='chapter_card'>
@@ -545,156 +709,7 @@ function StoryPage(props) {
            
 
            {/* Comments Section */}
-            <div className='info_section'> 
-                <h1 className='section_title3'>Comments</h1>
-                <div className='comment_field'>
-                    
-                    <Row>
-                        <Col xs={1} >
-                        {
-                            userId !== null ?(
-                                <>
-                                {
-                                    user.avatar !== null ?(
-                                        <>
-                                        <img
-                                        src = {user.avatar}
-                                        className="avatar_place"
-                                        style={{width: 50, height: 50, borderRadius: 50/ 2}}
-                                        />
-                                        </>
-                                    ):(
-                                        <>
-                                        <img
-                                        src = {ImgAsset.avatar2}
-                                        className="avatar_place"
-                                        alt="avatar"
-                                        />
-                                        </>
-                                    )
-                                }
-                                </>
-                            ):(
-                                <>
-                                <img
-                                src = {ImgAsset.avatar2}
-                                className="avatar_place"
-                                alt="avatar"
-                                />
-                                </>
-                            )
-                        }
-                        
-                        </Col>
-                        <Col > 
-                            <div className='comment_form'>
-                                {
-                                    userId === null ?(
-                                        <>
-                                        {/* Not Logged In */}
-                                        <div className='notlogin_box'>
-                                            <Col><p className='login_note'>You Must Be Logged In to Comment</p></Col>
-                                            <Col><Button href='/login' className='btn_comment_form'>Login</Button></Col>
-                                        </div>
-                                        </>
-                                    ):(
-                                                             
-                                        <>
-                                        {/* Logged In */}
-                                        <div className='login_box'>
-                                            <FloatingLabel
-                                                controlId="floatingTextarea"
-                                                label="Comment"
-                                                className="mb-3"
-                                            >
-                                                <Form.Control as="textarea" placeholder="Leave a comment here" />
-                                            </FloatingLabel>
-                                            <Button className='btn_comment_form'>Post Comment</Button>
-                                        </div>
-                                        </>                    
-                                    )
-                                }
-      
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='release_content'>3 Comments  </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>  
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-                <div className='comment_field2'>
-                    
-                    <Row>
-                        <Col xs={1} > 
-                            <img
-                                className='avatar_place'
-                                src = {ImgAsset.avatar2}
-                            />
-                        </Col>
-                        <Col > 
-                            <p className='comment_username'>Weaver the Demon of Fate</p>
-                            <p className='comment_date'>5 months ago</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={1}></Col>
-                        <Col > 
-                            <div className='comment_content_box'>
-                                <p className='comment_content'>This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!! This story is really Awesome !!!</p>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
-
-            </div>
+           <CommentSection key={story.id} userId={userId} story_id={story_id} author_Id={story.user_id}/>
          
         </Container>
         <Footer/>

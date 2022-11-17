@@ -12,6 +12,8 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const loginHandler = async (e) => {
     e.preventDefault();
 
@@ -48,7 +50,8 @@ function Login() {
             allowEscapeKey: false,
             confirmButtonColor: "#B8D9A0",
             preConfirm: () => {
-              window.location.href = "/homepage";
+              // window.location.href = "/homepage";
+              navigate(-1);
             },
           });
         }

@@ -8,7 +8,7 @@ import Footer from '../components/Footer'
 
 //import component Bootstrap React
 import { Card, Container, Row, Col , Button, Form, FormGroup } from 'react-bootstrap'
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from "axios";
@@ -34,13 +34,19 @@ const reducer = (currentState, action) => {
 }
 
 function WritingPage() {
-    const location = useLocation();
-    const {chapter_content} = location.state;
-    console.log(chapter_content);
+    // const location = useLocation();
+    // const {chapter_content} = location.state;
+    // console.log(chapter_content);
+
+    const { story_id, chapter_number } = useParams();
+    console.log("Story Id : ", story_id);
+    console.log("Chapter Number : ",chapter_number);
 
     const navigate = useNavigate();
 
-    const [thisChapter, setThisChapter] = useState(chapter_content);
+    const [thisChapter, setThisChapter] = useState(
+        {id : 1, title: "Title", number: "1", content:"Please Wait ...", story:{id:1, title:"Story"}}
+      );
     const [disable, setDisable] = useState(false);
     console.log(thisChapter)
 
@@ -48,9 +54,38 @@ function WritingPage() {
     console.log(chapter);
 
     useEffect(() => {
-        if (thisChapter.id === 0){
-            setDisable(true);
+        console.log("Get Data Chapter")
+        if (chapter_number === "newChapter"){
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
+            .then((response) => {
+                console.log(response.data);
+                const tempNewChapter = {id : 0, title : '', number : '', content : '', story : { id : response.data[0].id, title : response.data[0].title, type: response.data[0].type}};
+                setThisChapter(tempNewChapter);
+                setDisable(true);               
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+            
         }
+        else{
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/story/${story_id}`)
+            .then((response) => {
+                console.log(response.data);
+                const chapterAsc = [...response.data].sort((a, b) => a.number - b.number); 
+                console.log("Total Data: ", response.data.length);
+                var array = [...chapterAsc]; 
+                var myIndex = array.findIndex(item => item.number === chapter_number)
+                console.log("Index : ", myIndex)
+                setThisChapter(response.data[myIndex]);
+                
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }     
     }, [])
     
     const submitData = (e) => {
@@ -214,8 +249,8 @@ function WritingPage() {
                     <Col md={8}>
                         <div >
                             <Link className="link" 
-                            to={`/userstory/${thisChapter.story.title}`}
-                            state={{story_id: thisChapter.story.id}}
+                            to={`/userstory/${thisChapter.story.id}`}
+                            // state={{story_id: thisChapter.story.id}}
                             >
                                 <span className="titleSection">{thisChapter.story.title}</span>
                             </Link>
@@ -254,7 +289,7 @@ function WritingPage() {
                                         <Form.Label className="label_form">Chapter Title</Form.Label>
                                         <Form.Control 
                                             type="text" 
-                                            placeholder="Enter Chapter Number" 
+                                            placeholder="Enter Chapter Title" 
                                             name='number'
                                             defaultValue ={thisChapter.title}
                                             onBlur={(e) =>

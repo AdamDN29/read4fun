@@ -13,7 +13,7 @@ import Pagination from "../components/Pagination";
 //import component Bootstrap React
 import { Spinner, Container, Row, Col , Button, Form, Badge, InputGroup, ButtonGroup, ToggleButton  } from 'react-bootstrap'
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import GoTopButton from '../components/GoTopButton';
 import { useScroll } from "../helper/scroll";
@@ -28,7 +28,7 @@ const scrollToSection = (flag) => {
     });
   };
 
-const genres = [
+const allGenres = [
     {id: 1, label: 'Action'},
     {id: 2, label: 'Adventure'},
     {id: 3, label: 'Comedy'},
@@ -73,9 +73,12 @@ const allSort = [
 
 
 function BrowsePage() {
-    const location = useLocation();
-    const { link_query } = location.state;
+    // const location = useLocation();
+    // const { link_query } = location.state;
+    const { link_query } = useParams();
     console.log(link_query);
+
+    const navigate = useNavigate();
 
     const [query, setQuery] = useState("");    
     console.log(query);
@@ -102,21 +105,33 @@ function BrowsePage() {
     //Sort Status
     const [sortValue, setSortValue] = useState('1');
 
-    
+    // Link Flag
+    const [checkedLink, setCheckedLink] = useState(link_query);
+
+    //Genre Filter Checked
+    const [myGenre, setMyGenre] = useState([]);
 
     // Get Data Story
     useEffect(() => {
-        if (link_query !== ""){
-            console.log("Filterrr !!!!")
-            setTypeValue('Novel');
-            getLinkStory();
+        if (link_query === "Novel" || link_query === "Short Story"){
+            console.log("Type Filterrr")
+            console.log("Query : ", link_query)
+            setTypeValue(link_query);
+            getTypeStory();
         }
-        else {
+        // else if(link_query / 1 === link_query){
+            // console.log("Genre Filter");
+            // setMyGenre(link_query);
+            // getGenreStory();
+        // }
+        else if(link_query === "Story" || link_query === "Ranking"){
             axios
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbanned`)
             .then((response) => {
                 console.log(response.data)
-                const sortedStory = [...response.data].sort((a, b) => a.title - b.title);
+                const sortedStory = [...response.data].sort((a, b) =>
+                    a.title > b.title ? 1 : -1,
+                );
                 setStory(sortedStory);
                 console.log("Total Data: ", response.data.length);
                 setallSessionsCount(response.data.length);
@@ -127,15 +142,44 @@ function BrowsePage() {
                 setIsLoading(false);
             });
         }
+        else{
+            console.log("Genre Filter");
+            allGenres.map((genre) => {
+                if(genre.label === link_query){
+                    console.log("Found Label : ", genre.label);
+                    console.log("Found ID : ", genre.id);
+                    setMyGenre(genre.id);
+                    axios
+                    .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getStory/${genre.id}`)
+                    .then((response) => {
+                        const sortedStory = [...response.data].sort((a, b) =>
+                            a.title > b.title ? 1 : -1,
+                        );
+                        setStory(sortedStory);
+                        console.log("Total Data: ", response.data.length);
+                        setallSessionsCount(response.data.length);
+                        setIsLoading(false);
+                        console.log("Link Genre : ", response.data);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        setIsLoading(false);
+                    });
+                }
+            })
+        }
 
         
     }, []);
 
-    const getLinkStory = () => {
+    // Get Story with Link Type
+    const getTypeStory = () => {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/type/${link_query}`)
           .then((response) => {
-            const sortedStory = [...response.data].sort((a, b) => b.view - a.view);
+            const sortedStory = [...response.data].sort((a, b) =>
+                a.title > b.title ? 1 : -1,
+            );
             setStory(sortedStory);
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length);
@@ -148,7 +192,25 @@ function BrowsePage() {
         });
     }
 
-    
+    // Get Story with Link Genre
+    const getGenreStory = () => {
+        // axios
+        // .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getStory/${filterGenre}`)
+        //   .then((response) => {
+        //     const sortedStory = [...response.data].sort((a, b) =>
+        //         a.title > b.title ? 1 : -1,
+        //     );
+        //     setStory(sortedStory);
+        //     console.log("Total Data: ", response.data.length);
+        //     setallSessionsCount(response.data.length);
+        //     setIsLoading(false);
+        //     console.log("Link Genre : ", response.data);
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //     setIsLoading(false);
+        // });
+    } 
 
 	// Search Handler
     const onSearchHandler = (e) => {
@@ -156,6 +218,7 @@ function BrowsePage() {
         console.log(query);
         setIsLoading(true);
         if( e !== null || e !== ""){
+            setMyGenre([]);
             setQuery(query);
             console.log("apply :", query);
             searchStory(query);
@@ -166,13 +229,18 @@ function BrowsePage() {
 
     // Get data when Search
     function searchStory (query){
+        navigate('/browse/Story');
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/search?query=${query}`)
           .then((response) => {
-            setStory(response.data);
+            const sortedStory = [...response.data].sort((a, b) =>
+                a.title > b.title ? 1 : -1,
+            );
+            setStory(sortedStory);
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length);
             setIsLoading(false);
+            temp();
             console.log(response);
           })
           .catch((err) => {
@@ -182,15 +250,23 @@ function BrowsePage() {
         setCurrentPage(1);
     }
 
-    
-
     // Get data when Filter
     function filterStory (){
+        let filterQuery = "";
+        navigate('/browse/Story');
         setIsLoading(true);
+        console.log("My Genre : ", myGenre)
+        if(myGenre.length === 1){
+            filterQuery="/getStory/" + myGenre[0];
+        }
+        else if(myGenre.length === 2){
+            filterQuery="/getMultiple/" + myGenre[0] + "/" + myGenre[1];
+        }
+        console.log("Filter Query : ", filterQuery)
         axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbanned`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story${filterQuery}`)
           .then((response) => {
-            temp();
+            
             let sortedStory;
             let filtered1;
             let filtered2;
@@ -234,7 +310,7 @@ function BrowsePage() {
                 
             }
             setStory(sortedStory);
-
+            temp();
             console.log("Submit Filter: ", sortedStory.length);
             setallSessionsCount(sortedStory.length);
             console.log(response);
@@ -251,6 +327,32 @@ function BrowsePage() {
             setIsLoading(false);
         });
         setCurrentPage(1);
+    }
+
+    // Check Checked Genre from link
+    const genreChecker  = (genre_label)  => {
+        let temps = false;
+        if (genre_label === checkedLink) {
+            temps = true;
+        }
+        return temps;
+    }
+
+    const changeMyGenre =  (e) => {
+        var num = Number(e.target.value)
+        // if (myGenre === num){
+        //     setMyGenre(null);
+        // }else{
+        //     setMyGenre(num);
+        // }
+        var array = [...myGenre]; 
+        var index = array.indexOf(num)
+        if (index !== -1) {
+            array.splice(index, 1);
+            setMyGenre(array);
+        }else{
+            setMyGenre(current => [...current, num]);
+        }       
     }
 
     // Scroll to Section
@@ -366,36 +468,51 @@ function BrowsePage() {
                         <h4 className='section_title4'>Genre</h4>
                         <Row>
                             <Col> 
-                                {genres.slice(0,7).map((genre) => (               
+                                {allGenres.slice(0,7).map((genre) => {
+                                    const checked_status = genreChecker(genre.label);
+                                    return(               
                                         <Form.Check 
                                         type="checkbox"
                                         id={`${genre.id}`}
                                         label={`${genre.label}`}
+                                        defaultChecked={checked_status}
+                                        value={genre.id}
+                                        onChange={changeMyGenre}
                                         className='form_check'
                                         />
-                                    )
+                                    )}
                                 )}
                             </Col>
                             <Col> 
-                                {genres.slice(7,14).map((genre) => ( 
+                                {allGenres.slice(7,14).map((genre) => {
+                                    const checked_status = genreChecker(genre.label);
+                                    return( 
                                         <Form.Check 
                                         type="checkbox"
                                         id={`${genre.id}`}
                                         label={`${genre.label}`}
+                                        defaultChecked={checked_status}
+                                        value={genre.id}
+                                        onChange={changeMyGenre}
                                         className='form_check'
                                         />
-                                    )
+                                    )}
                                 )}   
                             </Col>
                             <Col> 
-                                {genres.slice(14,21).map((genre) => (
+                                {allGenres.slice(14,21).map((genre) => {
+                                    const checked_status = genreChecker(genre.label);
+                                    return(
                                         <Form.Check 
                                         type="checkbox"
                                         id={`${genre.id}`}
                                         label={`${genre.label}`}
+                                        defaultChecked={checked_status}
+                                        value={genre.id}
+                                        onChange={changeMyGenre}
                                         className='form_check'
                                         />
-                                    )
+                                    )}
                                 )}   
                             </Col>
                         </Row>
@@ -444,36 +561,50 @@ function BrowsePage() {
                                 // <Link className="link" 
                                 // to={`/story/${story.title}`}
                                 // state={{story_id: story.id}}>
-                                <Link className="link" 
-                                    to={`/story/${story.title}`}
-                                    state={{story_id: story.id}}>
-                                    <StoryBrowse key={story.id} storys={story}/>
-                                </Link>
+                                <>
+                                {
+                                    myGenre.length !== 0 ?  (
+                                        <Link className="link" 
+                                        to={`/story/${story.id}`}
+                                        // state={{story_id: story.story_id}}
+                                        >
+                                            <StoryBrowse key={story.id} story_id={story.story_id} storys={story}/>
+                                        </Link>
+                                    ):(
+                                        <Link className="link" 
+                                        to={`/story/${story.id}`}
+                                        // state={{story_id: story.id}}
+                                        >
+                                            <StoryBrowse key={story.id} story_id={story.id} storys={story}/>
+                                        </Link>
+                                    )
+                                }
+                                </>
+                               
                             )})}
                                 
                             </Row>
                             )
                         }
+                        <div className='pagination'>
+                            <Pagination
+                                itemsCount={allSessionsCount}
+                                itemsPerPage={sessionsPerPage}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                alwaysShown={false}
+                                flagScroll = "2"
+                            />
+                        </div>
+                        <GoTopButton visible={scrollPosition > 400} />
                     </>
                     )
                 }               
                 
             </div>
-                <div className='pagination'>
-                    <Pagination
-                        itemsCount={allSessionsCount}
-                        itemsPerPage={sessionsPerPage}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        alwaysShown={false}
-                        flagScroll = "2"
-                    />
-                </div>
-                <GoTopButton visible={scrollPosition > 400} />
+                
             </div>
-            
-          
-            
+       
         </Container>
         <Footer />   
         </div>

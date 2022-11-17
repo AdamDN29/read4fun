@@ -19,7 +19,7 @@ function PolicyPage() {
                         <h1 className="title">Privacy Policy</h1>
                         <h4 className="description"> Effective Date September 04,2022 </h4>
                         <h3 className="title-low">Our Privacy Policy: </h3>
-                        <h4 className="description">&#x2022;&emsp;explains the information we collect when you use our Services <br></br>
+                        <p className="description">&#x2022;&emsp;explains the information we collect when you use our Services <br></br>
                                             &#x2022;&emsp;how we may use or share your information <br></br>
                                              &#x2022;&emsp;how you can control your information <br></br>
                                              &#x2022;&emsp;Applies to all Short Story, Novel,  and services 
@@ -44,12 +44,12 @@ function PolicyPage() {
                         privacy statement. We may post additional notifications across our websites or send 
                         direct notifications. Please check the policy frequently; your continued use of our 
                         websites will be treated as acceptance of these changes from their effective date.
-                        </h4>
+                        </p>
                         <h1>Privacy Policy: Important Points</h1>
-                        <h4 className="description">This is a summary of the most important points of our 
+                        <p className="description">This is a summary of the most important points of our 
                         Privacy Policy.  It is important to read the full document. It takes 
                         priority if there are any misunderstandings or questions about the policy.
-                        
+                        <br></br>
                         &#x2022;&emsp;Personal information can identify you. It is important to 
                         protect it. It includes your real name, home and email addresses, and 
                         phone number.<br></br>
@@ -72,7 +72,7 @@ function PolicyPage() {
                         get this information.<br></br>
                         &#x2022;&emsp;If you have any questions about this policy, write to us using this <a href="mailto: read4fun.developer@gmail.com">Contact</a>.<br></br>
                   
-                        </h4>
+                        </p>
                         </Card.Body>
                     </Card>
                 </Col>

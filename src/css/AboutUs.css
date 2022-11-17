@@ -1,7 +1,7 @@
 .middle{
-    padding-left: 100px !important;
+    /* padding-left: 100px !important; */
     font-family: "nunito_sansextrabold";
-    color: #5d6161 ;
+    color: #2A2E2E ;
    margin-top: 15px !important;
     margin-bottom: 10px !important;
    
@@ -9,28 +9,28 @@
 .middle-des{
     padding-left: 50px !important;
     font-family: "nunito_sansextrabold";
-    color: #5d6161 ;
+    color: #2A2E2E ;
    margin-top: 15px !important;
     margin-bottom: 10px !important;
    
 }
 .title {
     font-family: "nunito_sansextrabold";
-    color: #2A2E2E black;
+    color: #2A2E2E #2A2E2E;
     font-size: 25px !important;
     margin-bottom: 10px !important;
 }
 .title-low {
     font-family: "nunito_sansextrabold";
-    color: #2A2E2E black;
+    color: #2A2E2E #2A2E2E;
     font-size: 25px !important;
 }
 
 .description{
-     font-family: "nunito_sansextrabold";
-    color: #5d6161 ;
+    font-family: "nunito_sanssemibold";
+    color: #2A2E2E ;
     font-size: 20px !important;
-   margin-top: 15px !important;
+    margin-top: 15px !important;
     margin-bottom: 10px !important;
 }
 
@@ -45,4 +45,8 @@ body::-webkit-scrollbar-thumb {
     background: #2A2E2E;
     length: 1.5rem;
     width: 1rem;
+}
+
+.textdev{
+    text-align: center;
 }

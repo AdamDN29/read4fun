@@ -50,8 +50,9 @@ export default function ListChapter (props) {
                             <Row className='row_chapter'>
                                 <Col>
                                     <Link 
-                                    to={`/story/${chapter.story.title}/chapter`}
-                                    state={{chapter_content: chapter, list_chapter: listChapters}}>
+                                    to={`/story/${chapter.story.id}/chapter/${chapter.number}`}
+                                    // state={{chapter_content: chapter, list_chapter: listChapters}}
+                                    >
                                         <Badge bg="#B8D9A0" className='genre_badge' >
                                             {
                                                 chapter.story.type !== "Novel" ? (

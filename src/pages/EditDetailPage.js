@@ -72,8 +72,10 @@ const reducer = (currentState, action) => {
 }
 
 function EditDetailPage() {
-    const { story_id } = useParams();
-    console.log(story_id);
+    const location = useLocation();
+    const { story_id, list_genre, id_genre } = location.state;
+    // const { story_id } = useParams();
+    // console.log(story_id);
 
     const [userId, setUserId] = useState(() => {
 		const localData = sessionStorage.getItem("id");
@@ -83,16 +85,17 @@ function EditDetailPage() {
     const navigate = useNavigate();
 
     const [preload, setPreLoad] = useState([]);
-    const [imagePlaceholder, setImagePlaceholder] = useState('');
+    const [imagePlaceholder, setImagePlaceholder] = useState(null);
 
     const [story, dispatch] = useReducer(reducer, initialState);
-    const [genres, setGenre] = useState([1, 5, 7, 12, 21]);
+    const [genres, setGenre] = useState(list_genre);
+    const [idGenres, setIdGenre] = useState(id_genre);
 
     const [myGenre, setMyGenre] = useState([]); 
 
     useEffect(()=>{
         // Check if create or edit story
-        if (story_id === "newStory"){
+        if (story_id === 0){
             const tempNewStory = {title : '', type : '', status : '', description : "", link : null ,user_id : userId};
             setPreLoad(tempNewStory);
         }
@@ -100,36 +103,28 @@ function EditDetailPage() {
             // Get Data Story
             axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
             .then((response)=> {
-                setPreLoad(response.data);
-                setImagePlaceholder(response.data.link);
+                setPreLoad(response.data[0]);
+                setImagePlaceholder(response.data[0].link);
                 console.log(response.data);
             })
             .catch((err) => {
                 console.log(err);
-            });
-
-            // Get Genre Story
-            axios
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getGenre/${story_id}`)
-            .then((response) => {
-                console.log(response.data);
-                setGenre(response.data);      
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            });         
         }  
 	},[])
 
     const genreChecker  = (genre_id)  => {
         let temps = false;
-        genres.map((genre) => {
-            if (genre === genre_id){
-                temps = true;
-            }
-        })
+
+        var array = [...genres]; 
+        var index = array.indexOf(genre_id)
+        if (index !== -1) {
+            temps = true;
+        }
         return temps;
     }
+    console.log("List Genre : ", genres);
+    console.log("List Id Genre : ", idGenres);
 
     const changeMyGenre =  (e) => {
         var num = Number(e.target.value)
@@ -144,28 +139,56 @@ function EditDetailPage() {
     }
     console.log ("List of My Genre : ", myGenre);
 
-    function postMyGenre (){
+    function postMyGenre (idStory){
         var array = [...genres]; 
         console.log("My Genre : ", myGenre)
         console.log("Story Genre : ", genres)
         
         myGenre.map((genre) => {
             var index = array.indexOf(genre)
+            
             if (index !== -1) {
                 console.log("Hapus Genre Story : ", genre)
-            }else{
+
+                axios
+                .delete(`${process.env.REACT_APP_BACKEND_URL}/api/genre/delete/${idStory}/${genre}`)
+                .then((response) => {
+                    console.log(response)
+                    console.log("Delete Genre : ", genre)	
+                })
+                .catch((err) => {
+                    console.log("Failed : ", genre)
+                    return;
+                });
+            }
+            else{
                 console.log("Tambah Genre Story : ", genre)
+                const dataForm = new FormData();
+                dataForm.append("story_id", idStory);
+                dataForm.append("genre_id", genre);
+
+                axios
+                .post(`${process.env.REACT_APP_BACKEND_URL}/api/genre/create`, dataForm)
+                .then((response) => {
+                    console.log(response)
+                    console.log("Create Genre : ", genre)	
+                })
+                .catch((err) => {
+                    console.log("Failed : ", genre)
+                    return;
+                });
             }
         })
     }
 
     function postData (dataForm){
         // Post Data Edit Story
-        if (story_id !== "newStory"){
+        if (story_id !== 0){
             axios
             .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/update/${story_id}`, dataForm)
             .then((response) => {
                 console.log(response)
+                postMyGenre(story_id);
                 Swal.fire({
                     icon: 'success',
                     title: 'Edit Detail Story Succesfull',
@@ -174,7 +197,7 @@ function EditDetailPage() {
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
                         // window.location.href = "/userstory";
-                        // navigate(-1);
+                        navigate(-1);
                     }	  
                 }) 		
             })
@@ -192,9 +215,15 @@ function EditDetailPage() {
         // Post Data Create Story
         else{
             axios
+            .create({
+                headers: {
+                  Authorization : `Bearer ${sessionStorage.getItem("token")}`
+                  }
+                })
             .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/create`, dataForm)
             .then((response) => {
-                console.log(response)
+                console.log(response.data)
+                postMyGenre(response.data.id);
                 Swal.fire({
                     icon: 'success',
                     title: 'Create Detail Story Succesfull',
@@ -203,7 +232,7 @@ function EditDetailPage() {
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
                         // window.location.href = "/userstory";
-                        // navigate(-1);
+                        navigate(-1);
                     }	  
                 }) 		
             })
@@ -252,7 +281,7 @@ function EditDetailPage() {
 
         // Check if create or edit story
         // Edit
-        if (story_id !== "newStory"){
+        if (story_id !== 0){
             dataForm.append("id", story_id);
             if (story.type !== null){
                 dataForm.append("type", story.type);
@@ -326,7 +355,7 @@ function EditDetailPage() {
                             <Col md='auto' className="upload_col">
 
                                 {
-                                    imagePlaceholder !== '' ?(
+                                    imagePlaceholder !== null ?(
                                         <img src={imagePlaceholder} alt="Cover" width="250px"/>
                                     ):(
                                         <img src={ImgAsset.image_placeholder} alt="Cover" width="250px"/>
@@ -543,7 +572,7 @@ function EditDetailPage() {
                                             />
                                     </Form.Group>
 
-                                    <Button onClick={postMyGenre} variant="primary" className="btn_back" >
+                                    <Button onClick={() => navigate(-1)} variant="primary" className="btn_back" >
                                         Back
                                     </Button>
                                     <Button variant="primary"  className="btn_save" type="submit" onClick={submitData}>
