@@ -38,7 +38,7 @@ function PolicyPage() {
                         Privacy Policy; acceptance of this Privacy Policy and the 
                         <a href="/term_of_service">Terms of Service </a> in 
                         effect at the time of use; consent to the use of your data for marketing purposes 
-                        by <strong>Read4Fun </strong>and its  <a href="/AboutUs">business affiliates as described below. </a>
+                        by <strong>Read4Fun </strong>and its  <a href="/About_Us">business affiliates as described below. </a>
                         <br></br><br></br>
                         We may change this policy at any time; we will post any alterations or updates to this 
                         privacy statement. We may post additional notifications across our websites or send 
