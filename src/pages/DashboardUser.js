@@ -12,7 +12,6 @@ import { Card, Container, Row, Col , Button, CloseButton, Badge } from 'react-bo
 import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-import StoryCard from '../components/StoryCard';
 import Swal from "sweetalert2"
 
 function DashboardUser() {
@@ -40,10 +39,11 @@ function DashboardUser() {
 
         // Get Data Story User
             axios
-            // .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/user/${userId}`)
-            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
+            .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/user/${userId}`)
+            // .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
             .then((response) => {
-                setStory(response.data);
+                let sortedStory = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
+                setStory(sortedStory);
                 setFlag(true);
                 console.log(response.data);
             })
@@ -52,7 +52,7 @@ function DashboardUser() {
             axios
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/userBookmark/${userId}`)
             .then((response) => {
-                let sortedBookmark = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
+                let sortedBookmark = response.data.sort((a, b) => new Date(...b.chapter_update_at.split('/').reverse()) - new Date(...a.chapter_update_at.split('/').reverse()));
                 setBookmark(sortedBookmark);           
                 console.log(response.data);
             })
@@ -233,7 +233,7 @@ function DashboardUser() {
                                 ):(
                                     <>
                                      {bookmarks.map((bookmark) => {
-                                        const date = bookmark.updated_at					
+                                        const date = bookmark.chapter_update_at					
                                         const dt = new Date(date)
                                         return(
                                         <Row key={bookmark.id} className='bookmark_story'> 
@@ -397,7 +397,7 @@ function DashboardUser() {
                                                                         <span className="size_s icon_text3"> 
                                                                             { story.view !== null ? (
                                                                                 <>{story.view}</>
-                                                                                ):(<>1</>)
+                                                                                ):(<>0</>)
                                                                             } Views
                                                                         </span>
                                                                     </div>
@@ -411,8 +411,8 @@ function DashboardUser() {
                                                                             src = {ImgAsset.icon_like2}
                                                                         />
                                                                         <span className="size_s icon_text3">
-                                                                            {/* {story_like !== null ?(story_like):("1")}  */}
-                                                                            <GetLike key={story.id} story_id={story.id} /> Likes
+                                                                            {story.like !== null ?(story.like):("0")} Likes
+                                                                            {/* <GetLike key={story.id} story_id={story.id} /> Likes */}
                                                                         </span>
                                                                     </div>
                                                                 </Row>
@@ -425,8 +425,8 @@ function DashboardUser() {
                                                                             src = {ImgAsset.icon_bookmark2}
                                                                         />
                                                                         <span className="size_s ">
-                                                                            {/* {story_bookmark !== null ?(story_bookmark):("1")}  */}
-                                                                            <GetBookmark key={story.id} story_id={story.id} /> Bookmarks
+                                                                            {story.bookmark !== null ?(story.bookmark):("0")} Bookmarks
+                                                                            {/* <GetBookmark key={story.id} story_id={story.id} /> Bookmarks */}
                                                                         </span>
                                                                     </div>
                                                                 </Row>

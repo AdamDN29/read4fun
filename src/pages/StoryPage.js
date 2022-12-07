@@ -12,7 +12,7 @@ import GetBookmark from '../hook/GetBookmark';
 import CommentSection from '../components/CommentSection';
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, Badge, Form, FloatingLabel } from 'react-bootstrap';
+import { Card, Container, Row, Col , Button, Badge, Form, Spinner } from 'react-bootstrap';
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2"
@@ -39,10 +39,11 @@ function StoryPage() {
     const [author, setAuthor] = useState([]);
     const [chapters, setChapter] = useState([]);
     const [genres, setGenre] = useState([]);
-    const [listChapters, setListChapters] = useState([]);
     const [firstChapter, setFirstChapter] = useState([]);
     const [lastChapter, setLastChapter] = useState([]);
     const [flag, setFlag] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -82,8 +83,7 @@ function StoryPage() {
           .then((response) => {
             console.log(response.data);
             const chapterAsc = [...response.data].sort((a, b) => a.number - b.number);
-            setChapter(chapterAsc);
-            setListChapters(chapterAsc);  
+            setChapter(chapterAsc); 
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length); 
             setFirstChapter(response.data[0]);
@@ -366,6 +366,7 @@ function StoryPage() {
             notLoginPop();
         }
         else{
+            setIsLoading(true);
             console.log("Change Bookmark")
         
             if(bookmarked === true){
@@ -387,7 +388,7 @@ function StoryPage() {
                         .then((response) => {
                             console.log(response.data);
                             setBookmarked(false);
-                            
+                            setIsLoading(false);
                             Swal.fire({
                                 icon: 'success',
                                 title: 'You remove this Story from Bookmark',
@@ -402,6 +403,7 @@ function StoryPage() {
                         })
                         .catch((err) => {
                             console.log(err);
+                            setIsLoading(false);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Failed to remove this Story from Bookmark',
@@ -423,6 +425,7 @@ function StoryPage() {
                 .then((response) => {
                     console.log(response.data);
                     setBookmarked(true);
+                    setIsLoading(false);
                     Swal.fire({
                         title: 'Bookmarked',
                         text: 'This Story has been added to your bookmarks',
@@ -436,6 +439,7 @@ function StoryPage() {
                 })
                 .catch((err) => {
                     console.log(err);
+                    setIsLoading(false);
                     Swal.fire({
                         icon: 'error',
                         title: 'Failed to Bookmark This Story',
@@ -584,8 +588,20 @@ function StoryPage() {
                         </Button>
                     
                     
-                    <Button onClick={changeBookmark} className='btn_sp'>
-                        {bookmarked ? ("Bookmarked"):("Add to Bookmark")}                        
+                    <Button onClick={changeBookmark} className='btn_sp' disabled={isLoading}>                             
+                        {
+                            isLoading === false ? (<>{bookmarked ? ("Bookmarked"):("Add to Bookmark")}</>)
+                            :(
+                                <>
+                                <Spinner
+                                as="span"
+                                animation="grow"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                                />{" "} Loading... </>
+                            )
+                        }         
                     </Button>
                     <Button onClick={reportStory} className='btn_report btn_sp'>Report</Button>
 

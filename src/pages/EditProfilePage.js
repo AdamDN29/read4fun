@@ -7,9 +7,7 @@ import axios from "axios";
 import Swal from 'sweetalert2'
 
 //import component Bootstrap React
-import { Card, Container, Row, Col, Button, Form, InputGroup } from 'react-bootstrap'
-
-// const imgbbUploader = require("imgbb-uploader");
+import { Card, Container, Row, Col, Button, Form, Spinner } from 'react-bootstrap'
 
 const initialState = {
     avatar: null,
@@ -47,6 +45,7 @@ export default function EditProfilePage() {
 
     const [preload, setPreLoad] = useState([]);
     const [imagePlaceholder, setImagePlaceholder] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         axios
@@ -62,7 +61,6 @@ export default function EditProfilePage() {
     }, []);
         
     const [user, dispatch] = useReducer(reducer, initialState);
-    const [disable, setDisable] = useState(false);
 
     function postData (formData){
         axios
@@ -74,19 +72,20 @@ export default function EditProfilePage() {
 		  .post(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/edit`, formData)
 		  .then((response) => {
 			console.log(response)
-            setDisable(false);
+            setIsLoading(false);
 			Swal.fire({
 				icon: 'success',
 				title: 'Profile Changed!',
 				allowOutsideClick: false,
 				allowEscapeKey: false,
-				confirmButtonColor: '#21c177',
+				confirmButtonColor: "#B8D9A0",
 				preConfirm: () => {
-					window.location.href = "/editprofile";
+					window.location.href = "/dashboard";
 				}	  
 			}) 		
 		  })
 		  .catch((error) => {
+            setIsLoading(false);
             Swal.fire({
 				icon: 'error',
 				title: 'Edit Profile Failed',
@@ -125,7 +124,7 @@ export default function EditProfilePage() {
         
     const submitProfile = (e) => {        
 		e.preventDefault();
-        setDisable(true);
+        setIsLoading(true);
         console.log(user);
 
         const formData = new FormData();
@@ -229,6 +228,7 @@ export default function EditProfilePage() {
                                     <Form.Control type="file" 
                                         placeholder="Enter Link of Story Cover"
                                         name="avatar"
+                                        accept="image/*"
                                         onChange={onImageChange}
                                         // onChange={(e) =>
                                         //     dispatch({ type: "avatar", upload: e.target.files[0], })
@@ -304,8 +304,20 @@ export default function EditProfilePage() {
                                             <Button href='/dashboard' variant="primary" className="btn_back" >
                                                 Back
                                             </Button>
-                                            <Button variant="primary" className="btn_save" type="submit" onClick={submitProfile}>
-                                                Save Profile
+                                            <Button variant="primary" disabled={isLoading} className="btn_save" type="submit" onClick={submitProfile}>
+                                                {
+                                                    isLoading === false ? (<>Save Profile</>)
+                                                    :(
+                                                        <>
+                                                        <Spinner
+                                                        as="span"
+                                                        animation="grow"
+                                                        size="sm"
+                                                        role="status"
+                                                        aria-hidden="true"
+                                                        />{" "} Loading... </>
+                                                    )
+                                                }
                                             </Button>
                                         </Col>
                                     </Row>

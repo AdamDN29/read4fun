@@ -2,6 +2,8 @@ import React from 'react';
 import { useState, useEffect, useReducer, useRef } from "react";
 import ImgAsset from '../resources'
 import '../css/storypage.css'
+import URLChecker from '../hook/URLChecker';
+import TextareaAutosize from 'react-textarea-autosize';
 import axios from "axios";
 import ReactTimeAgo from 'react-time-ago'
 import Swal from "sweetalert2"
@@ -51,7 +53,7 @@ function CommentSection(props) {
 
     // Get Comment Story
     useEffect(() => {				
-		axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/commentUserId/${story_id}`)
+		axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/showComment/${story_id}`)
 		.then((response)=> {
 			console.log(response);
             const sortedComment = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
@@ -71,14 +73,14 @@ function CommentSection(props) {
         const dataForm = new FormData();
 
         dataForm.append("story_id", story_id);
-        dataForm.append("username", user.username);
         dataForm.append("comment", userComment.comment);
-
-        if (user.avatar !== ""){
-            dataForm.append("avatar_link", user.avatar);
-        }else{
-            dataForm.append("avatar_link", "");
-        }
+        // dataForm.append("username", user.username);
+        
+        // if (user.avatar !== ""){
+        //     dataForm.append("avatar_link", user.avatar);
+        // }else{
+        //     dataForm.append("avatar_link", null);
+        // }
 
         if(userComment.comment !== ""){
             console.log("Comment !")
@@ -125,13 +127,17 @@ function CommentSection(props) {
 
     }
 
+    // const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    // useAutosizeTextArea(textAreaRef.current, userComment.comment);
+
     const formRef = useRef(null);
     const handleReset = () => {
         formRef.current.reset();
-      };
+    };
 
     function getComment (){
-        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/commentUserId/${story_id}`)
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/story/showComment/${story_id}`)
 		.then((response)=> {
 			console.log(response);
             const sortedComment = response.data.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
@@ -169,21 +175,17 @@ function CommentSection(props) {
                         <>
                         {
                             user.avatar !== null ?(
-                                <>
                                 <img
                                 src = {user.avatar}
                                 className="avatar_place"
                                 style={{width: 50, height: 50, borderRadius: 50/ 2}}
                                 />
-                                </>
                             ):(
-                                <>
                                 <img
                                 src = {ImgAsset.avatar2}
                                 className="avatar_place"
                                 alt="avatar"
                                 />
-                                </>
                             )
                         }
                         </>
@@ -216,6 +218,18 @@ function CommentSection(props) {
                                 {/* Logged In */}
                                 <div className='login_box'>
                                 <Form ref={formRef} onSubmit={submitData}>
+                                    <TextareaAutosize className="autoTextarea" 
+                                        // minRows={2} 
+                                        placeholder="Share Your Thoughts !"
+                                        ref={formRef}
+                                        onBlur={(e) =>
+                                            dispatch({ type: "comment", payload: e.target.value })
+                                        }
+                                    />
+                                    <Button className='btn_comment_form' type='submit'>Post Comment</Button>
+                                </Form>
+                                
+                                {/* <Form ref={formRef} onSubmit={submitData}>
                                     <FloatingLabel
                                         controlId="floatingTextarea"
                                         label="Comment"
@@ -230,7 +244,7 @@ function CommentSection(props) {
                                         />
                                     </FloatingLabel>
                                     <Button className='btn_comment_form' type='submit'>Post Comment</Button>
-                                </Form>
+                                </Form> */}
                                     
                                     
                                 </div>
@@ -279,16 +293,22 @@ function CommentSection(props) {
                             const dt = new Date(date)
                             console.log("Author Id :", authorId)
                             // getProfileComment(comment.user_id);
+                            var statusAvatar = false;
+                            if(comment.avatar !== null){
+                                statusAvatar = true;
+                                var temp = URLChecker(comment.avatar);
+                                if (temp === null){statusAvatar = false;}
+                            }
                             return (
                                 <div className='comment_field2'>
                                     <Row>
                                         <Col xs={1} > 
                                             {
-                                                comment.avatar_link !== null ?(
+                                                statusAvatar === true ?(
                                                     <img
                                                         style={{width: 50, height: 50, borderRadius: 50/ 2}}
                                                         className='avatar_place'
-                                                        src = {comment.avatar_link}
+                                                        src = {comment.avatar}
                                                     />
                                                 ):(
                                                     <img

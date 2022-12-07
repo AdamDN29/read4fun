@@ -15,7 +15,7 @@ function StoryBrowse(props) {
     const story = props.storys;
     const story_id = props.story_id;
 
-    const date = story.updated_at					
+    const date = story.chapter_update_at					
     const dt = new Date(date)
 
     const [genres, setGenre] = useState([]);
@@ -100,7 +100,7 @@ function StoryBrowse(props) {
                                     src = {ImgAsset.icon_view2}
                                 />
                                 <span className="icon_text2">
-                                    {story.view !== null ?(story.view):("1")} Views
+                                    {story.view !== null ?(story.view):("0")} Views
                                 </span>
                             </div>
 
@@ -113,7 +113,8 @@ function StoryBrowse(props) {
                                         src = {ImgAsset.icon_like2}
                                     />
                                     <span className="icon_text2">
-                                    <GetLike key={story_id} story_id={story_id} /> Likes
+                                    {story.like !== null ?(story.like):("0")} Likes
+                                    {/* <GetLike key={story_id} story_id={story_id} /> Likes */}
                                     </span>
                                 </div>
                             </div>
@@ -126,7 +127,8 @@ function StoryBrowse(props) {
                                     src = {ImgAsset.icon_bookmark2}
                                 />
                                 <span className="icon_text2">
-                                <GetBookmark key={story_id} story_id={story_id} />  Bookmarks
+                                {story.bookmark !== null ?(story.bookmark):("0")} Bookmarks
+                                {/* <GetBookmark key={story_id} story_id={story_id} />  Bookmarks */}
                                 </span>
                             </div>
                         </Col>
@@ -150,13 +152,6 @@ function StoryBrowse(props) {
                                 </>
                             )
                         }
-                            
-
-                            {/* <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
-                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
-                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
-                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge>
-                            <Badge bg="#B8D9A0" className='genre_badge2' >Fantasy</Badge> */}
                         </Col>      
                     </Row>                 
                 </Col>                          

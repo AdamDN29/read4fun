@@ -39,7 +39,7 @@ export default function ListChapter (props) {
 		<>
         {
             flag === false ? (
-                <p className='p_note'><i>There are no chapter in this story yet</i></p>
+                <p className='p_note'><i>There are no content in this story yet</i></p>
             ):(
                 <>
                 {

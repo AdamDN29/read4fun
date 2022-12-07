@@ -17,7 +17,7 @@ function ImgCarousel(props) {
         />
         <Carousel.Caption>
           <h3 className='title_caption'>Looking for a <a className='text_theme'>Great Place</a> to Read Novel and Short Story ?</h3>
-          <p>Explore a <a className='text_theme'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
+          <p className='title_caption'>Explore a <a className='text_theme'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
           <p><center><Button variant="primary" href="/browse/Story" className='btn_explore'>Explore</Button></center></p>
         </Carousel.Caption>
       </Carousel.Item>
@@ -30,7 +30,7 @@ function ImgCarousel(props) {
 
         <Carousel.Caption>
           <h3 className='title_caption2'>Want to be <a className='text_theme2'>Author</a> and Share Your Story in Great Place  ?</h3>
-          <p>Write a <a className='text_theme3'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
+          <p className='title_caption2'>Write a <a className='text_theme3'>Great Story</a> with <i>Read</i><a className='text_theme'>4</a><i>Fun</i></p>
           <p><center><Button variant="primary" href={link_btn}className='btn_write'>Write</Button></center></p>
         </Carousel.Caption>
       </Carousel.Item>

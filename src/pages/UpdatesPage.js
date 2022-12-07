@@ -44,7 +44,8 @@ function UpdatesPage() {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
           .then((response) => {
-            setStory(response.data);
+            let sortedStory = response.data.sort((a, b) => new Date(...b.chapter_update_at.split('/').reverse()) - new Date(...a.chapter_update_at.split('/').reverse()));
+            setStory(sortedStory);
             console.log("Total Data: ", response.data.length);
             setallSessionsCount(response.data.length);
             console.log(response);

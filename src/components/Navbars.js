@@ -36,12 +36,7 @@ export default function Navbars () {
 			axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${userId}`)
 			.then((response)=> {
 				console.log(response);
-				setUser(response.data.data);
-					// if(response.data.data.avatar !== null){
-					// 	setImageHolder(statusAvatar);
-					// }else{
-					// 	setImageHolder(response.data.data.avatar);
-					// }		
+				setUser(response.data.data);	
 			})
 		}		
 	}, [])
@@ -67,7 +62,7 @@ export default function Navbars () {
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     confirmButtonText: 'OK',
-                    confirmButtonColor: '#21c177',
+                    confirmButtonColor: "#B8D9A0",
                     preConfirm: () => {
                         window.location.href = "/homepage";
                     }                        
@@ -87,7 +82,7 @@ export default function Navbars () {
 
     return (
         <div>
-            <Navbar collapseOnSelect expand="lg" bg="light" variant="light">
+            <Navbar collapseOnSelect expand="lg" bg="light" variant="light" fixed="top" className="navbarStyle">
                 <Container>
                     <Navbar.Brand href="/homepage">
                         <img

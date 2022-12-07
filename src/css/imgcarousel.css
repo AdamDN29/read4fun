@@ -88,5 +88,105 @@
     color: #ffffff !important;   
 }
 
+/* @media only screen and (max-width: 768px) {
 
+    .title_caption{
+        font-size: medium !important;
+    }
 
+    .title_caption2{
+        font-size: medium !important;
+    }
+    .text_theme3{
+        font-size: medium !important;
+    }
+
+    .btn_explore{
+        margin-top: -150px !important;
+        bottom: 500px;
+        background-color: #B8D9A0 !important;
+        width: 75px;
+        font-size: small !important;
+        text-transform: none !important;
+        padding: 5px !important;
+        margin-left: -75px !important;
+        text-align: center;
+    }
+
+    .btn_write{
+        margin-top: -150px !important;
+        background-color: #2A2E2E !important;
+        width: 75px;
+        font-size: small !important;
+        text-transform: none !important;
+        padding: 5px !important;
+        margin-left: -75px !important;
+        text-align: center;
+    }
+
+    .btn_search{
+        margin-top: -150px !important;
+        background-color: #B8D9A0 !important;
+        width: 75px;
+        font-size: small !important;
+        text-transform: none !important;
+        color: #2A2E2E !important;
+        font-weight: bold !important;
+        padding: 5px !important;
+        margin-left: -75px !important;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    
+
+    .title_caption{
+        font-size: small !important;
+    }
+
+    .title_caption2{
+        font-size: small !important;
+    }
+    .text_theme3{
+        font-size: small !important;
+    }
+
+    .btn_explore{
+        margin-top: -150px !important;
+        bottom: 500px;
+        background-color: #B8D9A0 !important;
+        width: 75px;
+        font-size: x-small !important;
+        text-transform: none !important;
+        padding: 5px !important;
+        margin-left: -225px !important;
+        text-align: center;
+    }
+
+    .btn_write{
+        margin-top: -150px !important;
+        background-color: #2A2E2E !important;
+        width: 75px;
+        font-size: x-small !important;
+        text-transform: none !important;
+        padding: 5px !important;
+        margin-left: -225px !important;
+        text-align: center;
+    }
+
+    .btn_search{
+        margin-top: -150px !important;
+        background-color: #B8D9A0 !important;
+        width: 75px;
+        font-size: x-small !important;
+        text-transform: none !important;
+        color: #2A2E2E !important;
+        font-weight: bold !important;
+        padding: 5px !important;
+        margin-left: -225px !important;
+        text-align: center;
+    }
+}
+
+ */

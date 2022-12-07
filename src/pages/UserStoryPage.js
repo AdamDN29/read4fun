@@ -38,7 +38,6 @@ function UserStoryPage() {
 
     const [newChapter, setNewChapter] = useState();
     const [listGenre, setListGenre] = useState();
-    const [idGenre, setIdGenre] = useState();
 
     // Pagination Settings
     const [allSessionsCount, setallSessionsCount] = useState(1);
@@ -55,6 +54,13 @@ function UserStoryPage() {
         axios
           .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
           .then((response) => {
+            if(response.data[0].user_id !== Number(userId)){
+                // console.log("author_id = ", response.data[0].user_id);
+                // console.log("userId = ", userId);
+                console.log("Unauthenticated !");
+                window.location.href = "/dashboard";
+            }
+
             setStory(response.data[0]);
             console.log(response.data);
 
@@ -73,6 +79,8 @@ function UserStoryPage() {
                       '<center><p>Please contact <a href="mailto:read4fun.developer@gmail.com"> read4fun.developer@gmail.com </a> <br>if you think this is a mistake </p></center>',
                   });
             }
+
+           
             // Get Data Author
             axios
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/user/profile/${response.data[0].user_id}`)
@@ -117,11 +125,9 @@ function UserStoryPage() {
             const temp2 = [];
             response.data.map((genre, index) => {
                 temp1.push(genre.genre_id);
-                temp2.push(genre.id);
                 console.log("Temp ",index," : ", temp1)
             })   
             setListGenre(temp1);
-            setIdGenre(temp2);
           })
           .catch((err) => {
             console.log(err);
@@ -265,7 +271,8 @@ function UserStoryPage() {
                                     src = {ImgAsset.icon_like2}
                                 />
                                 <span className="icon_text">
-                                    <GetLike key={story.id} story_id={story.id} /> 
+                                    {story.like !== null ?(story.like):("0")} 
+                                    {/* <GetLike key={story.id} story_id={story.id} />  */}
                                 </span>
                             </div>
                         </Col>
@@ -276,7 +283,8 @@ function UserStoryPage() {
                                     src = {ImgAsset.icon_bookmark2}
                                 />
                                 <span className="icon_text">
-                                    <GetBookmark key={story.id} story_id={story.id} />
+                                    {story.bookmark !== null ?(story.bookmark):("0")} Bookmarks
+                                    {/* <GetBookmark key={story.id} story_id={story.id} /> */}
                                 </span>
                             </div>
                         </Col>
@@ -309,7 +317,7 @@ function UserStoryPage() {
                     {/* Button */}
                         <Link 
                             to={`/editdetail/${story.title}`}
-                            state={{story_id: story.id, list_genre: listGenre, id_genre: idGenre}}    
+                            state={{story_id: story.id, list_genre: listGenre}}    
                             ><Button className='btn_sp'>Edit Detail</Button></Link>
                     {
                         story.type === "Novel" ?(
@@ -325,15 +333,15 @@ function UserStoryPage() {
                             <>
                                 {chapters.length !== 0 ? (
                                     <Link className="link_chapter" 
-                                        to={`/userstory/${story.title}/writing/${firstChapter.number}`}
-                                        state={{chapter_content: firstChapter}}
+                                        to={`/userstory/${story.id}/writing/${firstChapter.number}`}
+                                        // state={{chapter_content: firstChapter}}
                                     >
                                         <Button className='btn_sp'>Edit Story</Button>
                                     </Link>
                                 ):(
                                     <Link className="link_chapter" 
-                                        to={`/userstory/${story.title}/writing/newChapter`}
-                                        state={{chapter_content: newChapter}}
+                                        to={`/userstory/${story.id}/writing/newChapter`}
+                                        // state={{chapter_content: newChapter}}
                                     >
                                         <Button className='btn_sp'>Add Story</Button>
                                     </Link>

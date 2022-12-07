@@ -5,17 +5,22 @@ import axios from "axios";
 import "../css/login.css";
 
 //import component Bootstrap React
-import { Card, Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Card, Container, Row, Col, Button, Form, Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
+
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
+  console.log("prev route flag : ", sessionStorage.getItem("prevPath"))
+
   const loginHandler = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const formData = new FormData();
 
@@ -28,6 +33,7 @@ function Login() {
         console.log(response);
 
         if (response.data.data.user.banned == 1) {
+          setIsLoading(false);
           Swal.fire({
             icon: "warning",
             title: "Your Account Is Banned!",
@@ -42,7 +48,7 @@ function Login() {
           sessionStorage.setItem("token", response.data.data.token);
           sessionStorage.setItem("id", response.data.data.user.id);
           sessionStorage.setItem("user", response.data.data.user.username);
-
+          setIsLoading(false);
           Swal.fire({
             icon: "success",
             title: "Login Succesful",
@@ -50,17 +56,20 @@ function Login() {
             allowEscapeKey: false,
             confirmButtonColor: "#B8D9A0",
             preConfirm: () => {
-              // window.location.href = "/homepage";
-              navigate(-1);
+              if (sessionStorage.getItem("prevPath") === "true"){
+                window.location.href = "/homepage";
+              }else{navigate(-1);} 
             },
           });
         }
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log("ERROR: ", error);
         Swal.fire({
           icon: "error",
           title: "Login Failed.",
+          text: error.response.data.error,
           allowOutsideClick: false,
           allowEscapeKey: false,
           confirmButtonColor: "#D3455B",
@@ -70,7 +79,7 @@ function Login() {
 
   return (
     <Container>
-      <div className="row vh-100 align-items-center">
+      <div className="bodyLogin row vh-100 align-items-center">
         <a href="/homepage">
           <img src={ImgAsset.logo} className="logo" alt="Read4Fun logo" />
         </a>
@@ -90,6 +99,7 @@ function Login() {
                   id="username"
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Email/Username"
+                  required={true}
                 ></input>
               </div>
               <div className="form-group mb-3">
@@ -100,10 +110,23 @@ function Login() {
                   id="password"
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
+                  required={true}
                 ></input>
               </div>
-              <button type="submit" className="btn_login btn btn-black">
-                <span className="spans">Login</span>
+              <button disabled={isLoading} type="submit" className="btn_login btn btn-black">
+                {
+                    isLoading === false ? (<span className="spans">Login</span>)
+                    :(
+                        <>
+                        <Spinner
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                        />{" "} Loading... </>
+                    )
+                }
               </button>
               <div>
                 <p className="login">

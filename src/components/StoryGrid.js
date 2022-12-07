@@ -17,7 +17,10 @@ function StoryGrid() {
         axios
         .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/sort`)
           .then((response) => {
-            setStory(response.data);
+            let sortedStory = response.data.sort((a, b) => new Date(...b.chapter_update_at.split('/').reverse()) - new Date(...a.chapter_update_at.split('/').reverse()));
+            // let sortedStory = response.data.sort((a, b) =>
+            //     a.chapter_update_at.split('/').reverse().join().localeCompare(b.chapter_update_at.split('/').reverse().join())); 
+            setStory(sortedStory);
             setIsLoading(false);
             console.log(response);
           })
@@ -39,7 +42,12 @@ function StoryGrid() {
             <Row xs={3} md={6} className="g-6">
             {storys.slice(0,12).map((story) => {
                 // let date1 =new Date(story.updated_at).toDateString()
-                const date = story.updated_at					
+                let update;
+                if(story.chapter_update_at !== null){
+                    update = story.chapter_update_at;
+                }else{update = story.updated_at}
+
+                const date = update;					
                 const dt = new Date(date)
 
                 return (

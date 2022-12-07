@@ -1,7 +1,8 @@
 import React from 'react'
+import { useState, useEffect } from "react";
 
 //import react router dom
-import { BrowserRouter, Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Router, Routes, Route, Link, useLocation } from "react-router-dom";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -37,6 +38,21 @@ import PrivateRoute from './hook/PrivateRoute';
 
 
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if(location.pathname !== "/login"){
+      if (location.pathname === "/register"){
+        sessionStorage.setItem("prevPath", true); 
+        console.log("Path Route : ", location.pathname)
+      }else{
+        sessionStorage.setItem("prevPath", false);
+        console.log("Path Route : ", location.pathname)
+      }
+    } 
+    console.log("Path Flag : ", sessionStorage.getItem("prevPath"));
+  }, [])
+
   return (
     <div>
         <ScrollToTop/>

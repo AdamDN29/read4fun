@@ -21,7 +21,7 @@ function Ranking() {
 
     useEffect(() => {
         axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story`)
+        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/unbanned`)
           .then((response) => {
             console.log(response);
             // setStory(response.data);
@@ -99,7 +99,7 @@ function Ranking() {
                                             src = {ImgAsset.icon_view}
                                         />
                                         <span className="icon_text">
-                                            {story.view !== null ?(story.view):("0")} View
+                                            {story.view !== null ?(story.view):("0")} Views
                                         </span>
                                     </div>
                                 </div>
@@ -114,7 +114,8 @@ function Ranking() {
                                             src = {ImgAsset.icon_like}
                                         />
                                         <span className="icon_text">
-                                            <GetLike key={story.id} story_id={story.id} /> Like
+                                            {story.like !== null ?(story.like):("0")} Likes
+                                            {/* <GetLike key={story.id} story_id={story.id} /> Like */}
                                         </span>
                                     </div>
                                 </div>
@@ -129,7 +130,8 @@ function Ranking() {
                                             src = {ImgAsset.icon_bookmark}
                                         />
                                         <span className="icon_text">
-                                            <GetBookmark key={story.id} story_id={story.id} /> Bookmark
+                                        {story.bookmark !== null ?(story.bookmark):("0")} Bookmarks
+                                            {/* <GetBookmark key={story.id} story_id={story.id} /> Bookmark */}
                                         </span>
                                     </div>
                                 </div>
@@ -157,14 +159,14 @@ function Ranking() {
                             <center>
                             <Spinner size="sm" animation="border" width="500px" height="500px"/> 
                             </center>
-                        ):(<Row xs={1} md={3}> {showStory}</Row>)
+                        ):(<Row xs={2} sm={3} md={3}> {showStory}</Row>)
                     }    
                 </Tab>
                 <Tab eventKey="most_like" title="Most Like" tabClassName="tabs_title">
-                    <Row xs={1} md={3}> {showStory}</Row>
+                    <Row xs={2} sm={3} md={3}> {showStory}</Row>
                 </Tab>
                 <Tab eventKey="most_bookmark" title="Most Bookmark" tabClassName="tabs_title">
-                    <Row xs={1} md={3}> {showStory}</Row>
+                    <Row xs={2} sm={3} md={3}> {showStory}</Row>
                 </Tab>
             </Tabs>
 

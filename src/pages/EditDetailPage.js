@@ -6,11 +6,12 @@ import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, Form, InputGroup } from 'react-bootstrap'
+import { Card, Container, Row, Col , Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { useState, useEffect, useReducer } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2"
+import TextareaAutosize from 'react-textarea-autosize';
 
 const allStatus = [
 	'On Going',
@@ -73,7 +74,7 @@ const reducer = (currentState, action) => {
 
 function EditDetailPage() {
     const location = useLocation();
-    const { story_id, list_genre, id_genre } = location.state;
+    const { story_id, list_genre } = location.state;
     // const { story_id } = useParams();
     // console.log(story_id);
 
@@ -89,9 +90,9 @@ function EditDetailPage() {
 
     const [story, dispatch] = useReducer(reducer, initialState);
     const [genres, setGenre] = useState(list_genre);
-    const [idGenres, setIdGenre] = useState(id_genre);
 
     const [myGenre, setMyGenre] = useState([]); 
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=>{
         // Check if create or edit story
@@ -124,7 +125,6 @@ function EditDetailPage() {
         return temps;
     }
     console.log("List Genre : ", genres);
-    console.log("List Id Genre : ", idGenres);
 
     const changeMyGenre =  (e) => {
         var num = Number(e.target.value)
@@ -140,48 +140,54 @@ function EditDetailPage() {
     console.log ("List of My Genre : ", myGenre);
 
     function postMyGenre (idStory){
+        console.log("ID Story : ", idStory)
         var array = [...genres]; 
         console.log("My Genre : ", myGenre)
         console.log("Story Genre : ", genres)
         
-        myGenre.map((genre) => {
-            var index = array.indexOf(genre)
-            
-            if (index !== -1) {
-                console.log("Hapus Genre Story : ", genre)
-
-                axios
-                .delete(`${process.env.REACT_APP_BACKEND_URL}/api/genre/delete/${idStory}/${genre}`)
-                .then((response) => {
-                    console.log(response)
-                    console.log("Delete Genre : ", genre)	
-                })
-                .catch((err) => {
-                    console.log("Failed : ", genre)
-                    return;
-                });
-            }
-            else{
-                console.log("Tambah Genre Story : ", genre)
-                const dataForm = new FormData();
-                dataForm.append("story_id", idStory);
-                dataForm.append("genre_id", genre);
-
-                axios
-                .post(`${process.env.REACT_APP_BACKEND_URL}/api/genre/create`, dataForm)
-                .then((response) => {
-                    console.log(response)
-                    console.log("Create Genre : ", genre)	
-                })
-                .catch((err) => {
-                    console.log("Failed : ", genre)
-                    return;
-                });
-            }
-        })
+        if (myGenre.length !== 0){
+            myGenre.map((genre) => {
+                var index = array.indexOf(genre)
+                
+                if (index !== -1) {
+                    console.log("Hapus Genre Story : ", genre)
+    
+                    axios
+                    .delete(`${process.env.REACT_APP_BACKEND_URL}/api/genre/delete/${idStory}/${genre}`)
+                    .then((response) => {
+                        console.log(response)
+                        console.log("Delete Genre : ", genre)	
+                    })
+                    .catch((err) => {
+                        console.log("Failed : ", genre)
+                        return;
+                    });
+                }
+                else{
+                    console.log("Tambah Genre Story : ", genre)
+                    const dataForm = new FormData();
+                    dataForm.append("story_id", idStory);
+                    dataForm.append("genre_id", genre);
+    
+                    axios
+                    .post(`${process.env.REACT_APP_BACKEND_URL}/api/genre/create`, dataForm)
+                    .then((response) => {
+                        console.log(response)
+                        console.log("Create Genre : ", genre)	
+                    })
+                    .catch((err) => {
+                        console.log("Failed : ", genre)
+                        return;
+                    });
+                }
+            })
+        }  
     }
 
     function postData (dataForm){
+        for (var pair of dataForm.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]); 
+        }
         // Post Data Edit Story
         if (story_id !== 0){
             axios
@@ -189,6 +195,7 @@ function EditDetailPage() {
             .then((response) => {
                 console.log(response)
                 postMyGenre(story_id);
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Edit Detail Story Succesfull',
@@ -202,6 +209,7 @@ function EditDetailPage() {
                 }) 		
             })
             .catch((err) => {
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Edit Detail Story Failed',
@@ -223,7 +231,9 @@ function EditDetailPage() {
             .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/create`, dataForm)
             .then((response) => {
                 console.log(response.data)
+                console.log("ID Story create : ", response.data.id)
                 postMyGenre(response.data.id);
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Create Detail Story Succesfull',
@@ -232,11 +242,12 @@ function EditDetailPage() {
                     confirmButtonColor: '#B8D9A0',
                     preConfirm: () => {
                         // window.location.href = "/userstory";
-                        navigate(-1);
+                        // navigate(-1);
                     }	  
                 }) 		
             })
             .catch((err) => {
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Create Detail Story Failed',
@@ -276,6 +287,7 @@ function EditDetailPage() {
     const submitData = (e) => {
 		e.preventDefault();
 		console.log(story);
+        setIsLoading(true);
 	
 		const dataForm = new FormData();
 
@@ -328,6 +340,8 @@ function EditDetailPage() {
             postData(dataForm);
         }   	
 	};
+
+    console.log("Data : ", story)
 
     const onImageChange = (e) => {
         dispatch({ type: "link", upload: e.target.files[0], })
@@ -388,6 +402,7 @@ function EditDetailPage() {
                                     <Form.Control type="file" 
                                         placeholder="Enter Link of Story Cover"
                                         name="link"
+                                        accept="image/*"
                                         onChange={onImageChange}
                                         // onChange={(e) =>
                                         //     dispatch({ type: "avatar", upload: e.target.files[0], })
@@ -418,36 +433,44 @@ function EditDetailPage() {
                                         </Form.Text> */}
                                     </Form.Group>
 
-                                    {/* Type Form */}
-                                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                                        <Form.Label className="label_form">Type</Form.Label>
-                                        <Form.Select
-                                            defaultValue ={preload.type}
-                                            onChange={(e) =>
-                                                dispatch({ type: "type", payload: e.target.value })
-                                              }
-                                        >
-                                            {
-                                                preload.type !== "" ? (
-                                                    <>
-                                                    <option value="">{preload.type}</option>
-                                                    {
-                                                        allType.map(post => {
-                                                            if(post !== preload.type){
-                                                                return(<option value={post}>{post}</option>)
-                                                            }
-                                                        })
-                                                    }
-                                                    </>
-                                                ):(
-                                                    <>
-                                                    <option value="Novel">Novel</option>
-                                                    <option value="Short Story">Short Story</option>
-                                                    </>
-                                                )
-                                            }
-                                        </Form.Select>
-                                    </Form.Group>
+                                    {
+                                        preload.type !== "" ? (
+                                            <></>
+                                        ):(
+                                            
+                                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                                            <Form.Label className="label_form">Type</Form.Label>
+                                            <Form.Select
+                                                defaultValue ={preload.type}
+                                                onChange={(e) =>
+                                                    dispatch({ type: "type", payload: e.target.value })
+                                                }
+                                            >
+                                                {
+                                                    preload.type !== "" ? (
+                                                        <>
+                                                        <option value="">{preload.type}</option>
+                                                        {
+                                                            allType.map(post => {
+                                                                if(post !== preload.type){
+                                                                    return(<option value={post}>{post}</option>)
+                                                                }
+                                                            })
+                                                        }
+                                                        </>
+                                                    ):(
+                                                        <>
+                                                        <option value="Novel">Novel</option>
+                                                        <option value="Short Story">Short Story</option>
+                                                        </>
+                                                    )
+                                                }
+                                            </Form.Select>
+                                        </Form.Group>
+                                        )
+                                    }
+
+                                    
 
                                     {/* Status Form */}
                                     <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -561,7 +584,7 @@ function EditDetailPage() {
                                     {/* Description Form */}
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                                         <Form.Label className="label_form">Description</Form.Label>
-                                        <Form.Control as="textarea" 
+                                        {/* <Form.Control as="textarea" 
                                             placeholder="Enter the Description" 
                                             rows={5} 
                                             name="description" 
@@ -569,14 +592,34 @@ function EditDetailPage() {
                                             onBlur={(e) =>
                                                 dispatch({ type: "description", payload: e.target.value })
                                             }
-                                            />
+                                        /> */}
+                                        <TextareaAutosize className="autoTextarea" 
+                                            minRows={5} 
+                                            placeholder="Enter the Description"
+                                            defaultValue ={preload.description}
+                                            onBlur={(e) =>
+                                                dispatch({ type: "description", payload: e.target.value })
+                                            }
+                                        />
                                     </Form.Group>
 
                                     <Button onClick={() => navigate(-1)} variant="primary" className="btn_back" >
                                         Back
                                     </Button>
-                                    <Button variant="primary"  className="btn_save" type="submit" onClick={submitData}>
-                                        Save Detail
+                                    <Button variant="primary"  disabled={isLoading} className="btn_save" type="submit" onClick={submitData}>
+                                        {
+                                            isLoading === false ? (<>Save Detail</>)
+                                            :(
+                                                <>
+                                                <Spinner
+                                                as="span"
+                                                animation="grow"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                                />{" "} Loading... </>
+                                            )
+                                        }
                                     </Button>
                                     
                                 </Form>

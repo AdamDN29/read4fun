@@ -148,11 +148,19 @@ function BrowsePage() {
                 if(genre.label === link_query){
                     console.log("Found Label : ", genre.label);
                     console.log("Found ID : ", genre.id);
-                    setMyGenre(genre.id);
+                    // setMyGenre(genre.id);
+                    setMyGenre([genre.id]);
+
+                    const dataForm = new FormData();
+
+                    dataForm.append('genre_id[]', genre.id);
+
                     axios
-                    .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getStory/${genre.id}`)
+                    .post(`${process.env.REACT_APP_BACKEND_URL}/api/story/get-multiple-genres`, dataForm)
                     .then((response) => {
-                        const sortedStory = [...response.data].sort((a, b) =>
+                        console.log("Response : ", response);   
+                        let dataTemp = Object.values(response.data);             
+                        const sortedStory = [...dataTemp].sort((a, b) =>
                             a.title > b.title ? 1 : -1,
                         );
                         setStory(sortedStory);
@@ -166,9 +174,8 @@ function BrowsePage() {
                         setIsLoading(false);
                     });
                 }
-            })
+            })           
         }
-
         
     }, []);
 
@@ -191,26 +198,6 @@ function BrowsePage() {
             setIsLoading(false);
         });
     }
-
-    // Get Story with Link Genre
-    const getGenreStory = () => {
-        // axios
-        // .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/getStory/${filterGenre}`)
-        //   .then((response) => {
-        //     const sortedStory = [...response.data].sort((a, b) =>
-        //         a.title > b.title ? 1 : -1,
-        //     );
-        //     setStory(sortedStory);
-        //     console.log("Total Data: ", response.data.length);
-        //     setallSessionsCount(response.data.length);
-        //     setIsLoading(false);
-        //     console.log("Link Genre : ", response.data);
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //     setIsLoading(false);
-        // });
-    } 
 
 	// Search Handler
     const onSearchHandler = (e) => {
@@ -256,83 +243,108 @@ function BrowsePage() {
         navigate('/browse/Story');
         setIsLoading(true);
         console.log("My Genre : ", myGenre)
-        if(myGenre.length === 1){
-            filterQuery="/getStory/" + myGenre[0];
+
+        if(myGenre.length !== 0){
+            filterQuery="/get-multiple-genres"
+            console.log("Filter Query : ", filterQuery)
+
+            const dataForm = new FormData();
+
+            myGenre.forEach((genre) => {
+                dataForm.append('genre_id[]', genre);
+            });
+
+            axios
+            .post(`${process.env.REACT_APP_BACKEND_URL}/api/story${filterQuery}`, dataForm)
+            .then((response) => {
+                console.log("Response : ", response);                
+                filterSortResult(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                setIsLoading(false);
+            });
+        }else{
+            axios
+            .get(`${process.env.REACT_APP_BACKEND_URL}/api/story${filterQuery}`)
+            .then((response) => {
+                console.log("Response : ", response);               
+                filterSortResult(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                setIsLoading(false);
+            });
         }
-        else if(myGenre.length === 2){
-            filterQuery="/get2Genre?genre1=" + myGenre[0] + "&genre2=" + myGenre[1];
-        }
-        else if(myGenre.length === 3){
-            filterQuery="/get3Genre?genre1=" + myGenre[0] + "&genre2=" + myGenre[1] + "&genre3=" + myGenre[2];
-        }
-        else if(myGenre.length === 4){
-            filterQuery="/get4Genre?genre1=" + myGenre[0] + "&genre2=" + myGenre[1] + "&genre3=" + myGenre[2] + "&genre4=" + myGenre[3];
-        }
-        console.log("Filter Query : ", filterQuery)
-        axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/api/story${filterQuery}`)
-          .then((response) => {
-            
-            let sortedStory;
-            let filtered1;
-            let filtered2;
+
+        setCurrentPage(1);
+    }
+
+    function filterSortResult (dataStory){
+            let dataTemp = Object.values(dataStory);
+            let sortedStory = [];
+            let filtered1 = [];
+            let filtered2 = [];
+
+            console.log("Data Temp : ", dataTemp)
 
             if (typeValue !== 'All'){
                 console.log("Filter by Type")
-                filtered1 = response.data.filter(story => {
+                filtered1 = dataTemp.filter(story => {
                     return story.type === typeValue;
                 });
             }else{
-                filtered1 = response.data;
+                filtered1 = dataTemp;
             }
+            console.log("Filtered 1 : ", filtered1)
 
             if (statusValue !== 'All'){
+                console.log("Filter by Status")
                 filtered2 = filtered1.filter(story => {
                     return story.status === statusValue;
                 });
             }else{
                 filtered2 = filtered1;
             }
+            console.log("Filtered 2 : ", filtered2)
+            console.log("Filtered 2 L : ", filtered2.length)
            
-
-            if (sortValue === "1"){
-                sortedStory = [...filtered2].sort((a, b) => b.view - a.view);
-                console.log("Sort by View")
-                
+            if (filtered2.length !== 1){
+                if (sortValue === "1"){
+                    sortedStory = [...filtered2].sort((a, b) => b.view - a.view);
+                    console.log("Sort by View")
+                    
+                }
+                else if(sortValue === "2"){
+                    sortedStory = [...filtered2].sort((a, b) => b.like - a.like);
+                    console.log("Sort by Like")
+                    
+                }
+                else if(sortValue === "3"){
+                    sortedStory = [...filtered2].sort((a, b) => b.bookmark - a.bookmark);
+                    console.log("Sort by Bookmark")
+                    
+                }
+                else if(sortValue === "4"){
+                    sortedStory = filtered2.sort((a, b) => new Date(...b.chapter_update_at.split('/').reverse()) - new Date(...a.chapter_update_at.split('/').reverse()));
+                    console.log("Sort by Update")
+                    
+                }
+            }else{
+                sortedStory = filtered2;
             }
-            else if(sortValue === "2"){
-                sortedStory = [...filtered2].sort((a, b) => b.like - a.like);
-                console.log("Sort by Like")
-                
-            }
-            else if(sortValue === "3"){
-                sortedStory = [...filtered2].sort((a, b) => b.bookmark - a.bookmark);
-                console.log("Sort by Bookmark")
-                
-            }
-            else if(sortValue === "4"){
-                sortedStory = filtered2.sort((a, b) => new Date(...b.updated_at.split('/').reverse()) - new Date(...a.updated_at.split('/').reverse()));
-                console.log("Sort by Update")
-                
-            }
+            
             setStory(sortedStory);
             temp();
             console.log("Submit Filter: ", sortedStory.length);
             setallSessionsCount(sortedStory.length);
-            console.log(response);
+            
             setCurrentPage(1);
             setIsLoading(false);
 
             if (sortedStory.length === 0){
                 console.log("Not Found");
             }
-
-          })
-          .catch((err) => {
-            console.log(err);
-            setIsLoading(false);
-        });
-        setCurrentPage(1);
     }
 
     // Check Checked Genre from link
@@ -360,6 +372,7 @@ function BrowsePage() {
             setMyGenre(current => [...current, num]);
         }       
     }
+    console.log("MY Genre : ", myGenre)
 
     // Scroll to Section
     const temp = () => {
@@ -526,14 +539,14 @@ function BrowsePage() {
                     </Col>
                 </Row>
                 <Row>
-                <div align="right">
+                <div align="right" id="result">
                     <Button className='btn_apply' onClick={filterStory}>Apply Filter</Button>
                 </div>
                 </Row>          
             </div>
 
             {/* Story Result Section */}
-            <div className='info_section2' id="result"> 
+            <div className='info_section2' > 
                 {/* <h1 className='section_title3'>Result</h1> */}
                 {/* <StoryBrowse querys={apply}/> */}
 
@@ -568,7 +581,13 @@ function BrowsePage() {
                                 // to={`/story/${story.title}`}
                                 // state={{story_id: story.id}}>
                                 <>
-                                {
+                                        <Link className="link" 
+                                        to={`/story/${story.id}`}
+                                        // state={{story_id: story.id}}
+                                        >
+                                            <StoryBrowse key={story.id} story_id={story.id} storys={story}/>
+                                        </Link>
+                                {/* {
                                     myGenre.length !== 0 ?  (
                                         <Link className="link" 
                                         to={`/story/${story.story_id}`}
@@ -584,7 +603,7 @@ function BrowsePage() {
                                             <StoryBrowse key={story.id} story_id={story.id} storys={story}/>
                                         </Link>
                                     )
-                                }
+                                } */}
                                 </>
                                
                             )})}

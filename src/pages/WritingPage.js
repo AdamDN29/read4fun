@@ -7,7 +7,7 @@ import Navbars from '../components/Navbars'
 import Footer from '../components/Footer'
 
 //import component Bootstrap React
-import { Card, Container, Row, Col , Button, Form, FormGroup } from 'react-bootstrap'
+import { Card, Container, Row, Col , Button, Form, Spinner } from 'react-bootstrap'
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -38,9 +38,15 @@ function WritingPage() {
     // const {chapter_content} = location.state;
     // console.log(chapter_content);
 
+    const [userId, setUserId] = useState(() => {
+		const localData = sessionStorage.getItem("id");
+		return localData ? localData : null;
+	});
+
     const { story_id, chapter_number } = useParams();
     console.log("Story Id : ", story_id);
     console.log("Chapter Number : ",chapter_number);
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -60,7 +66,13 @@ function WritingPage() {
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/story/${story_id}`)
             .then((response) => {
                 console.log(response.data);
-                const tempNewChapter = {id : 0, title : '', number : '', content : '', story : { id : response.data[0].id, title : response.data[0].title, type: response.data[0].type}};
+                if(response.data[0].user_id !== Number(userId)){
+                    // console.log("author_id = ", response.data[0].user_id);
+                    // console.log("userId = ", userId);
+                    console.log("Unauthenticated !");
+                    window.location.href = "/dashboard";
+                }
+                const tempNewChapter = {id : 0, title : '', number : '' + (Number(response.data[0].chapter) + 1), content : '', story : { id : response.data[0].id, title : response.data[0].title, type: response.data[0].type}};
                 setThisChapter(tempNewChapter);
                 setDisable(true);               
             })
@@ -74,6 +86,12 @@ function WritingPage() {
             .get(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/story/${story_id}`)
             .then((response) => {
                 console.log(response.data);
+                if(response.data.story.user_id !== Number(userId)){
+                    // console.log("author_id = ", response.data[0].user_id);
+                    // console.log("userId = ", userId);
+                    console.log("Unauthenticated !");
+                    window.location.href = "/dashboard";
+                }
                 const chapterAsc = [...response.data].sort((a, b) => a.number - b.number); 
                 console.log("Total Data: ", response.data.length);
                 var array = [...chapterAsc]; 
@@ -91,6 +109,7 @@ function WritingPage() {
     const submitData = (e) => {
 		e.preventDefault();
 		console.log(chapter);
+        setIsLoading(true);
 	
 		const dataForm = new FormData();
         // Dataform Create Chapter
@@ -109,7 +128,7 @@ function WritingPage() {
                 }
                 if (chapter.number !== ""){
                     dataForm.append("number", chapter.number);
-                }
+                }else{dataForm.append("number", thisChapter.number);}
             }
         } 
         // Dataform Update Chapter
@@ -133,7 +152,7 @@ function WritingPage() {
             .post(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/create`, dataForm)
             .then((response) => {
                 console.log(response)
-
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Create Chapter Succesfull',
@@ -146,6 +165,7 @@ function WritingPage() {
                 }) 		
             })
             .catch((err) => {
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Create Chapter Failed',
@@ -162,7 +182,7 @@ function WritingPage() {
             .post(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/update/${thisChapter.id}`, dataForm)
             .then((response) => {
                 console.log(response)
-
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Edit Chapter Succesfull',
@@ -175,6 +195,7 @@ function WritingPage() {
                 }) 		
             })
             .catch((err) => {
+                setIsLoading(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Edit Chapter Failed',
@@ -191,6 +212,8 @@ function WritingPage() {
     
     // Delete Chapter
     const deleteChapter = () => {
+        setIsLoading(true);
+        setDisable(true); 
         Swal.fire({
             icon: 'question',
             title: 'Are you sure you want to delete this chapter ?',
@@ -204,7 +227,8 @@ function WritingPage() {
                 .delete(`${process.env.REACT_APP_BACKEND_URL}/api/chapter/delete/${thisChapter.id}`)
                 .then((response) => {
                     console.log(response)
-
+                    setIsLoading(false);
+                    setDisable(false); 
                     Swal.fire({
                         icon: 'success',
                         title: 'Delete Chapter Succesfull',
@@ -217,6 +241,8 @@ function WritingPage() {
                     }) 		
                 })
                 .catch((err) => {
+                    setIsLoading(false);
+                    setDisable(false); 
                     Swal.fire({
                         icon: 'error',
                         title: 'Delete Chapter Failed',
@@ -258,10 +284,34 @@ function WritingPage() {
                     </Col>
                     <Col md='4'>
                         <Button onClick={deleteChapter} className="btn_delete_chapter " disabled={disable}> 
-                            <span>Delete Chapter</span>
+                            {
+                                isLoading === false ? (<span>Delete Chapter</span>)
+                                :(
+                                    <>
+                                    <Spinner
+                                    as="span"
+                                    animation="grow"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                    />{" "} Loading... </>
+                                )
+                            }
                         </Button>
-                        <Button onClick={submitData} className="btn_save_chapter " > 
-                            <span>Save Chapter</span>
+                        <Button disabled={isLoading} onClick={submitData} className="btn_save_chapter " >    
+                            {
+                                isLoading === false ? (<span>Save Chapter</span>)
+                                :(
+                                    <>
+                                    <Spinner
+                                    as="span"
+                                    animation="grow"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                    />{" "} Loading... </>
+                                )
+                            }
                         </Button>
                     </Col>
                 </Row>
@@ -331,8 +381,20 @@ function WritingPage() {
                 <Button onClick={backBtn} className="btn_back_chapter "> 
                             <span>Back</span>
                         </Button>
-                        <Button className="btn_save_chapter " onClick={submitData}> 
-                            <span>Save Chapter</span>
+                        <Button className="btn_save_chapter " disabled={isLoading} onClick={submitData}> 
+                            {
+                                isLoading === false ? (<span>Save Chapter</span>)
+                                :(
+                                    <>
+                                    <Spinner
+                                    as="span"
+                                    animation="grow"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                    />{" "} Loading... </>
+                                )
+                            }
                         </Button>
                 </Col>
             </Row>
